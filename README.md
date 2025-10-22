@@ -31,14 +31,18 @@ Kroz ovakav sustav, Dvoranko omogućuje digitalizaciju i unaprjeđenje procesa r
 - Administrator potvrđuje ili odbija zahtjeve za ulogu iznajmljivača
 
 # Tehnologije
+* Frontend: React, Figma
+* Backend: Java 21, Spring Boot 3.5.6
+* Deployment: 
+* Dokumentacija: 
 
 # Članovi tima 
-> Vid Martin Lulić,https://github.com/VML17 <br>
-> Dino Maras, https://github.com/dajnoo <br>
-> Ivan Vučak, https://github.com/IvanVucakGit <br>
-> Eva Huljaj, https://github.com/EvaHuljaj <br>
-> Matija Vandek, https://github.com/matijavan <br>
-> Borna Navratil, https://github.com/bornanavratil <br>
+> Vid Martin Lulić https://github.com/VML17 <br>
+> Dino Maras https://github.com/dajnoo <br>
+> Ivan Vučak https://github.com/IvanVucakGit <br>
+> Eva Huljaj https://github.com/EvaHuljaj <br>
+> Matija Vandek https://github.com/matijavan <br>
+> Borna Navratil https://github.com/bornanavratil <br>
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
