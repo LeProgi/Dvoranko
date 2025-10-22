@@ -1,34 +1,48 @@
-# Programsko inženjerstvo
+# Dvoranko
 
-> Ime projekta u naslovu ima cilj opisati namjenu projekta te pomoći u podizanju početnog interesa za projekt prezentirajući osnovnu svrhu projekta.
-> Isključivo ovisi o Vama!
-> 
-> Naravno, nijedan predložak nije idealan za sve projekte jer su potrebe i ciljevi različiti. Ne bojte se naglasiti Vaš cilj u ovoj početnoj stranici projekta, podržat ćemo ga bez obzira usredotočili se Vi više na tenologiju ili marketing.
-> 
-> Zašto ovaj dokument? Samo manji dio timova je do sada propoznao potrebu (a i meni je lakše pratiti Vaš rad).  
+>  U Zagrebu je sve veća potražnja za prostorima za radionice, proslave, konferencije i sportske aktivnosti. Dvoranko je web-aplikacija koja korisnicima omogućuje jednostavno pretraživanje i rezervaciju dvorana na jednom mjestu, dok vlasnicima olakšava upravljanje ponudom i terminima. Platforma povezuje obje strane u pregledan i učinkovit sustav rezervacija te potiče promociju javnih događanja u gradu. Korisnici mogu lako pronaći prostor koji im odgovara, a vlasnici jednostavno organizirati svoje poslovanje, sve kroz moderan digitalni alat.
+
 
 # Opis projekta
-Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu. 
+Ovaj projekt je rezultat timskog rada u sklopu projektnog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu. 
 
-Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije »Zato što je to bio zadatak i nismo imali ideje za drugo.«). Koji problem rješavate?
-> Obzirom da je ovo zadani projekt navedite i što želite/jeste novo  naučili.
+U urbanim sredinama poput Zagreba, sve je veća potreba za pronalaženjem i rezervacijom prostora za različite namjene: radionice, konferencije, proslave ili sportske aktivnosti. Trenutačno korisnici najčešće pretražuju i kontaktiraju dvorane ručno putem interneta, društvenih mreža, telefona ili e-maila, što je dugotrajan i često neorganiziran proces. Upravo iz te potrebe proizašla je naša ideja Dvoranko web-aplikacije, čiji je cilj omogućiti jednostavniju, bržu i pregledniju rezervaciju dvorana u Zagrebu na jednom mjestu. Dvoranko okuplja ponudu različitih prostora u jedinstven sustav, čime olakšava komunikaciju između iznajmljivača i korisnika te modernizira proces rezervacije i oglašavanja dvorana.
 
-> Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
+Aplikaciju Dvoranko moguće je koristiti kao obični korisnik, vlasnik dvorane ili administrator. Obični korisnici imaju mogućnost pretraživanja i rezervacije dvorana te pregledavanja javnih događanja objavljenih na oglasnoj ploči unutar aplikacije. Vlasnici dvorana imaju dodatne funkcionalnosti koje im omogućuju upravljanje svojim prostorima. Vlasnik može pregledati sve zahtjeve, prihvatiti ih ili odbiti, te tako jednostavno upravljati svojim poslovanjem putem aplikacije.
+
+Kroz ovakav sustav, Dvoranko omogućuje digitalizaciju i unaprjeđenje procesa rezervacije prostora u Zagrebu. Korisnici mogu pronaći dvoranu koja im odgovara u svega nekoliko klikova, dok vlasnici mogu učinkovito upravljati svojim prostorima i terminima bez potrebe za dodatnim alatima. Administratori osiguravaju da cijeli sustav funkcionira pouzdano i sigurno. Na taj način, Dvoranko stvara povezan “ekosustav” u kojem su svi sudionici uključeni u transparentan i učinkovit proces rezervacije dvorana.
+
 
 # Funkcijski zahtjevi
-> Navedite ključne zahtjeve Vašeg projekta.
+- Sustav omogućuje korisnicima kreiranje računa pomoću e-mail adrese
+- Sustav omogućuje odabir pojedine dvorane te rezervaciju termina za istu dvoranu
+- Sustav omogućuje stvaranje tri vrste korisnika: običnog korisnik, vlasnika dvorane i administrator
 
+### Običan korisnik
+- Svi korisnici mogu pregledavati slobodne termine objavljenih dvorana i rezervirati ih
+- Svi korisnici mogu pregledavati sva objavljena javna događanja na “oglasnoj ploči” unutar aplikacije
+
+### Vlasnik dvorane
+- Ako je osoba definirana kao vlasnik dvorane ona može oglasiti svoju dvoranu putem aplikacije
+- Vlasnik dvorane može poslati zahtjev da objavi svoj prostor. Kako bi to napravio mora priložiti podatke o prostoru poput veličine, kapaciteta te slike dvorane
+
+### Administrator
+- Administrator potvrđuje ili odbija zahtjeve za oglašavanje dvorane
+- Administrator potvrđuje ili odbija zahtjeve za ulogu iznajmljivača
 
 # Tehnologije
+* Frontend: React, Figma
+* Backend: Java 21, Spring Boot 3.5.6
+* Deployment: 
+* Dokumentacija: 
 
-#Instalcija
 # Članovi tima 
-> Vid Martin Lulić,https://github.com/VML17 <br>
-> Dino Maras, https://github.com/dajnoo <br>
-> Ivan Vučak, https://github.com/IvanVucakGit <br>
-> Eva Huljaj, https://github.com/EvaHuljaj <br>
-> Matija Vandek, https://github.com/matijavan <br>
-> Borna Navratil, https://github.com/bornanavratil <br>
+> Vid Martin Lulić https://github.com/VML17 <br>
+> Dino Maras https://github.com/dajnoo <br>
+> Ivan Vučak https://github.com/IvanVucakGit <br>
+> Eva Huljaj https://github.com/EvaHuljaj <br>
+> Matija Vandek https://github.com/matijavan <br>
+> Borna Navratil https://github.com/bornanavratil <br>
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
