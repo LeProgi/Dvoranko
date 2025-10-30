@@ -1,10 +1,14 @@
 package fer.leprogi.dvoranko.services;
 
-import fer.leprogi.dvoranko.domain.entity.KorisnikEnitity;
+import fer.leprogi.dvoranko.domain.entity.KorisnikEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface KorisnikService {
-    KorisnikEnitity createKorisnik(KorisnikEnitity korisnik);
-    Optional<KorisnikEnitity> getKorisnikById(Long id);
+    KorisnikEntity createKorisnik(KorisnikEntity korisnik);
+
+    Optional<KorisnikEntity> getKorisnikByIdKorisnik(Long idKorinsik);
+    Optional<KorisnikEntity> getKorisnikByEmail(String email);
+    List<KorisnikEntity> getAllKorisnik();
 }

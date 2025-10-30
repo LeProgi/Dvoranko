@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 
 @Data
@@ -15,16 +15,18 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "korisnik")
-public class KorisnikEnitity {
+public class KorisnikEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Column(name = "id_korisnik")
+    private Long idKorisnik;
 
-    String ime;
+    private String ime;
 
-    String prezime;
+    private String prezime;
 
-    String email;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    //Date datumRodenja;
+    private LocalDate datumRodenja;
 }
