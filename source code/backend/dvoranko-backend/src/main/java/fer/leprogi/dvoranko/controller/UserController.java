@@ -1,5 +1,7 @@
 package fer.leprogi.dvoranko.controller;
 
+import fer.leprogi.dvoranko.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,4 +22,6 @@ public class UserController {
                 "access", "USER, MODERATOR, ADMIN"
         ));
     }
+
+
 }

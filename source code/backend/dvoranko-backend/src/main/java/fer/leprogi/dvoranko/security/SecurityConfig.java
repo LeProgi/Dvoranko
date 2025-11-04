@@ -30,17 +30,16 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/error", "/login**", "/api/auth/user").permitAll()
+                        .requestMatchers("/", "/error", "/login**", "/api/auth/user", "/api/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("http://localhost:3000/auth/callback", true)
+                        .defaultSuccessUrl("http://localhost:3000", true)
                 );
 
         return http.build();
