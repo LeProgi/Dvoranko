@@ -2,7 +2,7 @@ services:
   - type: web
     name: dvoranko-backend
     env: docker
-    rootDir: backend/dvoranko-backend
+    dockerContext: backend/dvoranko-backend
     plan: free
     envVars:
       - key: SPRING_DATASOURCE_URL
