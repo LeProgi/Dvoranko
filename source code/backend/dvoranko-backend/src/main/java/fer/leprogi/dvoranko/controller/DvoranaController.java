@@ -16,4 +16,14 @@ public class DvoranaController {
     public Dvorana createDvorana(@RequestBody Dvorana dvorana, @PathVariable String koordinate){
         return dvoranaService.createDvorana(dvorana, koordinate);
     }
+
+    @GetMapping("/{idDvorana}")
+    public Dvorana getDvoranaById(@PathVariable Long idDvorana){
+        return dvoranaService.getDvoranaById(idDvorana);
+    }
+
+    @GetMapping
+    public Iterable<Dvorana> getAllDvorane(){
+        return dvoranaService.getAllDvorane();
+    }
 }

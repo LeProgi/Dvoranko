@@ -7,8 +7,6 @@ import fer.leprogi.dvoranko.repository.MjestoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class AdresaService {
@@ -27,7 +25,7 @@ public class AdresaService {
                 .orElseThrow(() -> new IllegalArgumentException("Adresa with koordinate " + koordinate + " does not exist"));
     }
 
-    public List<Adresa> getAllAdrese(){
+    public Iterable<Adresa> getAllAdrese(){
         return adresaRepository.findAll();
     }
 

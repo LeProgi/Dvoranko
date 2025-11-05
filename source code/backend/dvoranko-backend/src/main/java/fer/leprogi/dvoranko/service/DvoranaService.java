@@ -5,7 +5,6 @@ import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.repository.AdresaRepository;
 import fer.leprogi.dvoranko.repository.DvoranaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,5 +21,14 @@ public class DvoranaService {
 
         dvorana.setAdresa(adresa);
         return dvoranaRepository.save(dvorana);
+    }
+
+    public Dvorana getDvoranaById(Long idDvorana) {
+        return dvoranaRepository.findById(idDvorana)
+                .orElseThrow(() -> new IllegalArgumentException("Dvorana with idDvorana " + idDvorana + " does not exist"));
+    }
+
+    public Iterable<Dvorana> getAllDvorane(){
+        return dvoranaRepository.findAll();
     }
 }

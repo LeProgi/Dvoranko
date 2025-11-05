@@ -13,7 +13,7 @@ public class MjestoService {
 
     private final MjestoRepository mjestoRepository;
 
-    public List<Mjesto> getAllMjesta() {
+    public Iterable<Mjesto> getAllMjesta() {
         return mjestoRepository.findAll();
     }
 
