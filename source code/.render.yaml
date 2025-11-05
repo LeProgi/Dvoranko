@@ -4,15 +4,15 @@ services:
     env: docker
     rootDir: backend/dvoranko-backend
     plan: free
+    buildCommand: ./mvnw verify
+    startCommand: java -jar target/*.jar
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:postgresql://your-db-host:5432/Dvoranko
+        value: jdbc:postgresql://dvoranko-db.internal:5432/dvoranko
       - key: SPRING_DATASOURCE_USERNAME
-        value: postgres
+        value: postgresuser
       - key: SPRING_DATASOURCE_PASSWORD
-        value: bazepodataka
-      - key: SPRING_PROFILES_ACTIVE
-        value: prod
+        sync: false
       - key: GOOGLE_OAUTH2_ID
         sync: false
       - key: GOOGLE_OAUTH2_SECRET
