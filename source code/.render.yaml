@@ -4,8 +4,6 @@ services:
     env: docker
     rootDir: backend/dvoranko-backend
     plan: free
-    buildCommand: ./mvnw verify
-    startCommand: java -jar target/*.jar
     envVars:
       - key: SPRING_DATASOURCE_URL
         value: jdbc:postgresql://dvoranko-db.internal:5432/dvoranko
