@@ -24,6 +24,4 @@ public class Mjesto {
     @NotBlank(message = "Naziv mjesta ne smije biti prazan.")
     private String nazivMjesto;
 
-//    @OneToMany(mappedBy = "mjesto", orphanRemoval = true, cascade = CascadeType.ALL)
-//    private List<Adresa> dvorane;
 }
