@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: dvoranko-backend
+    env: docker
+    rootDir: backend/dvoranko-backend
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://your-db-host:5432/Dvoranko
+      - key: SPRING_DATASOURCE_USERNAME
+        value: postgres
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: bazepodataka
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: GOOGLE_OAUTH2_ID
+        sync: false
+      - key: GOOGLE_OAUTH2_SECRET
+        sync: false
+
+  - type: web
+    name: dvoranko-frontend
+    env: node
+    rootDir: frontend/dvoranko-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: .
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        value: https://dvoranko.onrender.com
