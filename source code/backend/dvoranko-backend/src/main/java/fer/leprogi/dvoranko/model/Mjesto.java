@@ -1,6 +1,8 @@
 package fer.leprogi.dvoranko.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,9 +18,11 @@ public class Mjesto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMjesto;
 
-    @Column(unique = true)
+    @NotNull(message = "Postanski broj ne smije biti prazan.")
+    @Column(unique = true, nullable = false)
     private Long postanskiBroj;
 
+    @NotBlank(message = "Naziv mjesta ne smije biti prazan.")
     private String nazivMjesto;
 
 //    @OneToMany(mappedBy = "mjesto", orphanRemoval = true, cascade = CascadeType.ALL)

@@ -1,8 +1,7 @@
 package fer.leprogi.dvoranko.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,10 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Dvorana {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idDvorana;
+
+    @NotBlank(message = "Naziv dvorane ne smije biti prazan.")
     private String nazivDvorana;
+
     private Integer kapacitet;
+
     private String opis;
-    private String koordinate;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Adresa adresa;
 
 }
