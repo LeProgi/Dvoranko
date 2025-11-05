@@ -12,9 +12,9 @@ public class DvoranaController {
 
     private final DvoranaService dvoranaService;
 
-    @PostMapping("/{koordinate}")
-    public Dvorana createDvorana(@RequestBody Dvorana dvorana, @PathVariable String koordinate){
-        return dvoranaService.createDvorana(dvorana, koordinate);
+    @PostMapping("/{idAdresa}")
+    public Dvorana createDvorana(@RequestBody Dvorana dvorana, @PathVariable Long idAdresa){
+        return dvoranaService.createDvorana(dvorana, idAdresa);
     }
 
     @GetMapping("/{idDvorana}")

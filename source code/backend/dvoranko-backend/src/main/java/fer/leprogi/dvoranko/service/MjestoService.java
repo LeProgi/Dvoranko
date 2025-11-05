@@ -55,6 +55,28 @@ public class MjestoService {
                 .collect(Collectors.toList());
     }
 
+    public MjestoDTO updateMjesto(Long idMjesto, CreateMjestoRequest request) {
+        Mjesto mjesto = mjestoRepository.findById(idMjesto)
+                .orElseThrow(() -> new ResourceNotFoundException("Mjesto with id " + idMjesto + " does not exist"));
 
+        // ako novi pbr vec postoji
+        if (!mjesto.getPostanskiBroj().equals(request.getPostanskiBroj()) && mjestoRepository.existsByPostanskiBroj(request.getPostanskiBroj()))
+            throw new IllegalArgumentException("Mjesto s poštanskim brojem " + request.getPostanskiBroj() + " već postoji");
+
+        mjesto.setPostanskiBroj(request.getPostanskiBroj());
+        mjesto.setNazivMjesto(request.getNazivMjesto());
+
+        Mjesto updated = mjestoRepository.save(mjesto);
+
+        return dtoMapper.toMjestoDTO(updated);
+    }
+
+
+    public void deleteMjesto(Long idMjesto) {
+        if (!mjestoRepository.existsById(idMjesto))
+            throw new ResourceNotFoundException("Mjesto with id " + idMjesto + " does not exist");
+
+        mjestoRepository.deleteById(idMjesto);
+    }
 }
 

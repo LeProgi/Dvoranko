@@ -1,9 +1,7 @@
 package fer.leprogi.dvoranko.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,18 +12,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Adresa {
     @Id
-    @NotBlank
-    @Pattern(
-            regexp = "^-?\\d+(\\.\\d+)?\\s+-?\\d+(\\.\\d+)?$",
-            message = "Koordinate moraju biti u formatu 'širina dužina', npr. '45.8150 15.9819'."
-    )
-    private String koordinate;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idAdresa;
+
+    @NotNull(message = "Latitude je obavezna")
+    @Column(nullable = false)
+    private Double latitude;
+
+    @NotNull(message = "Longitude je obavezna")
+    @Column(nullable = false)
+    private Double longitude;
 
     private String ulica;
 
     private String kucniBroj;
 
-    @NotNull
+    @NotNull(message = "Mjesto je obavezno")
     @ManyToOne
     @JoinColumn(name = "idMjesto", nullable = false)
     private Mjesto mjesto;

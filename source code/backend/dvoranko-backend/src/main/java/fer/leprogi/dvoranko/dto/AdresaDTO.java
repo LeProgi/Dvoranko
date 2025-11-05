@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdresaDTO {
-    private String koordinate;
+    private Long idAdresa;
+    private Double latitude;
+    private Double longitude;
     private String ulica;
     private String kucniBroj;
     private MjestoDTO mjesto;

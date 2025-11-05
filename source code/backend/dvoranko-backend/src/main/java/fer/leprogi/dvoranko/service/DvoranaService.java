@@ -15,9 +15,9 @@ public class DvoranaService {
     private final AdresaRepository adresaRepository;
 
 
-    public Dvorana createDvorana(Dvorana dvorana, String koordinate) {
-        Adresa adresa = adresaRepository.findById(koordinate)
-                .orElseThrow(() -> new IllegalArgumentException("Adresa with koordinate " + koordinate + " does not exist"));
+    public Dvorana createDvorana(Dvorana dvorana, Long idAdresa) {
+        Adresa adresa = adresaRepository.findById(idAdresa)
+                .orElseThrow(() -> new IllegalArgumentException("Adresa with koordinate " + idAdresa + " does not exist"));
 
         dvorana.setAdresa(adresa);
         return dvoranaRepository.save(dvorana);

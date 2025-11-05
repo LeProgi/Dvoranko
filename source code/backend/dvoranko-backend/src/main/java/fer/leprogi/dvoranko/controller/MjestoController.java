@@ -2,7 +2,6 @@ package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
 import fer.leprogi.dvoranko.dto.MjestoDTO;
-import fer.leprogi.dvoranko.model.Mjesto;
 import fer.leprogi.dvoranko.service.MjestoService;
 import fer.leprogi.dvoranko.utils.ApiResponse;
 import jakarta.validation.Valid;
@@ -10,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping( value = "/api/public/mjesta")
@@ -48,5 +45,19 @@ public class MjestoController {
         Iterable<MjestoDTO> mjesta = mjestoService.getAllMjesta();
 
         return ResponseEntity.ok(ApiResponse.success(mjesta, "Mjesta retrieved successfully"));
+    }
+
+    @PutMapping("/{idMjesto}")
+    public ResponseEntity<ApiResponse<MjestoDTO>> updateMjesto(@PathVariable Long idMjesto, @Valid @RequestBody CreateMjestoRequest request) {
+        MjestoDTO updated = mjestoService.updateMjesto(idMjesto, request);
+
+        return ResponseEntity.ok(ApiResponse.success(updated, "Mjesto updated successfully"));
+    }
+
+    @DeleteMapping("/{idMjesto}")
+    public ResponseEntity<ApiResponse<Void>> deleteMjesto(@PathVariable Long idMjesto) {
+        mjestoService.deleteMjesto(idMjesto);
+
+        return ResponseEntity.ok(ApiResponse.success(null, "Mjesto deleted successfully"));
     }
 }
