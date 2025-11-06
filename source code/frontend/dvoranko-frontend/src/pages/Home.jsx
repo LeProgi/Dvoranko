@@ -1,7 +1,33 @@
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import VenueCard from "../components/VenueCard";
+import { useEffect, useState } from "react";
 const Home = () => {
+    
+    const [hasLoggedIn, setHasLoggedIn] = useState(false);
+    const [username, setUsername] = useState("");
+    useEffect(() => {
+        fetch("http://localhost:8080/api/auth/user", {
+            credentials: "include",
+        })
+        .then((res) =>  {
+            if(res.status === 200) return res.json();
+            throw new Error("Nije ulogiran");
+        })
+        .then((data) => {
+            setHasLoggedIn(true);
+            setUsername(data.email);
+        })
+        .catch(() => {
+            setHasLoggedIn(false);
+            
+        });
+    }, []);
+
+    const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    };
+
     return (
     <div className="flex flex-col min-h-screen w-full bg-gray-100 items-center">
 
@@ -13,8 +39,8 @@ const Home = () => {
             </Link>
             <Button variant="default" title="Karta" />
             <Button variant="default" title="O nama" />
-            <Button variant="default" title="Prijavi se" />
-            <Button variant="profile" title="profile"/>
+            <Button variant="default" title="Prijavi se" onClick={handleGoogleLogin}/>
+            <Button variant="profile" title="profile" />
         </div>
 
         <h1 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Dvoranko</h1>
