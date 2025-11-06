@@ -1,34 +1,121 @@
 package fer.leprogi.dvoranko.service;
 
+import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.model.Adresa;
 import fer.leprogi.dvoranko.model.Dvorana;
+import fer.leprogi.dvoranko.model.Kategorija;
 import fer.leprogi.dvoranko.repository.AdresaRepository;
 import fer.leprogi.dvoranko.repository.DvoranaRepository;
+import fer.leprogi.dvoranko.repository.KategorijaRepository;
+import fer.leprogi.dvoranko.utils.DtoMapper;
+import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DvoranaService {
 
     private final DvoranaRepository dvoranaRepository;
     private final AdresaRepository adresaRepository;
+    private final KategorijaRepository kategorijaRepository;
+    private final DtoMapper dtoMapper;
 
 
-    public Dvorana createDvorana(Dvorana dvorana, Long idAdresa) {
-        Adresa adresa = adresaRepository.findById(idAdresa)
-                .orElseThrow(() -> new IllegalArgumentException("Adresa with koordinate " + idAdresa + " does not exist"));
+    public DvoranaDTO createDvorana(CreateDvoranaRequest request) {
+        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
+                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
 
+        Dvorana dvorana = new Dvorana();
+        dvorana.setNazivDvorana(request.getNazivDvorana());
+        dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setOpis(request.getOpis());
         dvorana.setAdresa(adresa);
-        return dvoranaRepository.save(dvorana);
+
+        if (request.getIdKategorija() != null && !request.getIdKategorija().isEmpty()) {
+            Set<Kategorija> kategorije = new HashSet<>();
+            for (Long idKategorija : request.getIdKategorija()) {
+                Kategorija kategorija = kategorijaRepository.findById(idKategorija)
+                        .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
+                kategorije.add(kategorija);
+            }
+            dvorana.setKategorije(kategorije);
+        }
+
+        Dvorana saved = dvoranaRepository.save(dvorana);
+
+        return dtoMapper.toDvoranaDTO(saved);
     }
 
-    public Dvorana getDvoranaById(Long idDvorana) {
-        return dvoranaRepository.findById(idDvorana)
-                .orElseThrow(() -> new IllegalArgumentException("Dvorana with idDvorana " + idDvorana + " does not exist"));
+    public DvoranaDTO getDvoranaById(Long idDvorana) {
+        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist"));
+
+        return dtoMapper.toDvoranaDTO(dvorana);
     }
 
-    public Iterable<Dvorana> getAllDvorane(){
-        return dvoranaRepository.findAll();
+    public Iterable<DvoranaDTO> getAllDvorane(){
+        return dvoranaRepository
+                .findAll()
+                .stream()
+                .map(dtoMapper::toDvoranaDTO)
+                .collect(Collectors.toList());
     }
+
+
+    public DvoranaDTO updateDvorana(Long idDvorana, CreateDvoranaRequest request) {
+        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist"));
+
+        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
+                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
+
+        dvorana.setNazivDvorana(request.getNazivDvorana());
+        dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setOpis(request.getOpis());
+        dvorana.setAdresa(adresa);
+
+        if (request.getIdKategorija() != null) {
+            Set<Kategorija> kategorije = new HashSet<>();
+            for (Long idKategorija : request.getIdKategorija()) {
+                Kategorija kategorija = kategorijaRepository.findById(idKategorija)
+                        .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
+                kategorije.add(kategorija);
+            }
+            dvorana.setKategorije(kategorije);
+        } else {
+            dvorana.getKategorije().clear();
+        }
+
+        Dvorana updated = dvoranaRepository.save(dvorana);
+
+        return dtoMapper.toDvoranaDTO(updated);
+    }
+
+    public Iterable<DvoranaDTO> getDvoraneByKategorija(Long idKategorija) {
+        if (!kategorijaRepository.existsById(idKategorija)) {
+            throw new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist");
+        }
+
+        return dvoranaRepository.findByKategorijeIdKategorija(idKategorija)
+                .stream()
+                .map(dtoMapper::toDvoranaDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    public void deleteDvorana(Long idDvorana) {
+        if (!dvoranaRepository.existsById(idDvorana)) {
+            throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");
+        }
+        dvoranaRepository.deleteById(idDvorana);
+    }
+
 }

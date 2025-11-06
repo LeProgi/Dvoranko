@@ -23,7 +23,7 @@ public class AdresaService {
 
     public AdresaDTO createAdresa(CreateAdresaRequest request) {
         Mjesto mjesto = mjestoRepository.findById(request.getIdMjesto())
-                .orElseThrow(() -> new IllegalArgumentException("Mjesto with idMjesta " + request.getIdMjesto() + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Mjesto with idMjesta " + request.getIdMjesto() + " does not exist"));
 
         Adresa adresa = new Adresa();
         adresa.setLatitude(request.getLatitude());

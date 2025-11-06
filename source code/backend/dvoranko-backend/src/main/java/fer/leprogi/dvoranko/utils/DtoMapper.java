@@ -4,6 +4,9 @@ import fer.leprogi.dvoranko.dto.*;
 import fer.leprogi.dvoranko.model.*;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Component
 public class DtoMapper {
 
@@ -16,6 +19,15 @@ public class DtoMapper {
         dto.setKapacitet(dvorana.getKapacitet());
         dto.setOpis(dvorana.getOpis());
         dto.setAdresa(toAdresaDTO(dvorana.getAdresa()));
+
+        if (dvorana.getKategorije() != null) {
+            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
+                    .stream()
+                    .map(this::toKategorijaDTO)
+                    .collect(Collectors.toSet());
+            dto.setKategorije(kategorijeDTO);
+        }
+
         return dto;
     }
 
@@ -39,6 +51,15 @@ public class DtoMapper {
         dto.setIdMjesto(mjesto.getIdMjesto());
         dto.setPostanskiBroj(mjesto.getPostanskiBroj());
         dto.setNazivMjesto(mjesto.getNazivMjesto());
+        return dto;
+    }
+
+    public  KategorijaDTO toKategorijaDTO(Kategorija kategorija) {
+        if (kategorija == null) return null;
+
+        KategorijaDTO dto = new KategorijaDTO();
+        dto.setIdKategorija(kategorija.getIdKategorija());
+        dto.setNazivKategorije(kategorija.getNazivKategorija());
         return dto;
     }
 }

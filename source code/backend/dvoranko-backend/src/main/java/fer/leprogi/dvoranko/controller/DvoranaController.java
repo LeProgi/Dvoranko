@@ -1,8 +1,14 @@
 package fer.leprogi.dvoranko.controller;
 
+import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.service.DvoranaService;
+import fer.leprogi.dvoranko.utils.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,18 +18,41 @@ public class DvoranaController {
 
     private final DvoranaService dvoranaService;
 
-    @PostMapping("/{idAdresa}")
-    public Dvorana createDvorana(@RequestBody Dvorana dvorana, @PathVariable Long idAdresa){
-        return dvoranaService.createDvorana(dvorana, idAdresa);
+    @PostMapping
+    public ResponseEntity<ApiResponse<DvoranaDTO>> createDvorana(@Valid @RequestBody CreateDvoranaRequest request){
+        DvoranaDTO dvorana = dvoranaService.createDvorana(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(dvorana, "Dvorana successfully created"));
     }
 
     @GetMapping("/{idDvorana}")
-    public Dvorana getDvoranaById(@PathVariable Long idDvorana){
-        return dvoranaService.getDvoranaById(idDvorana);
+    public ResponseEntity<ApiResponse<DvoranaDTO>> getDvoranaById(@PathVariable Long idDvorana){
+        DvoranaDTO dvorana = dvoranaService.getDvoranaById(idDvorana);
+
+        return ResponseEntity.ok(ApiResponse.success(dvorana, "Dvorana retrieved successfully"));
     }
 
     @GetMapping
-    public Iterable<Dvorana> getAllDvorane(){
-        return dvoranaService.getAllDvorane();
+    public ResponseEntity<ApiResponse<Iterable<DvoranaDTO>>> getAllDvorane(){
+        Iterable<DvoranaDTO> dvorane = dvoranaService.getAllDvorane();
+
+        return ResponseEntity.ok(ApiResponse.success(dvorane, "Dvorane retrieved successfully"));
     }
+
+    @PutMapping("/{idDvorana}")
+    public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable Long idDvorana, @Valid @RequestBody CreateDvoranaRequest request){
+        DvoranaDTO updated = dvoranaService.updateDvorana(idDvorana, request);
+
+        return ResponseEntity.ok(ApiResponse.success(updated, "Dvorana updated successfully"));
+    }
+
+    @DeleteMapping("/{idDvorana}")
+    public ResponseEntity<ApiResponse<Void>> deleteDvorana(@PathVariable Long idDvorana){
+        dvoranaService.deleteDvorana(idDvorana);
+
+        return ResponseEntity.ok(ApiResponse.success(null, "Dvorana deleted successfully"));
+    }
+
 }
