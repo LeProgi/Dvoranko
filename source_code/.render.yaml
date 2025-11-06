@@ -6,9 +6,9 @@ services:
     plan: free
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: "jdbc:postgresql://dvoranko-db.internal:5432/dvoranko"
+        sync: false
       - key: SPRING_DATASOURCE_USERNAME
-        value: postgresuser
+        sync: false
       - key: SPRING_DATASOURCE_PASSWORD
         sync: false
       - key: GOOGLE_OAUTH2_ID
