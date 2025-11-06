@@ -6,7 +6,7 @@ services:
     plan: free
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:postgresql://dvoranko-db.internal:5432/dvoranko
+        value: "jdbc:postgresql://dvoranko-db.internal:5432/dvoranko"
       - key: SPRING_DATASOURCE_USERNAME
         value: postgresuser
       - key: SPRING_DATASOURCE_PASSWORD
