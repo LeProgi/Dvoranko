@@ -32,7 +32,7 @@ public class AdminController {
         ));
     }
 
-    @GetMapping("/{id}/accept")
+    @PostMapping("/{id}/accept")
     public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
         Optional<ZahtjevIznajmljivac> z = zahtjevRepository.findById(id);
         if (z.isEmpty()) {
@@ -47,5 +47,16 @@ public class AdminController {
         userRepository.save(user);
         zahtjevRepository.delete(zahtjev);
         return ResponseEntity.ok("user promoted");
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<?> rejectRequest(@PathVariable Long id) {
+        Optional<ZahtjevIznajmljivac> z = zahtjevRepository.findById(id);
+        if (z.isEmpty()) {
+            return ResponseEntity.status(404).body("request not found");
+        }
+        ZahtjevIznajmljivac zahtjev = z.get();
+        zahtjevRepository.delete(zahtjev);
+        return ResponseEntity.ok("request rejected");
     }
 }
