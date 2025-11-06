@@ -33,6 +33,7 @@ public class AdminController {
     }
 
     @PostMapping("/{id}/accept")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
         Optional<ZahtjevIznajmljivac> z = zahtjevRepository.findById(id);
         if (z.isEmpty()) {
@@ -50,6 +51,7 @@ public class AdminController {
     }
 
     @PostMapping("/{id}/reject")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> rejectRequest(@PathVariable Long id) {
         Optional<ZahtjevIznajmljivac> z = zahtjevRepository.findById(id);
         if (z.isEmpty()) {

@@ -16,4 +16,5 @@ public class DvoranaDTO {
     private String opis;
     private AdresaDTO adresa;
     private Iterable<KategorijaDTO> kategorije;
+    private UserDTO vlasnik;
 }

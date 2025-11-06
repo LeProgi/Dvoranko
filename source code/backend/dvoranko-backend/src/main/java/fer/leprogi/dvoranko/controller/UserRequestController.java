@@ -34,7 +34,7 @@ public class UserRequestController {
         this.zahtjevRepository = zahtjevRepository;
     }
 
-    @GetMapping("/getModerator")
+    @PostMapping("/getModerator")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createModeratorRequest(@AuthenticationPrincipal CustomOAuth2User principal) {
         if (principal == null) {

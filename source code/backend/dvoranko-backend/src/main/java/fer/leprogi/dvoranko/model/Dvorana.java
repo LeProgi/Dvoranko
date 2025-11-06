@@ -41,4 +41,8 @@ public class Dvorana {
             inverseJoinColumns = @JoinColumn(name = "idKategorija"))
     private Set<Kategorija> kategorije = new HashSet<>();
 
+
+    @ManyToOne
+    @JoinColumn(name = "vlasnikId", nullable = false)
+    private User vlasnik;
 }
