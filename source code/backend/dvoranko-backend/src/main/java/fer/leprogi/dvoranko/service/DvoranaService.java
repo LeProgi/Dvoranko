@@ -5,9 +5,11 @@ import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.model.Adresa;
 import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.Kategorija;
+import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.repository.AdresaRepository;
 import fer.leprogi.dvoranko.repository.DvoranaRepository;
 import fer.leprogi.dvoranko.repository.KategorijaRepository;
+import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class DvoranaService {
     private final AdresaRepository adresaRepository;
     private final KategorijaRepository kategorijaRepository;
     private final DtoMapper dtoMapper;
+    private final UserRepository userRepository;
 
 
     public DvoranaDTO createDvorana(CreateDvoranaRequest request) {
@@ -48,6 +51,11 @@ public class DvoranaService {
             }
             dvorana.setKategorije(kategorije);
         }
+
+        User user = userRepository.findById(request.getIdVlasnik())
+                        .orElseThrow(() -> new ResourceNotFoundException("User with id " + request.getIdVlasnik() + " does not exist"));
+
+        dvorana.setVlasnik(user);
 
         Dvorana saved = dvoranaRepository.save(dvorana);
 

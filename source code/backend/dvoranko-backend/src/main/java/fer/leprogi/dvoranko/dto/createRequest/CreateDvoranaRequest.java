@@ -15,4 +15,5 @@ public class CreateDvoranaRequest {
     private String opis;
     private Long idAdresa;
     private Set<Long> idKategorija;
+    private Long idVlasnik;
 }
