@@ -52,10 +52,10 @@ public class DvoranaService {
             dvorana.setKategorije(kategorije);
         }
 
-        User user = userRepository.findById(request.getIdVlasnik())
-                        .orElseThrow(() -> new ResourceNotFoundException("User with id " + request.getIdVlasnik() + " does not exist"));
+        User vlasnik = userRepository.findById(request.getIdVlasnik())
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + request.getIdVlasnik() + " does not exist"));
 
-        dvorana.setVlasnik(user);
+        dvorana.setVlasnik(vlasnik);
 
         Dvorana saved = dvoranaRepository.save(dvorana);
 

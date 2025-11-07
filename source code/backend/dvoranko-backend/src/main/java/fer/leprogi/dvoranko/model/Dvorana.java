@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,8 +42,12 @@ public class Dvorana {
             inverseJoinColumns = @JoinColumn(name = "idKategorija"))
     private Set<Kategorija> kategorije = new HashSet<>();
 
-
     @ManyToOne
-    @JoinColumn(name = "vlasnikId", nullable = false)
+    @JoinColumn(name = "idVlasnik")
     private User vlasnik;
+
+
+    @OneToMany(mappedBy = "dvorana", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SlikaDvorana> slike = new HashSet<>();
+
 }

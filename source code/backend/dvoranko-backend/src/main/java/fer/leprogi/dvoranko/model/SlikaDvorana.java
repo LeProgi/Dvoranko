@@ -2,11 +2,17 @@ package fer.leprogi.dvoranko.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SlikaDvorana {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +21,11 @@ public class SlikaDvorana {
     @Lob
     @NotNull
     private byte[] imageData;
+
+
+    @ManyToOne
+    @JoinColumn(name = "idDvorana", nullable = false)
+    private Dvorana dvorana;
 
 
 }
