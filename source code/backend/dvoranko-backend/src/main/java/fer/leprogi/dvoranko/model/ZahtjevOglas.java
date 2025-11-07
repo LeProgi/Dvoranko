@@ -92,7 +92,6 @@ public class ZahtjevOglas {
         this.updatedAt = updatedAt;
     }
 
-    // ...getteri/setteri za nova polja...
     public String getNaziv() {
         return naziv;
     }

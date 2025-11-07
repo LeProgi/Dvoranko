@@ -13,50 +13,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/request")
 public class UserRequestController {
 
     @Autowired
     private UserService userService;
 
-    private final UserRepository userRepository;
-    private final ZahtjevIznajmljivacRepository zahtjevRepository;
-
-    public UserRequestController(UserRepository userRepository, ZahtjevIznajmljivacRepository zahtjevRepository) {
-        this.userRepository = userRepository;
-        this.zahtjevRepository = zahtjevRepository;
-    }
-
-    @PostMapping("/getModerator")
+    @GetMapping("/getModerator")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createModeratorRequest(@AuthenticationPrincipal CustomOAuth2User principal) {
-        if (principal == null) {
-            return ResponseEntity.status(401).build();
-        }
-        UserDTO userDTO = userService.convertToDTO(principal.getUser());
 
+         ZahtjevIznajmljivac zahtjev = userService.createModeratorRequest(principal);
 
-        if (userDTO == null) {
-            return ResponseEntity.status(401).body("unauthenticated");
-        }
-        Optional<User> u = userRepository.findById(userDTO.getId());
-        if (u.isEmpty()) {
-            return ResponseEntity.status(404).body("user not found");
-        }
-        User user = u.get();
-        Optional<ZahtjevIznajmljivac> existing = zahtjevRepository.findByUserId(user.getId());
-        if (existing.isPresent()) {
-            return ResponseEntity.badRequest().body("request already exists");
-        }
-        ZahtjevIznajmljivac zahtjev = new ZahtjevIznajmljivac(user);
-        zahtjevRepository.save(zahtjev);
         return ResponseEntity.ok("request created");
     }
 }
