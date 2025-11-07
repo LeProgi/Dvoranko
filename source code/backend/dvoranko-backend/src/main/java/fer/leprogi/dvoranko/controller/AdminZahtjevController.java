@@ -20,7 +20,6 @@ public class AdminZahtjevController {
 			return ResponseEntity.notFound().build();
 		}
 
-		z.approve();
 		zahtjevRepo.save(z);
 
 		// Ovdje fali spajanje i kreiranje Dvorana entiteta jer nije jos napravljeno da se moze izradit dvorana jer nemamo podatke o gradovima 
@@ -35,7 +34,6 @@ public class AdminZahtjevController {
 		if (z == null) {
 			return ResponseEntity.notFound().build();
 		}
-		z.reject();
 		zahtjevRepo.save(z);
 		return ResponseEntity.ok("Zahtjev odbijen");
 	}
