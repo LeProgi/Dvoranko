@@ -25,4 +25,4 @@ services:
     plan: free
     envVars:
       - key: VITE_API_URL
-        value: https://dvoranko-2.onrender.com
+        value: https://dvoranko.onrender.com
