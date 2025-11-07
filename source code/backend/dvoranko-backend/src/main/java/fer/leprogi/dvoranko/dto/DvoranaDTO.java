@@ -18,5 +18,5 @@ public class DvoranaDTO {
     private AdresaDTO adresa;
     private Iterable<KategorijaDTO> kategorije;
     private UserDTO vlasnik;
-    private SlikaDvorana slika;
+    private SlikaDvoranaDTO slika;
 }

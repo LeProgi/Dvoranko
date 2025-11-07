@@ -29,7 +29,7 @@ public class DtoMapper {
         }
 
         dto.setVlasnik(toUserDTO(dvorana.getVlasnik()));
-        dto.setSlika(dvorana.getSlika());
+        dto.setSlika(toSlikaDvoranaDTO(dvorana.getSlika()));
 
         return dto;
     }
@@ -78,5 +78,13 @@ public class DtoMapper {
         return dto;
     }
 
+    public SlikaDvoranaDTO toSlikaDvoranaDTO(SlikaDvorana slikaDvorana) {
+        if (slikaDvorana == null) return null;
+
+        SlikaDvoranaDTO dto = new SlikaDvoranaDTO();
+        dto.setIdSlika(slikaDvorana.getIdSlika());
+        dto.setImageData(slikaDvorana.getImageData());
+        return dto;
+    }
 
 }
