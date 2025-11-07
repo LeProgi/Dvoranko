@@ -2,6 +2,7 @@ package fer.leprogi.dvoranko.service;
 
 import fer.leprogi.dvoranko.dto.UserDTO;
 import fer.leprogi.dvoranko.model.User;
+
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
 import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +20,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ZahtjevIznajmljivacRepository zahtjevRepository;
 
@@ -55,6 +58,7 @@ public class UserService {
         zahtjevRepository.save(zahtjev);
         return zahtjev;
     }
+
 
 
 

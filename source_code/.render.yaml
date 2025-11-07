@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: dvoranko-backend
+    env: docker
+    dockerContext: backend/dvoranko-backend
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: GOOGLE_OAUTH2_ID
+        sync: false
+      - key: GOOGLE_OAUTH2_SECRET
+        sync: false
+
+  - type: web
+    name: dvoranko-frontend
+    env: node
+    rootDir: frontend/dvoranko-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: .
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        value: https://dvoranko.onrender.com

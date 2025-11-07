@@ -1,5 +1,6 @@
 package fer.leprogi.dvoranko.controller;
 
+
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.model.User;
@@ -17,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
 
+
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
 
     @Autowired
     private  AdminService adminService;
-
 
 
     @GetMapping("/dashboard")
@@ -64,4 +65,5 @@ public class AdminController {
         adminService.rejectOglasRequest(id);
 		return ResponseEntity.ok("Zahtjev odbijen");
 	}
+
 }
