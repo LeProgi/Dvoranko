@@ -4,17 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DvoranaDTO {
-    private Long idDvorana;
-    private String nazivDvorana;
-    private Integer kapacitet;
+public class ZahtjevOglasDTO {
+    private Long id;
+    private UserDTO user;
+    private String naziv;
     private String opis;
-    private AdresaDTO adresa;
+    private Integer kapacitet;
+    private String adresa;
     private Iterable<KategorijaDTO> kategorije;
-    private UserDTO vlasnik;
+    private Double latitude;
+    private Double longitude;
+
 }
