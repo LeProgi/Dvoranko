@@ -1,10 +1,17 @@
 package fer.leprogi.dvoranko.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -29,6 +36,9 @@ public class User {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "vlasnik", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dvorana> dvorane;
 
     @PrePersist
     protected void onCreate() {
@@ -114,5 +124,13 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Dvorana> getDvoranas() {
+        return dvorane;
+    }
+
+    public void setDvoranas(List<Dvorana> dvoranas) {
+        this.dvorane = dvoranas;
     }
 }
