@@ -1,5 +1,6 @@
 package fer.leprogi.dvoranko.dto;
 
+import fer.leprogi.dvoranko.model.SlikaDvorana;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,5 @@ public class DvoranaDTO {
     private AdresaDTO adresa;
     private Iterable<KategorijaDTO> kategorije;
     private UserDTO vlasnik;
+    private SlikaDvorana slika;
 }

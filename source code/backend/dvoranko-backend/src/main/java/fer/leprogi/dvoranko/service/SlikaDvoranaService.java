@@ -24,7 +24,7 @@ public class SlikaDvoranaService {
 
         SlikaDvorana image = new SlikaDvorana();
         image.setImageData(imageData.getBytes());
-        image.setDvorana(dvorana);
+//        image.setDvorana(dvorana);
 
         return slikaDvoranaRepository.save(image);
     }
@@ -33,12 +33,12 @@ public class SlikaDvoranaService {
         return slikaDvoranaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Invalid id: " + id));
     }
 
-    public Iterable<SlikaDvorana> getSlikeByDvorana(Long idDvorana) {
-        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid id: " + idDvorana));
-
-        return dvorana.getSlike();
-    }
+//    public Iterable<SlikaDvorana> getSlikeByDvorana(Long idDvorana) {
+//        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
+//                .orElseThrow(() -> new ResourceNotFoundException("Invalid id: " + idDvorana));
+//
+//        return dvorana.getSlike();
+//    }
 
 
 }

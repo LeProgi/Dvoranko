@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,10 +23,21 @@ public class SlikaDvorana {
     @NotNull
     private byte[] imageData;
 
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "idDvorana", nullable = false)
     private Dvorana dvorana;
 
 
+//    @ManyToOne
+//    @JoinColumn(name = "idDvorana", nullable = false)
+//    private Dvorana dvorana;
+//
+//    @Override
+//    public String toString() {
+//        return "SlikaDvorana{" +
+//                "idSlika=" + idSlika +
+//                ", imageData=" + Arrays.toString(imageData) +
+//                ", dvorana=" + dvorana +
+//                '}';
+//    }
 }

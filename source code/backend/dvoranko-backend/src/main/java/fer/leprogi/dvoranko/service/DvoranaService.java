@@ -12,6 +12,7 @@ import fer.leprogi.dvoranko.repository.KategorijaRepository;
 import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DvoranaService {
 
     private final DvoranaRepository dvoranaRepository;
@@ -32,6 +34,7 @@ public class DvoranaService {
     private final UserRepository userRepository;
 
 
+    @Transactional
     public DvoranaDTO createDvorana(CreateDvoranaRequest request) {
         Adresa adresa = adresaRepository.findById(request.getIdAdresa())
                 .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
@@ -77,7 +80,7 @@ public class DvoranaService {
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional
     public DvoranaDTO updateDvorana(Long idDvorana, CreateDvoranaRequest request) {
         Dvorana dvorana = dvoranaRepository.findById(idDvorana)
                 .orElseThrow(() -> new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist"));
@@ -119,6 +122,7 @@ public class DvoranaService {
     }
 
 
+    @Transactional
     public void deleteDvorana(Long idDvorana) {
         if (!dvoranaRepository.existsById(idDvorana)) {
             throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");

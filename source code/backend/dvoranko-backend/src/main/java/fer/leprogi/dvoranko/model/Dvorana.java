@@ -32,7 +32,7 @@ public class Dvorana {
 
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne//(cascade = CascadeType.ALL)
     @JoinColumn(name = "idAdresa", nullable = false)
     private Adresa adresa;
 
@@ -47,7 +47,9 @@ public class Dvorana {
     private User vlasnik;
 
 
-    @OneToMany(mappedBy = "dvorana", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SlikaDvorana> slike = new HashSet<>();
+
+    @OneToOne(mappedBy = "dvorana")
+    @JsonIgnore
+    private SlikaDvorana slika;
 
 }

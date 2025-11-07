@@ -18,7 +18,7 @@ public class SlikaDvoranaContorller {
     private final SlikaDvoranaService slikaDvoranaService;
 
     @PostMapping
-    public ResponseEntity<SlikaDvorana> uploadImage(@RequestPart("file") MultipartFile file, @RequestPart("dvorana") Long idDvorana) throws IOException {
+    public ResponseEntity<SlikaDvorana> uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("dvorana") Long idDvorana) throws IOException {
         return ResponseEntity.ok(slikaDvoranaService.saveSlikaDvorana(file, idDvorana));
     }
 

@@ -28,6 +28,9 @@ public class DtoMapper {
             dto.setKategorije(kategorijeDTO);
         }
 
+        dto.setVlasnik(toUserDTO(dvorana.getVlasnik()));
+        dto.setSlika(dvorana.getSlika());
+
         return dto;
     }
 
@@ -54,7 +57,7 @@ public class DtoMapper {
         return dto;
     }
 
-    public  KategorijaDTO toKategorijaDTO(Kategorija kategorija) {
+    public KategorijaDTO toKategorijaDTO(Kategorija kategorija) {
         if (kategorija == null) return null;
 
         KategorijaDTO dto = new KategorijaDTO();
@@ -62,4 +65,18 @@ public class DtoMapper {
         dto.setNazivKategorije(kategorija.getNazivKategorija());
         return dto;
     }
+
+    public UserDTO toUserDTO(User user) {
+        if (user == null) return null;
+
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPictureUrl(user.getPictureUrl());
+        dto.setRole(user.getRole());
+        return dto;
+    }
+
+
 }
