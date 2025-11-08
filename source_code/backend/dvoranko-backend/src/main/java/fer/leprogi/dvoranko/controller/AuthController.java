@@ -17,7 +17,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/me")
+    @GetMapping("/user")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal CustomOAuth2User principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
