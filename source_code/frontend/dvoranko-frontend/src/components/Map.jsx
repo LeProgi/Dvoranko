@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 const containerStyle = {
@@ -6,11 +6,6 @@ const containerStyle = {
   height: "100%"
 };
 
-// Primjer koordinata dvorana
-const locations = [
-  { id: 1, name: "Dvorana 1", position: { lat: 45.815, lng: 15.978 } },
-  { id: 2, name: "Dvorana 2", position: { lat: 45.820, lng: 15.980 } },
-];
 
 const customMapStyle = [
   { featureType: "poi", stylers: [{ visibility: "off" }] },
@@ -22,9 +17,25 @@ const customMapStyle = [
 ];
 
 const Map = () => {
+  const[locations, setLocations] = useState([]);
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   });
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/public/dvorane") 
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.data.map(dvorana => ({
+          id: dvorana.idDvorana,
+          name: dvorana.nazivDvorana,
+          position: { lat: dvorana.adresa.latitude, lng: dvorana.adresa.longitude }
+        }));
+        setLocations(formatted);
+      })
+      .catch((err) => console.error("Nešto ne valja kume, nisam uspio dohvatit lokacije ", err));
+  }, []);
 
   if (!isLoaded) return <div>Učitavanje karte...</div>;
 
