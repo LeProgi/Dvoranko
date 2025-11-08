@@ -2,6 +2,7 @@ import Button from "../components/Button";
 import { data, Link } from "react-router-dom";
 import VenueCard from "../components/VenueCard";
 import { useEffect, useState } from "react";
+import Footer from "../components/Footer";
 const Home = () => {
     
     const [hasLoggedIn, setHasLoggedIn] = useState(false);
@@ -41,7 +42,9 @@ const Home = () => {
             <Link to="/event-board" className="w-[50vw] block">
                 <Button variant="default" title="Oglasna ploča" />
             </Link>
-            <Button variant="default" title="Karta" />
+            <Link to="/maps" className="w-[50vw] block">
+                <Button variant="default" title="Karta" />
+            </Link>
             <Button variant="default" title="O nama" />
             {user ? (
                 <img
@@ -58,7 +61,7 @@ const Home = () => {
         <h1 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Dvoranko</h1>
       </div>
       
-        <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12">
+        <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
                 <div className="flex flex-col items-center gap-4 w-full">
                     <Link to="/venue1" className="w-11/12 block">
@@ -73,6 +76,7 @@ const Home = () => {
                     
                 </div>
         </div>
+        <Footer/>
     </div>
   );
 }
