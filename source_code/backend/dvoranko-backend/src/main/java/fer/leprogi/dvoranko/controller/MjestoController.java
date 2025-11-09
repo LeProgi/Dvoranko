@@ -17,7 +17,7 @@ public class MjestoController {
 
     private final MjestoService mjestoService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<ApiResponse<MjestoDTO>> createMjesto(@Valid @RequestBody CreateMjestoRequest request) {
         MjestoDTO created = mjestoService.createMjesto(request);
 
