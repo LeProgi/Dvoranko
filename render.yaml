@@ -3,7 +3,7 @@ services:
     name: dvoranko-backend
     env: docker
     rootDir: source_code/backend/dvoranko-backend
-    dockerContext: source_code/backend/dvoranko-backend
+    dockerContext: .
     region: frankfurt
     plan: free
     envVars:
