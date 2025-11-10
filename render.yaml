@@ -2,7 +2,8 @@ services:
   - type: web
     name: dvoranko-backend
     env: docker
-    dockerContext: backend/dvoranko-backend
+    dockerContext: source_code/backend/dvoranko-backend
+    region: frankfurt
     plan: free
     envVars:
       - key: SPRING_DATASOURCE_URL
@@ -19,6 +20,7 @@ services:
   - type: web
     env: static
     name: dvoranko-frontend
-    rootDir: frontend/dvoranko-frontend
+    rootDir: source_code/frontend/dvoranko-frontend
+    region: frankfurt
     buildCommand: npm install && npm run build
     staticPublishPath: dist
