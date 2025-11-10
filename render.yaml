@@ -16,10 +16,9 @@ services:
       - key: GOOGLE_OAUTH2_SECRET
         sync: false
 
-  - type: web
-    env: static
-    name: dvoranko-frontend
+staticSites:
+  - name: dvoranko-frontend
     rootDir: frontend/dvoranko-frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    publishPath: dist
     plan: free
