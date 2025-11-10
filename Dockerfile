@@ -17,7 +17,8 @@ WORKDIR /app
 
 COPY source_code/backend/dvoranko-backend/mvnw . 
 COPY source_code/backend/dvoranko-backend/.mvn .mvn
-COPY source_code/backend/dvoranko-backend/pom.xml . 
+COPY source_code/backend/dvoranko-backend/pom.xml .
+COPY source_code/backend/dvoranko-backend/.env .env
 
 RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline -B
@@ -33,6 +34,7 @@ FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
 COPY --from=build /app/target/dvoranko-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/.env .env
 
 EXPOSE 8080
 
