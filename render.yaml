@@ -2,6 +2,7 @@ services:
   - type: web
     name: dvoranko-backend
     env: docker
+    rootDir: source_code/backend/dvoranko-backend
     dockerContext: source_code/backend/dvoranko-backend
     region: frankfurt
     plan: free
