@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: dvoranko-backend
+    name: dvoranko
     env: docker
-    rootDir: source_code/backend/dvoranko-backend
+    rootDir: .
     dockerContext: .
     region: frankfurt
     plan: free
@@ -17,10 +17,3 @@ services:
         sync: false
       - key: GOOGLE_OAUTH2_SECRET
         sync: false
-
-  - type: web
-    env: static
-    name: dvoranko
-    rootDir: source_code/frontend/dvoranko-frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
