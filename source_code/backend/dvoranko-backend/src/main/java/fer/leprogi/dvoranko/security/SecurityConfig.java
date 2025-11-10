@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("https://dvoranko-frontend.onrender.com", true)
+                        .defaultSuccessUrl("https://dvoranko.onrender.com", true)
                 );
 
         return http.build();
