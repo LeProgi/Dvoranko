@@ -16,13 +16,10 @@ services:
       - key: GOOGLE_OAUTH2_SECRET
         sync: false
 
-  - type: web
+  - type: static
     name: dvoranko-frontend
     env: node
     rootDir: frontend/dvoranko-frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: .
+    staticPublishPath: dist
     plan: free
-    envVars:
-      - key: VITE_API_URL
-        value: https://dvoranko.onrender.com

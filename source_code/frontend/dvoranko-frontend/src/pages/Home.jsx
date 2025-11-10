@@ -9,7 +9,7 @@ const Home = () => {
     const [user, setUser] = useState(null);
     
     useEffect(() => {
-        fetch("http://localhost:8080/api/auth/user", {
+        fetch("https://dvoranko-backend.onrender.com/api/auth/user", {
             credentials: "include",
         })
         .then((res) =>  {
@@ -30,7 +30,7 @@ const Home = () => {
     }, []);
 
     const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href = "https://dvoranko-backend.onrender.com/oauth2/authorization/google";
     };
 
     return (
