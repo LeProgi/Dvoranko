@@ -21,6 +21,5 @@ services:
     env: static
     name: dvoranko
     rootDir: source_code/frontend/dvoranko-frontend
-    region: frankfurt
     buildCommand: npm install && npm run build
     staticPublishPath: dist
