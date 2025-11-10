@@ -24,7 +24,7 @@ const Map = () => {
   });
 
   useEffect(() => {
-    fetch("https://dvoranko-spojeno.onrender.com/api/public/dvorane") 
+    fetch("https://dvoranko.onrender.com/api/public/dvorane") 
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.data.map(dvorana => ({

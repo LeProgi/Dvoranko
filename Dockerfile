@@ -24,7 +24,6 @@ RUN ./mvnw dependency:go-offline -B
 
 COPY source_code/backend/dvoranko-backend/src ./src
 
-#RUN mkdir -p src/main/resources/static
 COPY --from=build-frontend /frontend/dist ./src/main/resources/static
 
 RUN ./mvnw verify
