@@ -19,7 +19,7 @@ WORKDIR /frontend
 COPY source_code/frontend/dvoranko-frontend/package*.json ./
 RUN npm install --frozen-lockfile
 
-COPY frontend/ ./
+COPY source_code/frontend/dvoranko-frontend ./
 RUN npm run build
 
 FROM eclipse-temurin:21-jdk-alpine
