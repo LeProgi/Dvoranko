@@ -21,4 +21,4 @@ services:
     name: dvoranko-frontend
     rootDir: frontend/dvoranko-frontend
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: dist
