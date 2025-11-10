@@ -28,7 +28,8 @@ WORKDIR /app
 
 COPY --from=build /app/target/dvoranko-0.0.1-SNAPSHOT.jar app.jar
 
-COPY --from=build-frontend /frontend/dist ./src/main/resources/static
+RUN mkdir -p src/main/resources/static
+COPY --from=build-frontend /frontend/dist/ src/main/resources/static/
 
 EXPOSE 8080
 
