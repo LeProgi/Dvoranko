@@ -9,6 +9,9 @@ RUN npm install
 
 COPY source_code/frontend/dvoranko-frontend ./
 
+ARG VITE_GOOGLE_MAPS_API_KEY
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
+
 RUN npm run build
 
 FROM eclipse-temurin:21-jdk-alpine AS build
