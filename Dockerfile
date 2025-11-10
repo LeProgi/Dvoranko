@@ -16,8 +16,10 @@ FROM node:20-alpine AS build-frontend
 
 WORKDIR /frontend
 
-COPY source_code/frontend/dvoranko-frontend/package*.json ./
-RUN npm install --frozen-lockfile
+COPY source_code/frontend/dvoranko-frontend/package.json ./
+COPY source_code/frontend/dvoranko-frontend/package-lock.json ./
+
+RUN npm install
 
 COPY source_code/frontend/dvoranko-frontend ./
 RUN npm run build
