@@ -1,8 +1,35 @@
 
+import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+
+
 
 const VenuePage = () => {
+    const {id} = useParams();
+    const [venue, setVenue] = useState(null);
+    useEffect(() =>{
+        fetch (`https://dvoranko.onrender.com/api/public/dvorane/${id}`,{
+            credentials: "include",
+        })
+            .then(res => res.json())
+            .then(data => {
+                const dvorana = data.data;
+                setVenue({
+                    name: dvorana.nazivDvorana,
+                    adresa: dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`:
+                    "",
+                    kapacitet: dvorana.kapacitet,
+                    opis: dvorana.opis
+                });                
+            })
+            .catch(err => console.error("neuspjelo dohvacanje dvorane", err));
+    }, [id]);
+
+    if(!venue) return <p className="text-center mt-10 text-white">Učitavanje...</p>;
+    
    
     return (
         <div className="flex justify-center items-center min-h-screen bg-[#5B7692]">
@@ -22,18 +49,18 @@ const VenuePage = () => {
                             </button>
                         </Link>
                         <h2 className="text-2xl font-semibold text-[#1C2D3A] mb-6">
-                            Ime Prostorа
+                            {venue.name}
                         </h2>
 
                         <p className="text-[#1C2D3A] mb-2">
-                            <span className="font-semibold">Lokacija:</span> Zagrebačka 10
+                            <span className="font-semibold">Lokacija: </span> {venue.adresa}
                         </p>
                         <p className="text-[#1C2D3A] mb-2">
-                            <span className="font-semibold">Kapacitet:</span> 120 osoba
+                            <span className="font-semibold">Kapacitet: </span> {venue.kapacitet}
                         </p>
                         <p className="text-[#1C2D3A] mb-2">
                             <span className="font-semibold">Opis prostora:</span> 
-                            Prostrana konferencijska dvorana s modernom opremom i odličnom akustikom.
+                            {venue.opis}
                         </p>
                     </div>
 

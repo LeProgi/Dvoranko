@@ -23,7 +23,7 @@ const Home = () => {
                 const formatted = data.data.map(dvorana=>({
                     id: dvorana.idDvorana,
                     name: dvorana.nazivDvorana,
-                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica}, ${dvorana.adresa.mjesto?.naziv}` : ""
+                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : ""
 
 
                 }));
