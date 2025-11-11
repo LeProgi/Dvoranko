@@ -1,4 +1,4 @@
-const VenueCard = () => {
+const VenueCard = (name, adresa) => {
     return (
         <button className="w-11/12">
             <div className="flex items-center bg-[#e5e5e5] h-20 w-full rounded-lg shadow-sm hover:bg-[#d0d0d0] transition">
@@ -6,8 +6,8 @@ const VenueCard = () => {
 
                 {/* Tekst ili info desno */}
                 <div className="ml-6 text-left">
-                    <h3 className="text-lg font-semibold text-gray-700">Naziv dvorane</h3>
-                    <p className="text-sm text-gray-500">Kratki opis ili lokacija</p>
+                    <h3 className="text-lg font-semibold text-gray-700">{name}</h3>
+                    <p className="text-sm text-gray-500">{adresa}</p>
                 </div>
             </div>
         </button>
