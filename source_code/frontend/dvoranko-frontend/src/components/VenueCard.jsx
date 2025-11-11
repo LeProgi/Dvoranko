@@ -1,4 +1,4 @@
-const VenueCard = (name, adresa) => {
+const VenueCard = ({name, adresa}) => {
     return (
         <button className="w-11/12">
             <div className="flex items-center bg-[#e5e5e5] h-20 w-full rounded-lg shadow-sm hover:bg-[#d0d0d0] transition">
