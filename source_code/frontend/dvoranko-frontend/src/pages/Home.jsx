@@ -7,6 +7,30 @@ const Home = () => {
     
     const [hasLoggedIn, setHasLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
+        const [venues, setVenues] = useState([
+]);
+
+    
+    useEffect(() =>{
+        fetch ("https://dvoranko.onrender.com/api/public/dvorane",{
+            credentials: "include",
+        })
+            .then(res => res.json())
+            .then(data => {
+                if(data){
+                console.log("datadohvacen");
+                }
+                const formatted = data.data.map(dvorana=>({
+                    id: dvorana.idDvorana,
+                    name: dvorana.nazivDvorana,
+                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica}, ${dvorana.adresa.mjesto?.naziv}` : ""
+
+
+                }));
+                setVenues(formatted);
+            })
+            .catch(err => console.error("neuspjelo dohvacanje dvorane", err));
+    }, []);
     
     useEffect(() => {
         fetch("https://dvoranko.onrender.com/api/auth/user", {
@@ -64,16 +88,11 @@ const Home = () => {
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
                 <div className="flex flex-col items-center gap-4 w-full">
-                    <Link to="/venue1" className="w-11/12 block">
-                        <VenueCard></VenueCard>
-                    </Link>
-                    <Link to="/venue1" className="w-11/12 block">
-                        <VenueCard></VenueCard>
-                    </Link>
-                    <Link to="/venue1" className="w-11/12 block">
-                        <VenueCard></VenueCard>
-                    </Link>
-                    
+                    {venues.map((venue) =>(
+                        <Link key={venue.id} to = {`/venue/${venue.id}`} className="w-11/12 block">
+                            <VenueCard name = {venue.name} adresa = {venue.adresa}/>
+                        </Link>
+                    ))}
                 </div>
         </div>
         <Footer/>
