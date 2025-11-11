@@ -8,7 +8,7 @@ Ovaj projekt je rezultat timskog rada u sklopu projektnog zadatka kolegija [Prog
 
 U urbanim sredinama poput Zagreba, sve je veća potreba za pronalaženjem i rezervacijom prostora za različite namjene: radionice, konferencije, proslave ili sportske aktivnosti. Trenutačno korisnici najčešće pretražuju i kontaktiraju dvorane ručno putem interneta, društvenih mreža, telefona ili e-maila, što je dugotrajan i često neorganiziran proces. Upravo iz te potrebe proizašla je naša ideja Dvoranko web-aplikacije, čiji je cilj omogućiti jednostavniju, bržu i pregledniju rezervaciju dvorana u Zagrebu na jednom mjestu. Dvoranko okuplja ponudu različitih prostora u jedinstven sustav, čime olakšava komunikaciju između iznajmljivača i korisnika te modernizira proces rezervacije i oglašavanja dvorana.
 
-Aplikaciju Dvoranko moguće je koristiti kao obični korisnik, vlasnik dvorane ili administrator. Obični korisnici imaju mogućnost pretraživanja i rezervacije dvorana te pregledavanja javnih događanja objavljenih na oglasnoj ploči unutar aplikacije. Vlasnici dvorana imaju dodatne funkcionalnosti koje im omogućuju upravljanje svojim prostorima. Vlasnik može pregledati sve zahtjeve, prihvatiti ih ili odbiti, te tako jednostavno upravljati svojim poslovanjem putem aplikacije.
+Aplikaciju Dvoranko moguće je koristiti kao neprijavljeni ili prijavljeni korisnik, vlasnik dvorane ili administrator. Neprijavljeni korisnici mogu pregledavati objavljeni popis dvorana koje iznajmljivači nude te ponudu javnih događanja objavljenu na oglasnoj ploči. Prijavljeni korisnici imaju mogućnost pretraživanja i rezervacije dvorana te praćenja svoj rezervacija unutar aplikacije. Vlasnici dvorana imaju dodatne funkcionalnosti koje im omogućuju upravljanje svojim prostorima. Vlasnik može pregledati sve zahtjeve, prihvatiti ih ili odbiti, te tako jednostavno upravljati svojim poslovanjem putem aplikacije. Administrator ima najveću razinu pristupa, on odobrava dvore i promjenu uloge iz korisnika u iznajmljivača.
 
 Kroz ovakav sustav, Dvoranko omogućuje digitalizaciju i unaprjeđenje procesa rezervacije prostora u Zagrebu. Korisnici mogu pronaći dvoranu koja im odgovara u svega nekoliko klikova, dok vlasnici mogu učinkovito upravljati svojim prostorima i terminima bez potrebe za dodatnim alatima. Administratori osiguravaju da cijeli sustav funkcionira pouzdano i sigurno. Na taj način, Dvoranko stvara povezan “ekosustav” u kojem su svi sudionici uključeni u transparentan i učinkovit proces rezervacije dvorana.
 
@@ -16,11 +16,16 @@ Kroz ovakav sustav, Dvoranko omogućuje digitalizaciju i unaprjeđenje procesa r
 # Funkcijski zahtjevi
 - Sustav omogućuje korisnicima kreiranje računa pomoću e-mail adrese
 - Sustav omogućuje odabir pojedine dvorane te rezervaciju termina za istu dvoranu
-- Sustav omogućuje stvaranje tri vrste korisnika: običnog korisnik, vlasnika dvorane i administrator
+- Sustav omogućuje stvaranje tri vrste korisnika: prijavljen korisnik, vlasnika dvorane i administrator
 
-### Običan korisnik
+### Neprijavljen korisnik
+- Mogu pregledavati popis dvorana, javna događanja objavljena na oglasnoj ploči te lokacije dvorana na kartama
+- Žele li rezervirati dvoranu, moraju se prijaviti u sustav
+
+### Prijavljen korisnik
 - Svi korisnici mogu pregledavati slobodne termine objavljenih dvorana i rezervirati ih
-- Svi korisnici mogu pregledavati sva objavljena javna događanja na “oglasnoj ploči” unutar aplikacije
+- Mogu pregledavati i uređivati svoje rezervacije unutar aplikacije
+- Prijavljeni korisnici uz to imaju sve funkcionalnosti kao i ne prijavljeni korisnik
 
 ### Vlasnik dvorane
 - Ako je osoba definirana kao vlasnik dvorane ona može oglasiti svoju dvoranu putem aplikacije
@@ -31,10 +36,10 @@ Kroz ovakav sustav, Dvoranko omogućuje digitalizaciju i unaprjeđenje procesa r
 - Administrator potvrđuje ili odbija zahtjeve za ulogu iznajmljivača
 
 # Tehnologije
-* Frontend: React, Figma
+* Frontend: React 19.1.1 , Vite 7.1.7 , Figma
 * Backend: Java 21, Spring Boot 3.5.6
-* Deployment: 
-* Dokumentacija: 
+* Deployment: Render
+* Dokumentacija: Astah 
 
 # Članovi tima 
 > Vid Martin Lulić https://github.com/VML17 <br>
