@@ -24,9 +24,12 @@ const Map = () => {
   });
 
   useEffect(() => {
-    fetch("https://dvoranko.onrender.com/api/public/dvorane") 
+    // fetch("https://dvoranko.onrender.com/api/public/dvorane") 
+    console.log("Fetching locations from backend: " + `${import.meta.env.VITE_BACKEND_URL}/api/public/dvorane`);
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/public/dvorane`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("Fetched locations: ", data);
         const formatted = data.data.map(dvorana => ({
           id: dvorana.idDvorana,
           name: dvorana.nazivDvorana,

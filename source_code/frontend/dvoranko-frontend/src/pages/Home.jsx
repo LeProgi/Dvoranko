@@ -33,7 +33,7 @@ const Home = () => {
     }, []);
     
     useEffect(() => {
-        fetch("https://dvoranko.onrender.com/api/auth/user", {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/user`, {
             credentials: "include",
         })
         .then((res) =>  {
@@ -54,7 +54,8 @@ const Home = () => {
     }, []);
 
     const handleGoogleLogin = () => {
-    window.location.href = "https://dvoranko.onrender.com/oauth2/authorization/google";
+    // window.location.href = "https://dvoranko.onrender.com/oauth2/authorization/google";
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/google`;
     };
 
     return (

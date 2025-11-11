@@ -2,6 +2,7 @@ package fer.leprogi.dvoranko.security;
 
 import fer.leprogi.dvoranko.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -22,6 +23,9 @@ import java.util.List;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    @Value("${leprogi.dvoranko.url}")
+    private String frontendUrl;
+
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
 
@@ -39,7 +43,8 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("https://dvoranko.onrender.com", true)
+//                        .defaultSuccessUrl("https://dvoranko.onrender.com", true)
+                        .defaultSuccessUrl(frontendUrl, true)
                 );
 
         return http.build();
@@ -48,7 +53,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://dvoranko.onrender.com"));
+//        configuration.setAllowedOrigins(List.of("https://dvoranko.onrender.com"));
+        configuration.setAllowedOrigins(List.of(frontendUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
