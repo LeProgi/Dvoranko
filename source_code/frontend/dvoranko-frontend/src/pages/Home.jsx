@@ -76,12 +76,14 @@ const Home = () => {
             </Link>
             <Button variant="default" title="O nama" />
             {user ? (
+                <Link to="/my-profile">
                 <img
               src={user.pictureUrl}
               alt={user.name}
               className="w-10 h-10 rounded-full border-2 border-white cursor-pointer"
               title={user.name}
             />
+            </Link>
             ):<Button variant="default" title="prijavi se"  onClick={handleGoogleLogin}/>
 }
             
