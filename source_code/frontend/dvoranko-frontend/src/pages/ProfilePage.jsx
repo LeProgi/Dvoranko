@@ -3,17 +3,16 @@ import { Link } from "react-router-dom";
 import { url } from "../main.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer";
+import { useLocation } from "react-router-dom";
 
 
 const ProfilePage = () => {
-    //neki moji podatci za probu
-  const [user, setUser] = useState({
-    name: "Eva",
-    surname: "Huljaj",
-    email: "leprogi@gmail.com",
-    pictureUrl:
-      "https://cdn-icons-png.flaticon.com/512/847/847969.png", 
-  });
+    const location = useLocation();
+    const { user } = location.state;
+
+
+    
+
 
   return (
     <div className="flex flex-col min-h-screen items-center bg-gray-100">
@@ -28,7 +27,7 @@ const ProfilePage = () => {
             />
                 <div className="text-left">
                     <h2 className="text-2xl font-semibold">
-                    {user.name} {user.surname}
+                    {user.name} 
                     </h2>
                     <p className="text-lg opacity-90">{user.email}</p>
                 </div>

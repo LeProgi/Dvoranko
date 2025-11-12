@@ -76,13 +76,15 @@ const Home = () => {
             </Link>
             <Button variant="default" title="O nama" />
             {user ? (
-                <Link to="/my-profile">
+                <Link to="/my-profile" state ={{ user }}>
+               <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md hover:scale-105 transition-transform duration-200">
                 <img
-              src={user.pictureUrl}
-              alt={user.name}
-              className="w-10 h-10 rounded-full border-2 border-white cursor-pointer"
-              title={user.name}
-            />
+                    src={user.pictureUrl}
+                    alt={user.name}
+                    title={user.name}
+                    className="w-full h-full object-cover"
+                />
+            </div>
             </Link>
             ):<Button variant="default" title="prijavi se"  onClick={handleGoogleLogin}/>
 }
