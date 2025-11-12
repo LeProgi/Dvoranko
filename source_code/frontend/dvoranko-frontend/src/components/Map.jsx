@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-
+import { url } from "../main.jsx";
 const containerStyle = {
   width: "100%",
   height: "100%"
@@ -24,9 +24,8 @@ const Map = () => {
   });
 
   useEffect(() => {
-    // fetch("https://dvoranko.onrender.com/api/public/dvorane") 
-    console.log("Fetching locations from backend: " + `${import.meta.env.VITE_BACKEND_URL}/api/public/dvorane`);
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/public/dvorane`)
+
+    fetch(`${url}/api/public/dvorane`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched locations: ", data);

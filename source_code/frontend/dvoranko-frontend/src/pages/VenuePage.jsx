@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { url } from "../main.jsx";
 
 
 
@@ -11,7 +12,7 @@ const VenuePage = () => {
     const {id} = useParams();
     const [venue, setVenue] = useState(null);
     useEffect(() =>{
-        fetch (`https://dvoranko.onrender.com/api/public/dvorane/${id}`,{
+        fetch(`${url}/api/public/dvorane/${id}`,{
             credentials: "include",
         })
             .then(res => res.json())

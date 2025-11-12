@@ -3,6 +3,7 @@ import { data, Link } from "react-router-dom";
 import VenueCard from "../components/VenueCard";
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
+import { url } from "../main.jsx";
 const Home = () => {
     
     const [hasLoggedIn, setHasLoggedIn] = useState(false);
@@ -12,7 +13,8 @@ const Home = () => {
 
     
     useEffect(() =>{
-        fetch ("https://dvoranko.onrender.com/api/public/dvorane",{
+        console.log(`${url}/api/public/dvorane`);
+        fetch(`${url}/api/public/dvorane`,{
             credentials: "include",
         })
             .then(res => res.json())
@@ -33,7 +35,8 @@ const Home = () => {
     }, []);
     
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/user`, {
+        console.log(`${url}/api/auth/user`);
+        fetch(`${url}/api/auth/user`, {
             credentials: "include",
         })
         .then((res) =>  {
@@ -55,7 +58,8 @@ const Home = () => {
 
     const handleGoogleLogin = () => {
     // window.location.href = "https://dvoranko.onrender.com/oauth2/authorization/google";
-        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/google`;
+    console.log(`${url}/oauth2/authorization/google`);
+        window.location.href = `${url}/oauth2/authorization/google`;
     };
 
     return (
