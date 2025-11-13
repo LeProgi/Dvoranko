@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class FrontendController {
 
     @RequestMapping({
-        "/",                        // root
-        "/{path:^(?!api$|assets$)[^\\.]*}$",          // /maps, /profile
-        "/{path:^(?!api$|assets$)[^\\.]*}/**"        // /maps/settings
+        "/",
+        "/{path:^(?!api$|assets$)[^\\.]*}$",
+        "/{path:^(?!api$|assets$)[^\\.]*}/**"
     })
     public String forward() {
         return "forward:/index.html";
