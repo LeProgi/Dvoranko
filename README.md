@@ -1,6 +1,7 @@
 # Dvoranko
 
 >  U Zagrebu je sve veća potražnja za prostorima za radionice, proslave, konferencije i sportske aktivnosti. Dvoranko je web-aplikacija koja korisnicima omogućuje jednostavno pretraživanje i rezervaciju dvorana na jednom mjestu, dok vlasnicima olakšava upravljanje ponudom i terminima. Platforma povezuje obje strane u pregledan i učinkovit sustav rezervacija te potiče promociju javnih događanja u gradu. Korisnici mogu lako pronaći prostor koji im odgovara, a vlasnici jednostavno organizirati svoje poslovanje, sve kroz moderan digitalni alat.
+> Web aplikacija je dostopna na https://dvoranko.onrender.com/
 
 
 # Opis projekta
