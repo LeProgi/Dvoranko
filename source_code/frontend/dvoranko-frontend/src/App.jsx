@@ -7,6 +7,7 @@ import EventBoard from './pages/EventBoard';
 import VenuePage from './pages/VenuePage';
 import MapPage from './pages/MapPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 
 const App = () => {
   
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/venue/:id" element={<VenuePage/>}/>
         <Route path="/maps" element={<MapPage/>}/>
         <Route path='/my-profile' element={<ProfilePage/>}/>
+        <Route path='/admin' element ={<AdminPage/>}/>
       </Routes>
     </Router>
   )

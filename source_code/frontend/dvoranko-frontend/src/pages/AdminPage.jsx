@@ -78,7 +78,6 @@ const AdminPage = () => {
   </div>
 </div>
 
-
     </div>
 
     <div className="bg-[#f5f5f5] rounded-2xl p-6 overflow-y-auto">
