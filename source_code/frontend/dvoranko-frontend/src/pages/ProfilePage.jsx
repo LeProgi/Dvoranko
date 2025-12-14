@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 const ProfilePage = () => {
     const location = useLocation();
     const { user } = location.state;
+    
 
 
     
@@ -37,11 +38,23 @@ const ProfilePage = () => {
                 <Link to="/" className="w-[20vw] block">
                     <Button variant="default" title="Početna stranica" />
                 </Link>
-                <Link className="w-[20vw] block">
-                    <Button variant="default" title="Postani iznajmljivač" />
-                </Link>
+                {user.role === "USER" && (
+                    <Link className="w-[20vw] block">
+                        <Button variant="default" title="Postani iznajmljivač" />
+                    </Link>
+                )}
             </div>
         </div>
+        {user.role === "RENTER" && (
+            <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
+                <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
+                <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition">
+                    +
+                </button>
+            </div>
+        )}
+
+
 
       
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
