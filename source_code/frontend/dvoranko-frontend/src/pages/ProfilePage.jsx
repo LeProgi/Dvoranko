@@ -1,3 +1,4 @@
+import Form from "../components/Form.jsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { url } from "../main.jsx";
@@ -7,8 +8,16 @@ import { useLocation } from "react-router-dom";
 
 
 const ProfilePage = () => {
-    const location = useLocation();
-    const { user } = location.state;
+    //const location = useLocation();
+    //const { user } = location.state;
+        const user = {
+        id: 3,
+        name: "Borna Navratil",
+        email: "borna.navratil@gmail.com",
+        pictureUrl: "https://lh3.googleusercontent.com/a/ACg8ocKt_F4BE5H3rvtT9UTEjIqdJfAJ9eZueKPmt2QQZm-UqOeC3pCj=s96-c",
+        role: "RENTER" 
+    };
+    const [seeForm, setSeeForm] = useState(false);
     
 
 
@@ -48,8 +57,20 @@ const ProfilePage = () => {
         {user.role === "RENTER" && (
             <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                 <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
-                <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition">
+                <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition"
+                onClick={() => setSeeForm(true)}>
                     +
+                </button>
+            </div>
+        )}
+        {seeForm && (
+            <div  className="w-3/4 bg-white rounded-lg shadow-md p-6 m-6">
+                <Form/>
+                <button 
+                    onClick={() => setSeeForm(false)}
+                    className="mt-4 text-red-500 hover:underline"
+                >
+
                 </button>
             </div>
         )}

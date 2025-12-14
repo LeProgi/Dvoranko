@@ -36,3 +36,4 @@ function AddressAutocomplete({onSelect, onInvalid}) {
         />
     );
 }
+export default AddressAutocomplete;
