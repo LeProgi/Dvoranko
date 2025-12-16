@@ -27,12 +27,16 @@ function AddressAutocomplete({onSelect, onInvalid}) {
 
             placeholder="Unesite adresu..."
             style = {{
-                width: '100%',
-                padding: '8px',
-                fontSize: '40',
+                width: '90%',
+                height: '40px',
+                padding: '6px',
                 borderRadius: '4px',
                 fontSize: '16px',
+                border: '2px solid black',
+                backgroundColor: 'white'
             }}
         />
     );
 }
+
+export default AddressAutocomplete;

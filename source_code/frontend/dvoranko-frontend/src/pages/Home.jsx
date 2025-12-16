@@ -3,6 +3,7 @@ import { data, Link } from "react-router-dom";
 import VenueCard from "../components/VenueCard";
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
+import Form from "../components/Form";
 import { url } from "../main.jsx";
 const Home = () => {
     
@@ -104,6 +105,7 @@ const Home = () => {
                     ))}
                 </div>
         </div>
+        
         <Footer/>
     </div>
   );

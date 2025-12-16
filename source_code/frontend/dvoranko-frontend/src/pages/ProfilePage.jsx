@@ -52,6 +52,10 @@ const ProfilePage = () => {
             <p className="text-gray-600">Trenutno nemate rezervacija.</p>
         </div>
 
+        <Link to="/form" className="w-[50vw] block">
+            <Button variant="default" title="Iznajmite dvoranu"/>
+        </Link>
+
         <Footer />
     </div>
   );
