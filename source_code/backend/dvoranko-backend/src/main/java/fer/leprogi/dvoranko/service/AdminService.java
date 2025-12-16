@@ -1,7 +1,11 @@
 package fer.leprogi.dvoranko.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import fer.leprogi.dvoranko.dto.ZahtjevIznajmljivacDTO;
+import fer.leprogi.dvoranko.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +29,8 @@ public class AdminService {
     private ZahtjevIznajmljivacRepository zahtjevIznajmljivacRepository;
     @Autowired
     private ZahtjevOglasRepository zahtjevOglasRepository;
-
+    @Autowired
+    private DtoMapper dtoMapper;
 
 
     public User acceptIznajmljivacRequest(Long requestId) {
@@ -81,6 +86,19 @@ public class AdminService {
         zahtjevOglasRepository.delete(zahtjev);
     }
 
+    public List<ZahtjevIznajmljivacDTO> getAllIznajmljivacRequests() {
+        return zahtjevIznajmljivacRepository.findAll()
+                .stream()
+                .map(dtoMapper::toZahtjevIznajmljivacDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ZahtjevOglasDTO> getAllDvoranaRequests() {
+        return zahtjevOglasRepository.findAll()
+                .stream()
+                .map(dtoMapper::toZahtjevOglasDTO)
+                .collect(Collectors.toList());
+    }
 }
 
 
