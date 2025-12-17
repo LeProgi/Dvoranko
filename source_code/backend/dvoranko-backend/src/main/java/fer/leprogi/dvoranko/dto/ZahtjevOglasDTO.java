@@ -9,13 +9,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ZahtjevOglasDTO {
     private Long id;
-    private UserDTO user;
+    private UserDTO owner;
+
     private String naziv;
     private String opis;
     private Integer kapacitet;
-    private String adresa;
-    private Iterable<KategorijaDTO> kategorije;
+//    private Iterable<KategorijaDTO> kategorije;
+
+    private Integer postalCode;
+    private String city;
+    private String street;
+    private String streetNumber;
     private Double latitude;
     private Double longitude;
+
+
 
 }

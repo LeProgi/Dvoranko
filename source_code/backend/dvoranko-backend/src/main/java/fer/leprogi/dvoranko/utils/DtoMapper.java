@@ -113,26 +113,18 @@ public class DtoMapper {
         if (zahtjev == null) return null;
 
         ZahtjevOglasDTO dto = new ZahtjevOglasDTO();
+
         dto.setId(zahtjev.getId());
-
-        if(zahtjev.getUser() != null) {
-            UserDTO userDTO = new UserDTO();
-
-            userDTO.setId(zahtjev.getUser().getId());
-            userDTO.setName(zahtjev.getUser().getName());
-            userDTO.setEmail(zahtjev.getUser().getEmail());
-            userDTO.setPictureUrl(zahtjev.getUser().getPictureUrl());
-            userDTO.setRole(zahtjev.getUser().getRole());
-
-            dto.setUser(userDTO);
-        }
+        dto.setOwner(toUserDTO(zahtjev.getOwner()));
 
         dto.setNaziv(zahtjev.getNaziv());
         dto.setOpis(zahtjev.getOpis());
         dto.setKapacitet(zahtjev.getKapacitet());
-        dto.setAdresa(zahtjev.getAdresa());
 
-        //TREBA KATEOGRIJE URADIT JOŠ NEŠTO MI NEVALJA
+        dto.setPostalCode(zahtjev.getPostalCode());
+        dto.setCity(zahtjev.getCity());
+        dto.setStreet(zahtjev.getStreet());
+        dto.setStreetNumber(zahtjev.getStreetNumber());
         dto.setLatitude(zahtjev.getLatitude());
         dto.setLongitude(zahtjev.getLongitude());
 
