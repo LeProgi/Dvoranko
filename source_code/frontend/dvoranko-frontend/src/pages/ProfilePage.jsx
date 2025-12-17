@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import { url } from "../main.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 const ProfilePage = () => {
     const location = useLocation();
     const [user, setUser] = useState(location.state?.user ?? null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (user) return;
@@ -21,8 +22,11 @@ const ProfilePage = () => {
             return res.json();
             })
             .then((data) => setUser(data))
-            .catch(() => setUser(null));
-    }, [user]);
+            .catch(() => {
+                setUser(null);
+                navigate("/", { replace: true });
+            });
+    }, [user, navigate]);
 
     if (!user) {
         return (
