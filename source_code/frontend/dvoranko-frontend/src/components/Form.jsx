@@ -1,12 +1,34 @@
 import { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 
 function Form() {
     const [name, setName] = useState("");
+    const [capacity, setCapacity] = useState("");
+    const [category, setCategory] = useState("");
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState(null);
     const [addressError, setAddressError] = useState(false);
+    const [days, setDays] = useState({
+        pon: { enabled: false, start: "", end: "" },
+        uto: { enabled: false, start: "", end: "" },
+        sri: { enabled: false, start: "", end: "" },
+        cet: { enabled: false, start: "", end: "" },
+        pet: { enabled: false, start: "", end: "" },
+        sub: { enabled: false, start: "", end: "" },
+        ned: { enabled: false, start: "", end: "" },
+    });
+    const DAY_LABELS = [
+        { key: "pon", label: "Ponedjeljak" },
+        { key: "uto", label: "Utorak" },
+        { key: "sri", label: "Srijeda" },
+        { key: "cet", label: "Četvrtak" },
+        { key: "pet", label: "Petak" },
+        { key: "sub", label: "Subota" },
+        { key: "ned", label: "Nedjelja" },
+    ];
+    const [user, setUser] = useState(null);
     const [image, setImage] = useState(null);
 
     const handleAddressSelect = (place) => {
@@ -63,21 +85,21 @@ function Form() {
     };
 
     return (
-        <div style={{ backgroundColor: "#5B7692", minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", gap: "10vw" }}>
+        <div style={{ backgroundColor: "#5B7692", minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <form
                 onSubmit={handleSubmit}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
                 }}
             >
-                <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10vw" }}>
-                    <div style={{ width: "40vw", backgroundColor: "#F5F5F5", borderRadius: "20px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }}>
-                        <div style={{backgroundColor: "#3B5B80", borderTopLeftRadius: "20px", borderTopRightRadius: "20px", padding: "16px", color: "white", textAlign: "center", fontSize: "24px", fontWeight: "bold", width: "100%"}}>
-                            <h2>Nova lokacija</h2>
+                <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8vw", flexWrap: "wrap" }}>
+                    <div style={{ width: "45vw", backgroundColor: "#F5F5F5", borderRadius: "20px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center", position: "relative" }}>
+                        <div style={{backgroundColor: "#3B5B80", borderTopLeftRadius: "19px", borderTopRightRadius: "19px", padding: "16px", color: "white", textAlign: "center", fontSize: "24px", fontWeight: "bold", width: "100%"}}>
+                            <label>Nova lokacija</label>
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "16px", borderRight: "2px solid black" }}>
+                        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "16px", borderRight: "1px solid black", width:"50%" }}>
                                 <div style={{ marginBottom: "16px" }}>
                                     <label>Naziv dvorane</label>
                                     <input
@@ -94,8 +116,8 @@ function Form() {
                                     <label>Kapacitet dvorane</label>
                                     <input
                                         type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        value={capacity}
+                                        onChange={(e) => setCapacity(e.target.value)}
                                         required
                                         placeholder="Kapacitet dvorane"
                                         style={{ width: "90%", height: "40px", border: "2px solid black", borderRadius: "4px", backgroundColor: "white" }}
@@ -106,15 +128,15 @@ function Form() {
                                     <label>Kategorija dvorane</label>
                                     <input
                                         type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        value={category}
+                                        onChange={(e) => setCategory(e.target.value)}
                                         required
                                         placeholder="Kategorija dvorane"
                                         style={{ width: "90%", height: "40px", border: "2px solid black", borderRadius: "4px", backgroundColor: "white" }}
                                     />
                                 </div>
 
-                                <div style={{ marginBottom: "16px" }}>
+                                <div style={{ marginBottom: "16px", display: "flex", flexDirection: "column", alignItems: "center" }}>
                                     <label>Opis</label>
                                     <textarea
                                         value={description}
@@ -127,7 +149,7 @@ function Form() {
                                 </div>
                             </div>
 
-                            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "16px", width:"50%", borderLeft: "1px solid black" }}>
                                 <div style={{ marginBottom: "16px" }}>
                                     <label>Adresa</label>
                                     <AddressAutocomplete
@@ -135,24 +157,77 @@ function Form() {
                                         onInvalid={() => setAddress(null) & setAddressError(true)}
                                     />
                                     {addressError && (
-                                        <p style={{ color: "red", marginTop: "4px", width: "250px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", width: "100%" }}>
                                             Molimo odaberite adresu iz Google Places liste i ne mijenjajte je ručno.
                                         </p>
                                     )}
                                 </div>
-                                
-                                <div>
-                                    <div style={{ marginBottom: "16px", display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                        <label>Ponedjeljak</label>
-                                        <input
-                                            type="checkbox"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            required
-                                            placeholder="Naziv dvorane"
-                                            style={{ width: "10%", height: "12px" }}
-                                        />
-                                    </div>
+
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <label>Radni dani</label>
+
+                                    {DAY_LABELS.map(({ key, label }) => {
+                                        const day = days[key];
+
+                                        return (
+                                        <div key={key} style={{ display: "flex", alignItems: "center"}}>
+                                            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", width: "50%", gap: "5px" }}>
+                                                <label>{label}</label>
+
+                                                <input
+                                                    type="checkbox"
+                                                    checked={day.enabled}
+                                                    className="hover:cursor-pointer"
+                                                    onChange={(e) =>
+                                                        setDays({
+                                                        ...days,
+                                                        [key]: {
+                                                            ...day,
+                                                            enabled: e.target.checked,
+                                                            start: e.target.checked ? day.start : "",
+                                                            end: e.target.checked ? day.end : "",
+                                                        },
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", width: "50%" }}>
+                                                <label style={{ marginRight: "5px" }}>Od:</label>
+
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    value={day.start}
+                                                    disabled={!day.enabled}
+                                                    onChange={(e) =>
+                                                        setDays({
+                                                        ...days,
+                                                        [key]: { ...day, start: e.target.value },
+                                                        })
+                                                    }
+                                                    style={{ width: "30px", height: "30px", border: "2px solid black", borderRadius: "4px", backgroundColor: day.enabled ? "white" : "#ccc" }}
+                                                />
+
+                                                <label style={{ margin: "5px" }}>Do:</label>
+
+                                                <input
+                                                    type="text"
+                                                    placeholder="0"
+                                                    value={day.end}
+                                                    disabled={!day.enabled}
+                                                    onChange={(e) =>
+                                                        setDays({
+                                                        ...days,
+                                                        [key]: { ...day, end: e.target.value },
+                                                        })
+                                                    }
+                                                    style={{ width: "30px", height: "30px", border: "2px solid black", borderRadius: "4px", backgroundColor: day.enabled ? "white" : "#ccc" }}
+                                                />
+                                            </div>
+                                        </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -160,10 +235,19 @@ function Form() {
                         <button type="submit" className="bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors" style={{ height: "40px", width: "45%", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", marginBottom: "10px" }}>
                             Zatraži zahtjev za lokaciju
                         </button>
+
+                        <div style={{ position: "absolute", bottom: "10px", right: "10px" }}>
+                            <Link to="/my-profile" state ={{ user }}>
+                                <button className="bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors" style={{ width: "fit-content", height: "40px", border: "none", borderRadius: "10px", color: "white", cursor: "pointer", padding: "0 10px" }}>
+                                    Odustani
+                                </button>
+                            </Link>
+                        </div>
                     </div>
 
                     <div style={{ padding: "10px", backgroundColor: "#F5F5F5", borderRadius: "20px", display: "flex", flexDirection: "column", gap: "10px", width: "30vw", height: "fit-content", minHeight: "20vh" }}>
                         <label>Slika dvorane</label>
+
                         <input
                             type="file"
                             id="photo"
@@ -190,20 +274,16 @@ function Form() {
                             >
                             {image ? (
                                 <img
-                                src={URL.createObjectURL(image)}
-                                alt="Preview"
-                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                    src={URL.createObjectURL(image)}
+                                    alt="Preview"
+                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
                                 />
                             ) : (
                                 <div style={{ textAlign: "center", color: "#3B5B80" }}>
-                                <strong>Klikni za dodati sliku</strong>
-                                <div style={{ fontSize: "12px", color: "#777" }}>
-                                    JPG ili PNG
-                                </div>
+                                    <strong>Klikni za dodati sliku</strong>
                                 </div>
                             )}
                         </label>
-
                     </div>
                 </div>
             </form>
