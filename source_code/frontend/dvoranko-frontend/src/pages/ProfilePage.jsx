@@ -15,7 +15,7 @@ const ProfilePage = () => {
         name: "Borna Navratil",
         email: "borna.navratil@gmail.com",
         pictureUrl: "https://lh3.googleusercontent.com/a/ACg8ocKt_F4BE5H3rvtT9UTEjIqdJfAJ9eZueKPmt2QQZm-UqOeC3pCj=s96-c",
-        role: "RENTER" 
+        role: "USER" 
     };
     const [seeForm, setSeeForm] = useState(false);
     const [seeCheck, setSeeCheck] = useState(false);
@@ -95,7 +95,7 @@ const ProfilePage = () => {
             </div>
 )}
 
-        {user.role === "RENTER" && (
+        {user.role === "MODERATOR" && (
             <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                 <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
                 <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition"
