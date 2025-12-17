@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
@@ -30,6 +30,26 @@ function Form() {
     ];
     const [user, setUser] = useState(null);
     const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const fileInputRef = useRef(null);
+
+    useEffect(() => {
+        if (!image) {
+            setImagePreview(null);
+            return;
+        }
+
+        const objectUrl = URL.createObjectURL(image);
+        setImagePreview(objectUrl);
+
+        return () =>  URL.revokeObjectURL(objectUrl);
+    }, [image]);
+
+    const handleRemove = (e) => {
+        e.stopPropagation(); // prevent label click
+        setImage(null);
+        if (fileInputRef.current) fileInputRef.current.value = ""; // 2. reset input
+    };
 
     const handleAddressSelect = (place) => {
         const get = (type) =>
@@ -154,7 +174,9 @@ function Form() {
                                     <label>Adresa</label>
                                     <AddressAutocomplete
                                         onSelect={handleAddressSelect}
-                                        onInvalid={() => setAddress(null) & setAddressError(true)}
+                                        onInvalid={() => {
+                                            setAddress(null);
+                                            setAddressError(true);}}
                                     />
                                     {addressError && (
                                         <p style={{ color: "red", marginTop: "4px", width: "100%" }}>
@@ -237,7 +259,7 @@ function Form() {
                         </button>
 
                         <div style={{ position: "absolute", bottom: "10px", right: "10px" }}>
-                            <Link to="/my-profile" state ={{ user }}>
+                            <Link to="/my-profile">
                                 <button className="bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors" style={{ width: "fit-content", height: "40px", border: "none", borderRadius: "10px", color: "white", cursor: "pointer", padding: "0 10px" }}>
                                     Odustani
                                 </button>
@@ -253,6 +275,7 @@ function Form() {
                             id="photo"
                             accept="image/*"
                             className="hidden"
+                            ref={fileInputRef}
                             onChange={(e) => setImage(e.target.files[0])}
                         />
 
@@ -270,14 +293,36 @@ function Form() {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 overflow: "hidden",
+                                position: "relative",
                             }}
                             >
-                            {image ? (
-                                <img
-                                    src={URL.createObjectURL(image)}
-                                    alt="Preview"
-                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                />
+                            {imagePreview ? (
+                                <>
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                    />
+
+                                    <button
+                                        type="button"
+                                        onClick={handleRemove}
+                                        style={{
+                                            position: "absolute",
+                                            top: "5px",
+                                            right: "5px",
+                                            backgroundColor: "rgba(0,0,0,0.5)",
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: "50%",
+                                            width: "25px",
+                                            height: "25px",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        X
+                                    </button>
+                                </>
                             ) : (
                                 <div style={{ textAlign: "center", color: "#3B5B80" }}>
                                     <strong>Klikni za dodati sliku</strong>

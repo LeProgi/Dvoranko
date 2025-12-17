@@ -8,13 +8,31 @@ import { useLocation } from "react-router-dom";
 
 const ProfilePage = () => {
     const location = useLocation();
-    const { user } = location.state;
+    const [user, setUser] = useState(location.state?.user ?? null);
 
+    useEffect(() => {
+        if (user) return;
 
-    
+        fetch(`${url}/api/auth/user`, {
+            credentials: "include",
+        })
+            .then((res) => {
+            if (!res.ok) throw new Error("Not logged in");
+            return res.json();
+            })
+            .then((data) => setUser(data))
+            .catch(() => setUser(null));
+    }, [user]);
 
+    if (!user) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+            <p>Učitavanje profila...</p>
+            </div>
+        );
+    }
 
-  return (
+    return (
     <div className="flex flex-col min-h-screen items-center bg-gray-100">
       
         <div className="relative bg-[#3B5B80] w-full pb-5 px-[5vw] flex flex-row justify-between items-center text-white">
