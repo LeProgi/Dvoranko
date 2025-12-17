@@ -8,17 +8,12 @@ import { useLocation } from "react-router-dom";
 
 
 const ProfilePage = () => {
-    //const location = useLocation();
-    //const { user } = location.state;
-        const user = {
-        id: 3,
-        name: "Borna Navratil",
-        email: "borna.navratil@gmail.com",
-        pictureUrl: "https://lh3.googleusercontent.com/a/ACg8ocKt_F4BE5H3rvtT9UTEjIqdJfAJ9eZueKPmt2QQZm-UqOeC3pCj=s96-c",
-        role: "RENTER" 
-    };
+    const location = useLocation();
+    const { user } = location.state;
+
     const [seeForm, setSeeForm] = useState(false);
-    
+    const [seeCheck, setSeeCheck] = useState(false);
+     
 
 
     
@@ -48,12 +43,52 @@ const ProfilePage = () => {
                     <Button variant="default" title="Početna stranica" />
                 </Link>
                 {user.role === "USER" && (
-                    <Link className="w-[20vw] block">
+                    <button
+                    onClick={() => setSeeCheck(true)}
+                    className="w-[20vw]"
+                    >
                         <Button variant="default" title="Postani iznajmljivač" />
-                    </Link>
+                    </button>
                 )}
             </div>
         </div>
+
+        {seeCheck && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+
+        
+                <div
+                    className="absolute inset-0 backdrop-blur-sm"
+                    onClick={() => setSeeCheck(false)}
+                />
+
+        
+                <div className="relative bg-white rounded-lg shadow-2xl px-16 py-14 w-[450px] z-20">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+                        Poslati zahtjev za postati iznajmljivač?
+                    </h2>
+
+                    <div className="flex gap-3">
+                        <button
+                            className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+                            onClick={() => {
+                                setSeeCheck(false);
+                            }}
+                        >
+                            DA
+                        </button>
+
+                        <button
+                            className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition"
+                            onClick={() => setSeeCheck(false)}
+                        >
+                            NE
+                        </button>
+                    </div>
+                </div>
+            </div>
+)}
+
         {user.role === "RENTER" && (
             <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                 <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
@@ -70,7 +105,7 @@ const ProfilePage = () => {
                     onClick={() => setSeeForm(false)}
                     className="mt-4 text-red-500 hover:underline"
                 >
-
+                    Zatvori
                 </button>
             </div>
         )}
