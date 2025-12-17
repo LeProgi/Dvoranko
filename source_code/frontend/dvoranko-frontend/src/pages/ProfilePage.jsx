@@ -8,9 +8,15 @@ import { useLocation } from "react-router-dom";
 
 
 const ProfilePage = () => {
-    const location = useLocation();
-    const { user } = location.state;
-
+    //const location = useLocation();
+    //const { user } = location.state;
+        const user = {
+        id: 3,
+        name: "Borna Navratil",
+        email: "borna.navratil@gmail.com",
+        pictureUrl: "https://lh3.googleusercontent.com/a/ACg8ocKt_F4BE5H3rvtT9UTEjIqdJfAJ9eZueKPmt2QQZm-UqOeC3pCj=s96-c",
+        role: "RENTER" 
+    };
     const [seeForm, setSeeForm] = useState(false);
     const [seeCheck, setSeeCheck] = useState(false);
      
@@ -103,7 +109,7 @@ const ProfilePage = () => {
                 <Form/>
                 <button 
                     onClick={() => setSeeForm(false)}
-                    className="mt-4 text-red-500 hover:underline"
+                    className="mt-6 bg-red-500 text-white py-2 px-4 rounded  hover:bg-red-600 transition"
                 >
                     Zatvori
                 </button>
