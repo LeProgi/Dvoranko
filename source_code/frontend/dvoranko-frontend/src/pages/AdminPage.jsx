@@ -10,35 +10,74 @@ const AdminPage = () => {
   const[zahtjevDvorana, setZahtjevDvorana] = useState([]);
 
   useEffect(() => {
-  const fetchRequests = async () => {
+    const fetchRequests = async () => {
+      try {
+        //dvorane
+        const resDvorana = await fetch(`${url}/api/public/admin/getall/zahtjevidvorana`, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+        const dataDvorana = await resDvorana.json();
+        setZahtjevDvorana(dataDvorana.data); 
+        console.log(dataDvorana);
+
+        //iznajmljivaci
+        const resIznajmljivac = await fetch(`${url}/api/public/admin/getall/zahtjeviznajmljivac`, {
+          method: "GET",
+          credentials: "include", 
+        });
+
+        if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+        const dataIznajmljivac = await resIznajmljivac.json();
+        setZahtjevIznajmljivac(dataIznajmljivac.data); 
+      } catch (err) {
+        console.error("Kume error tijekom hvacanja zahtjeva za iznajmljivaca:", err);
+      }
+    };
+
+    fetchRequests();
+  }, []);
+
+
+
+  const handleAcceptDvorana = async (id) => {
     try {
-      //dvorane
-      const resDvorana = await fetch(`${url}/api/public/admin/getall/zahtjevidvorana`, {
-        method: "GET",
+      const res = await fetch(`${url}/api/public/admin/requests/${id}/approve`, {
+        method: "POST",
         credentials: "include",
       });
 
-      if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
-      const dataDvorana = await resDvorana.json();
-      setZahtjevDvorana(dataDvorana.data); 
+      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
 
-      //iznajmljivaci
-      const resIznajmljivac = await fetch(`${url}/api/public/admin/getall/zahtjeviznajmljivac`, {
-        method: "GET",
-        credentials: "include", 
-      });
-
-      if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
-      const dataIznajmljivac = await resIznajmljivac.json();
-      setZahtjevIznajmljivac(dataIznajmljivac.data); 
+      // Ukloni prihvaćeni zahtjev iz stanja
+      setZahtjevDvorana((prevRequests) =>
+        prevRequests.filter((request) => request.id !== id)
+      );
     } catch (err) {
-      console.error("Kume error tijekom hvacanja zahtjeva za iznajmljivaca:", err);
+      console.error("Kume error tijekom prihvaćanja zahtjeva za dvoranu:", err);
     }
   };
 
-  fetchRequests();
-}, []);
 
+  const handleRejectDvorana = async (id) => {
+    try {
+      const res = await fetch(`${url}/api/public/admin/requests/${id}/reject`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+
+      // Ukloni odbijeni zahtjev iz stanja
+      setZahtjevDvorana((prevRequests) =>
+        prevRequests.filter((request) => request.id !== id)
+      );
+    } catch (err) {
+      console.error("Kume error tijekom odbijanja zahtjeva za dvoranu:", err);
+    }
+  };
 
 
   return (
@@ -91,10 +130,10 @@ const AdminPage = () => {
                 </div>
 
                 <div className="flex justify-between mt-4">
-                  <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                  <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptDvorana(request.id)}>
                     PRIHVATI
                   </button>
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectDvorana(request.id)}>
                     ODBIJ
                   </button>
                 </div>
