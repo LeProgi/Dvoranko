@@ -1,8 +1,6 @@
-import { useState } from "react"; 
 import Autocomplete from "react-google-autocomplete";
 
-function AddressAutocomplete({onSelect, onInvalid}) {
-    const [selectedAddress, setSelectedAddress] = useState("");
+function AddressAutocomplete({value, onSelect, onChange}) {
 
     return (
         <Autocomplete
@@ -13,28 +11,15 @@ function AddressAutocomplete({onSelect, onInvalid}) {
             }}
 
             onPlaceSelected={(place) => {
-                setSelectedAddress(place.formatted_address);
                 onSelect(place);
             }}
 
-            onChange={(e) => {
-                const value = e.target.value;
+            value={value}
 
-                if (value != selectedAddress) {
-                    onInvalid();
-                }
-            }}
+            onChange={(e) => onChange(e.target.value)}
 
             placeholder="Unesite adresu..."
-            style = {{
-                width: '90%',
-                height: '40px',
-                padding: '6px',
-                borderRadius: '4px',
-                fontSize: '16px',
-                border: '2px solid black',
-                backgroundColor: 'white'
-            }}
+            className="w-[90%] h-[40px] p-1.5 rounded-[4px] text-[16px] border-2 border-black bg-white"
         />
     );
 }

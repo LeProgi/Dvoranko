@@ -2,14 +2,21 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
+import CategorySelector from "./CategorySelector.jsx";
+import TimeDropdown from "./TimeDropdown.jsx";
+import { url } from "../main.jsx";
 
 function Form() {
+    const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
+    const [selectedCategories, setselectedCategories] = useState([]);
+    const timesOd = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+    const timesDo = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
     const [name, setName] = useState("");
     const [capacity, setCapacity] = useState("");
-    const [category, setCategory] = useState("");
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState(null);
     const [addressError, setAddressError] = useState(false);
+    const [addressText, setAddressText] = useState("");
     const [days, setDays] = useState({
         pon: { enabled: false, start: "", end: "" },
         uto: { enabled: false, start: "", end: "" },
@@ -28,10 +35,24 @@ function Form() {
         { key: "sub", label: "Subota" },
         { key: "ned", label: "Nedjelja" },
     ];
-    const [user, setUser] = useState(null);
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
+    const [formError, setFormError] = useState("");
+    const [ownerId, setOwnerId] = useState(null);
+
+    useEffect (() => {
+        if (addressText.trim() === "") {
+            setAddressError(false);
+            setFormError("");
+        }
+
+        if (addressError) {
+            setFormError("Molimo odaberite adresu iz Google Places liste i ne mijenjajte je ručno.");
+        } else {
+            setFormError("");
+        }
+    }, [addressError, addressText]);
 
     useEffect(() => {
         if (!image) {
@@ -46,9 +67,9 @@ function Form() {
     }, [image]);
 
     const handleRemove = (e) => {
-        e.stopPropagation(); // prevent label click
+        e.stopPropagation();
         setImage(null);
-        if (fileInputRef.current) fileInputRef.current.value = ""; // 2. reset input
+        if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
     const handleAddressSelect = (place) => {
@@ -65,8 +86,20 @@ function Form() {
             lng: place.geometry.location.lng(),
         });
 
-        setAddressError(false); // ukloni error kad se odabere validna adresa
-        console.log("SELECTED ADDRESS:", place);
+        setAddressText(place.formatted_address);
+        setAddressError(false);
+    };
+
+    const handleAddressChange = (text) => {
+        setAddressText(text);
+
+        if (text.trim() === "") {
+            setAddress(null);
+            setAddressError(false);
+        } else {
+            setAddress(null);
+            setAddressError(true);
+        }
     };
 
     const postDvorana = async (data) => {
@@ -82,45 +115,110 @@ function Form() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validacija polja
         if (!name.trim()) {
-            alert("Molimo unesite naziv dvorane.");
+            setFormError("Molimo unesite naziv dvorane.");
             return;
         }
+
+        if (!capacity.trim()) {
+            setFormError("Molimo unesite kapacitet dvorane.");
+            return;
+        } else if (!/^([1-9]\d*)$/.test(capacity.trim())) {
+            setFormError("Molimo da kapacitet bude pozitivan cijeli broj.");
+            return;
+        }
+
+        if (selectedCategories.length === 0) {
+            setFormError("Molimo odaberite barem jednu kategoriju.");
+            return;
+        }
+
         if (!description.trim()) {
-            alert("Molimo unesite opis dvorane.");
+            setFormError("Molimo unesite opis dvorane.");
             return;
         }
+
         if (!address) {
-            setAddressError(true);
+            setFormError("Molimo unesite adresu dvorane.");
             return;
         }
 
-        //dodat slanje slike
+        if (!days.pon.enabled && !days.uto.enabled && !days.sri.enabled && !days.cet.enabled && !days.pet.enabled && !days.sub.enabled && !days.ned.enabled) {
+            setFormError("Molimo odaberite barem jedan radni dan.");
+            return;
+        } else {
+            const invalidDays = Object.entries(days)
+                .filter(([key, day]) => day.enabled && (!day.start || !day.end))
+                .map(([key]) => key);
 
-        const payload = { name, description, address };
+            if (invalidDays.length > 0) {
+                const dayNames = invalidDays.map(d => {
+                    switch(d) {
+                        case "pon": return "ponedjeljak";
+                        case "uto": return "utorak";
+                        case "sri": return "srijedu";
+                        case "cet": return "četvrtak";
+                        case "pet": return "petak";
+                        case "sub": return "subotu";
+                        case "ned": return "nedjelju";
+                    }
+                }).join(", ");
+
+                setFormError(`Molimo unesite vremena "Od" i "Do" za ${dayNames}.`);
+                return;
+            }
+        }
+
+        if (!image) {
+            setFormError("Molimo dodajte sliku dvorane.");
+            return;
+        }
+
+        setFormError("");
+
+        let daysOpen = "";
+        Object.entries(days).forEach(([key, day]) => {
+            if (day.enabled) {
+                daysOpen += `${key}:${day.start}-${day.end};`;
+            }
+        });
+
+        fetch(`${url}/api/auth/user`, {
+            credentials: "include",
+        })
+        .then((res) =>  {
+            if(res.status === 200) return res.json();
+            throw new Error("Nije ulogiran");
+        })
+        .then((data) => {
+            setOwnerId(data.id);
+        })
+
+        //const payload = { name, capacity, selectedCategories, description, address, daysOpen, image };
+        const payload = { ownerId, name, capacity, description, address };
         console.log("SUBMITTED DATA:", payload);
 
-        // postDvorana(payload);
+        //postDvorana(payload);
     };
 
     return (
-        <div style={{ backgroundColor: "#5B7692", minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative">
             <form
                 onSubmit={handleSubmit}
+                noValidate
                 onKeyDown={(e) => {
                     if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
                 }}
             >
-                <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8vw", flexWrap: "wrap" }}>
-                    <div style={{ width: "45vw", backgroundColor: "#F5F5F5", borderRadius: "20px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center", position: "relative" }}>
-                        <div style={{backgroundColor: "#3B5B80", borderTopLeftRadius: "19px", borderTopRightRadius: "19px", padding: "16px", color: "white", textAlign: "center", fontSize: "24px", fontWeight: "bold", width: "100%"}}>
+                <div className="flex flex-row items-center gap-[8vw] flex-wrap">
+                    <div className="w-[45vw] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
+                        <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
                             <label>Nova lokacija</label>
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "16px", borderRight: "1px solid black", width:"50%" }}>
-                                <div style={{ marginBottom: "16px" }}>
+                        <div className="flex flex-row w-full">
+                            <div className="flex flex-col gap-[5px] border-r border-black w-[50%]">
+                                <div className="mb-[5px]">
                                     <label>Naziv dvorane</label>
                                     <input
                                         type="text"
@@ -128,11 +226,11 @@ function Form() {
                                         onChange={(e) => setName(e.target.value)}
                                         required
                                         placeholder="Naziv dvorane"
-                                        style={{ width: "90%", height: "40px", border: "2px solid black", borderRadius: "4px", backgroundColor: "white" }}
+                                        className="w-[90%] h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>
 
-                                <div style={{ marginBottom: "16px" }}>
+                                <div className="mb-[5px]">
                                     <label>Kapacitet dvorane</label>
                                     <input
                                         type="text"
@@ -140,23 +238,20 @@ function Form() {
                                         onChange={(e) => setCapacity(e.target.value)}
                                         required
                                         placeholder="Kapacitet dvorane"
-                                        style={{ width: "90%", height: "40px", border: "2px solid black", borderRadius: "4px", backgroundColor: "white" }}
+                                        className="w-[90%] h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>
 
-                                <div style={{ marginBottom: "16px" }}>
+                                <div className="mb-[5px] flex flex-col items-center">
                                     <label>Kategorija dvorane</label>
-                                    <input
-                                        type="text"
-                                        value={category}
-                                        onChange={(e) => setCategory(e.target.value)}
-                                        required
-                                        placeholder="Kategorija dvorane"
-                                        style={{ width: "90%", height: "40px", border: "2px solid black", borderRadius: "4px", backgroundColor: "white" }}
+                                    <CategorySelector
+                                        categories={categories}
+                                        selectedCategories={selectedCategories}
+                                        setSelectedCategories={setselectedCategories}
                                     />
                                 </div>
 
-                                <div style={{ marginBottom: "16px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <div className="mb-[5px] flex flex-col items-center">
                                     <label>Opis</label>
                                     <textarea
                                         value={description}
@@ -164,36 +259,35 @@ function Form() {
                                         rows={4}
                                         required
                                         placeholder="Kratki opis dvorane"
-                                        style={{ width: "90%", border: "2px solid black", borderRadius: "4px", backgroundColor: "white" }}
+                                        className="w-[90%] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>
                             </div>
 
-                            <div style={{ display: "flex", flexDirection: "column", gap: "16px", width:"50%", borderLeft: "1px solid black" }}>
-                                <div style={{ marginBottom: "16px" }}>
+                            <div className="flex flex-col gap-[5px] w-[50%] border-l border-black">
+                                <div className="mb-[5px]">
                                     <label>Adresa</label>
                                     <AddressAutocomplete
                                         onSelect={handleAddressSelect}
+                                        required
+                                        value={addressText}
+                                        onChange={handleAddressChange}
                                         onInvalid={() => {
                                             setAddress(null);
-                                            setAddressError(true);}}
+                                            setAddressError(true);
+                                        }}
                                     />
-                                    {addressError && (
-                                        <p style={{ color: "red", marginTop: "4px", width: "100%" }}>
-                                            Molimo odaberite adresu iz Google Places liste i ne mijenjajte je ručno.
-                                        </p>
-                                    )}
                                 </div>
 
-                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div className="flex flex-col">
                                     <label>Radni dani</label>
 
                                     {DAY_LABELS.map(({ key, label }) => {
                                         const day = days[key];
 
                                         return (
-                                        <div key={key} style={{ display: "flex", alignItems: "center"}}>
-                                            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", width: "50%", gap: "5px" }}>
+                                        <div key={key} className="flex items-center">
+                                            <div className="flex justify-center items-center flex-row w-[40%] gap-[5px]">
                                                 <label>{label}</label>
 
                                                 <input
@@ -214,37 +308,27 @@ function Form() {
                                                 />
                                             </div>
 
-                                            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "row", width: "50%" }}>
-                                                <label style={{ marginRight: "5px" }}>Od:</label>
+                                            <div className="flex justify-center items-center flex-row w-[60%]">
+                                                <label className="mr-[5px]">Od:</label>
 
-                                                <input
-                                                    type="text"
-                                                    placeholder="0"
+                                                <TimeDropdown
                                                     value={day.start}
                                                     disabled={!day.enabled}
-                                                    onChange={(e) =>
-                                                        setDays({
-                                                        ...days,
-                                                        [key]: { ...day, start: e.target.value },
-                                                        })
+                                                    onChange={(val) =>
+                                                        setDays({ ...days, [key]: { ...day, start: val } })
                                                     }
-                                                    style={{ width: "30px", height: "30px", border: "2px solid black", borderRadius: "4px", backgroundColor: day.enabled ? "white" : "#ccc" }}
+                                                    options={timesOd.filter(t => !day.end || t < day.end)}
                                                 />
 
-                                                <label style={{ margin: "5px" }}>Do:</label>
+                                                <label className="m-[5px]">Do:</label>
 
-                                                <input
-                                                    type="text"
-                                                    placeholder="0"
+                                                <TimeDropdown
                                                     value={day.end}
                                                     disabled={!day.enabled}
-                                                    onChange={(e) =>
-                                                        setDays({
-                                                        ...days,
-                                                        [key]: { ...day, end: e.target.value },
-                                                        })
+                                                    onChange={(val) =>
+                                                        setDays({ ...days, [key]: { ...day, end: val } })
                                                     }
-                                                    style={{ width: "30px", height: "30px", border: "2px solid black", borderRadius: "4px", backgroundColor: day.enabled ? "white" : "#ccc" }}
+                                                    options={timesDo.filter(t => t > day.start)}
                                                 />
                                             </div>
                                         </div>
@@ -254,20 +338,20 @@ function Form() {
                             </div>
                         </div>
                         
-                        <button type="submit" className="bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors" style={{ height: "40px", width: "45%", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", marginBottom: "10px" }}>
+                        <button type="submit" className="h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
                             Zatraži zahtjev za lokaciju
                         </button>
 
-                        <div style={{ position: "absolute", bottom: "10px", right: "10px" }}>
+                        <div className="absolute bottom-[10px] right-[10px]">
                             <Link to="/my-profile">
-                                <button className="bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors" style={{ width: "fit-content", height: "40px", border: "none", borderRadius: "10px", color: "white", cursor: "pointer", padding: "0 10px" }}>
+                                <button className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
                                     Odustani
                                 </button>
                             </Link>
                         </div>
                     </div>
 
-                    <div style={{ padding: "10px", backgroundColor: "#F5F5F5", borderRadius: "20px", display: "flex", flexDirection: "column", gap: "10px", width: "30vw", height: "fit-content", minHeight: "20vh" }}>
+                    <div className="p-[10px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[10px] w-[30vw] h-fit min-h-[20vh]">
                         <label>Slika dvorane</label>
 
                         <input
@@ -276,55 +360,32 @@ function Form() {
                             accept="image/*"
                             className="hidden"
                             ref={fileInputRef}
+                            required
                             onChange={(e) => setImage(e.target.files[0])}
                         />
 
                         <label
                             htmlFor="photo"
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                minHeight: "20vh",
-                                border: "2px dashed #3B5B80",
-                                borderRadius: "12px",
-                                cursor: "pointer",
-                                backgroundColor: "white",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                overflow: "hidden",
-                                position: "relative",
-                            }}
+                            className="w-full h-full min-h-[20vh] border-2 border-dashed border-[#3B5B80] rounded-[12px] cursor-pointer bg-white flex items-center justify-center overflow-hidden relative"
                             >
                             {imagePreview ? (
                                 <>
                                     <img
                                         src={imagePreview}
                                         alt="Preview"
-                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                        className="w-full h-full object-cover"
                                     />
 
                                     <button
                                         type="button"
                                         onClick={handleRemove}
-                                        style={{
-                                            position: "absolute",
-                                            top: "5px",
-                                            right: "5px",
-                                            backgroundColor: "rgba(0,0,0,0.5)",
-                                            color: "white",
-                                            border: "none",
-                                            borderRadius: "50%",
-                                            width: "25px",
-                                            height: "25px",
-                                            cursor: "pointer",
-                                        }}
+                                        className="absolute top-[5px] right-[5px] bg-[rgba(0,0,0,0.5)] text-white border-none rounded-full w-[25px] h-[25px] cursor-pointer"
                                     >
                                         X
                                     </button>
                                 </>
                             ) : (
-                                <div style={{ textAlign: "center", color: "#3B5B80" }}>
+                                <div className="text-center text-[#3B5B80]">
                                     <strong>Klikni za dodati sliku</strong>
                                 </div>
                             )}
@@ -332,6 +393,12 @@ function Form() {
                     </div>
                 </div>
             </form>
+
+            {formError && (
+                <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-fit text-center font-medium absolute top-[20px] right-[20px]">
+                    {formError}
+                </div>
+            )}
         </div>
     );
 }
