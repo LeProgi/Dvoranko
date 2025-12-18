@@ -23,7 +23,7 @@ public class ZahtjevOglas {
     private User owner;
 
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+//    private LocalDateTime updatedAt;
 
     @Column(name = "nazDvorana")
     private String naziv;
@@ -37,7 +37,7 @@ public class ZahtjevOglas {
 //    @Column(name = "kategorija")
 //    private String kategorija;
 
-    private Integer postalCode;
+    private Long postalCode;
 
 //    @Column(name = "mjesto")
     private String city;

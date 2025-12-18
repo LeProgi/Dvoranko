@@ -10,7 +10,7 @@ public class CreateZahtjevOglas {
     private String opis;
     private Integer kapacitet;
 
-    private Integer postalCode;
+    private Long postalCode;
     private String city;
     private String street;
     private String streetNumber;

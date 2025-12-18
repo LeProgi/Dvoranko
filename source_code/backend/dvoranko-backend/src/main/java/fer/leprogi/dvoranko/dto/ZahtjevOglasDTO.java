@@ -16,7 +16,7 @@ public class ZahtjevOglasDTO {
     private Integer kapacitet;
 //    private Iterable<KategorijaDTO> kategorije;
 
-    private Integer postalCode;
+    private Long postalCode;
     private String city;
     private String street;
     private String streetNumber;

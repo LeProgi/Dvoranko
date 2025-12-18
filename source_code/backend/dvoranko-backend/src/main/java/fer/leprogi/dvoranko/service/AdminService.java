@@ -1,21 +1,19 @@
 package fer.leprogi.dvoranko.service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import fer.leprogi.dvoranko.dto.ZahtjevIznajmljivacDTO;
+import fer.leprogi.dvoranko.dto.*;
+import fer.leprogi.dvoranko.dto.createRequest.CreateAdresaRequest;
+import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
+import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
+import fer.leprogi.dvoranko.model.*;
+import fer.leprogi.dvoranko.repository.MjestoRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
-import fer.leprogi.dvoranko.model.Dvorana;
-import fer.leprogi.dvoranko.model.Role;
-import fer.leprogi.dvoranko.model.User;
-import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
-import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
@@ -31,6 +29,14 @@ public class AdminService {
     private ZahtjevOglasRepository zahtjevOglasRepository;
     @Autowired
     private DtoMapper dtoMapper;
+    @Autowired
+    private MjestoRepository mjestoRepository;
+    @Autowired
+    private MjestoService mjestoService;
+    @Autowired
+    private AdresaService adresaService;
+    @Autowired
+    private DvoranaService dvoranaService;
 
 
     public User acceptIznajmljivacRequest(Long requestId) {
@@ -61,29 +67,53 @@ public class AdminService {
     }
 
 
-    public Dvorana approveOglasRequest(Long requestId) {
-        Optional<ZahtjevOglas> z = zahtjevOglasRepository.findById(requestId);
-        if (z.isEmpty()) {
-            throw new IllegalArgumentException("request not found");
+    public DvoranaDTO approveOglasRequest(Long requestId) {
+        ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("request not found"));
+
+        MjestoDTO mjestoSaved;
+        try {
+            mjestoSaved = mjestoService.createMjesto(new CreateMjestoRequest(zahtjev.getPostalCode(), zahtjev.getCity()));
+        }catch (Exception e){
+            mjestoSaved = mjestoService.getMjestoByPostanskiBroj(zahtjev.getPostalCode());
         }
-        ZahtjevOglas zahtjev = z.get();
 
-        Dvorana dvorana = new Dvorana();
+        AdresaDTO adresaSaved;
 
-        //potrebno izradit dvoranu
+        adresaSaved = adresaService.createAdresa(new CreateAdresaRequest(
+                zahtjev.getLatitude(),
+                zahtjev.getLongitude(),
+                zahtjev.getStreet(),
+                zahtjev.getStreetNumber(),
+                mjestoSaved.getIdMjesto()
+        ));
 
+
+        DvoranaDTO novaDvorana = dvoranaService.createDvorana(new CreateDvoranaRequest(
+                zahtjev.getNaziv(),
+                zahtjev.getKapacitet(),
+                zahtjev.getOpis(),
+                adresaSaved.getIdAdresa(),
+                new HashSet<Long>(),
+                zahtjev.getOwner().getId()
+        ));
 
         zahtjevOglasRepository.delete(zahtjev);
-        return dvorana;
+
+        return novaDvorana;
     }
 
     public void rejectOglasRequest(Long requestId) {
-        Optional<ZahtjevOglas> z = zahtjevOglasRepository.findById(requestId);
-        if (z.isEmpty()) {
+
+//        ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
+//                .orElseThrow(() -> new IllegalArgumentException("request not found"));
+//
+//        zahtjevOglasRepository.delete(zahtjev);
+
+        if (!zahtjevOglasRepository.existsById(requestId)) {
             throw new IllegalArgumentException("request not found");
         }
-        ZahtjevOglas zahtjev = z.get();
-        zahtjevOglasRepository.delete(zahtjev);
+        zahtjevOglasRepository.deleteById(requestId);
     }
 
     public List<ZahtjevIznajmljivacDTO> getAllIznajmljivacRequests() {
