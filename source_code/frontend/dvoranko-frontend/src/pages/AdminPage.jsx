@@ -110,16 +110,16 @@ const AdminPage = () => {
                   <span>{request.naziv}</span>
 
                   <span className="font-semibold">Vlasnik:</span>
-                  <span>{request.user?.name}</span>
+                  <span>{request.owner?.name}</span>
                   
                   <span className="font-semibold">Email:</span>
-                  <span>{request.user?.email}</span>
+                  <span>{request.owner?.email}</span>
 
                   <span className="font-semibold">Kapacitet:</span>
                   <span>{request.kapacitet}</span>
 
                   <span className="font-semibold">Adresa:</span>
-                  <span>{request.adresa}</span>
+                  <span>{request.street} {request.streetNumber}, {request.postalCode}, {request.city}</span>
 
                   <span className="font-semibold">Opis:</span>
                   <span>{request.opis}</span>
