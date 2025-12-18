@@ -13,7 +13,7 @@ const AdminPage = () => {
   const fetchRequests = async () => {
     try {
       //dvorane
-      const resDvorana = await fetch(`${url}/api/admin/getall/zahtjevidvorana`, {
+      const resDvorana = await fetch(`${url}/api/public/admin/getall/zahtjevidvorana`, {
         method: "GET",
         credentials: "include",
       });
@@ -23,7 +23,7 @@ const AdminPage = () => {
       setZahtjevDvorana(dataDvorana.data); 
 
       //iznajmljivaci
-      const resIznajmljivac = await fetch(`${url}/api/admin/getall/zahtjeviznajmljivac`, {
+      const resIznajmljivac = await fetch(`${url}/api/public/admin/getall/zahtjeviznajmljivac`, {
         method: "GET",
         credentials: "include", 
       });
