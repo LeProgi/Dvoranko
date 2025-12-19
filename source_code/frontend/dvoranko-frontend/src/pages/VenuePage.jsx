@@ -45,7 +45,7 @@ const VenuePage = () => {
                 <div className="flex flex-col justify-between w-2/3 p-10 relative">
                     <div>
                         <Link to="/">
-                            <button className="absolute top-6 right-6 bg-[#3B5B80] text-[#f5f5f5] rounded-[15%] w-[25px] h-[25px] flex items-center justify-center">
+                            <button className="absolute top-6 right-6 bg-[#3B5B80] text-[#f5f5f5] rounded-[15%] w-[25px] h-[25px] flex items-center justify-center cursor-pointer hover:bg-[#2F4B6A] transition-colors">
                                 X
                             </button>
                         </Link>
