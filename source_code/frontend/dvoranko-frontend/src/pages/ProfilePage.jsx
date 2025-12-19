@@ -8,15 +8,9 @@ import { useLocation } from "react-router-dom";
 
 
 const ProfilePage = () => {
-    //const location = useLocation();
-    //const { user } = location.state;
-        const user = {
-        id: 3,
-        name: "Borna Navratil",
-        email: "borna.navratil@gmail.com",
-        pictureUrl: "https://lh3.googleusercontent.com/a/ACg8ocKt_F4BE5H3rvtT9UTEjIqdJfAJ9eZueKPmt2QQZm-UqOeC3pCj=s96-c",
-        role: "USER" 
-    };
+    const location = useLocation();
+    const { user } = location.state;
+    
     const [seeForm, setSeeForm] = useState(false);
     const [seeCheck, setSeeCheck] = useState(false);
      
