@@ -1,6 +1,7 @@
 package fer.leprogi.dvoranko.service;
 
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
+import fer.leprogi.dvoranko.model.Kategorija;
 import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.repository.*;
 
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Service
@@ -22,6 +25,8 @@ public class ModeratorService {
 
     @Autowired
     private DtoMapper dtoMapper;
+    @Autowired
+    private KategorijaRepository kategorijaRepository;
 
 
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request) {
@@ -40,6 +45,9 @@ public class ModeratorService {
         zahtjev.setStreetNumber(request.getStreetNumber());
         zahtjev.setLatitude(request.getLat());
         zahtjev.setLongitude(request.getLng());
+
+        Set<Kategorija> kategorije = new HashSet<>(kategorijaRepository.findAllById(request.getIdKategorije()));
+        zahtjev.setKategorije(kategorije);
 
         ZahtjevOglas saved = zahtjevRepository.save(zahtjev);
 

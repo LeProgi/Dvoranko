@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import CategorySelector from "./CategorySelector.jsx";
@@ -8,7 +7,11 @@ import { url } from "../main.jsx";
 
 function Form() {
     const navigate = useNavigate();
-    const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
+    // const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
+    const [categories, setCategories] = useState([]);
+    const [categoriesLoading, setCategoriesLoading] = useState(true);
+    const [categoriesError, setCategoriesError] = useState("");
+
     const [selectedCategories, setselectedCategories] = useState([]);
     const timesOd = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
     const timesDo = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
@@ -40,6 +43,26 @@ function Form() {
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
     const [formError, setFormError] = useState("");
+
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch(`${url}/api/public/kategorije`);
+                if (!res.ok) throw new Error("Greška pri dohvaćanju kategorija");
+                const data = await res.json();
+                // console.log("Fetched categories:", data);
+                setCategories(data.data);
+            } catch (err) {
+                console.error(err);
+                setCategoriesError("Ne mogu dohvatiti kategorije.");
+            } finally {
+                setCategoriesLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
 
     useEffect (() => {

@@ -114,7 +114,7 @@ public class DtoMapper {
 
         ZahtjevOglasDTO dto = new ZahtjevOglasDTO();
 
-        dto.setId(zahtjev.getId());
+        dto.setId(zahtjev.getIdZahtjevOglas());
         dto.setOwner(toUserDTO(zahtjev.getOwner()));
 
         dto.setNaziv(zahtjev.getNaziv());
