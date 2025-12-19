@@ -1,7 +1,11 @@
 package fer.leprogi.dvoranko.controller;
 
 
+import fer.leprogi.dvoranko.dto.MjestoDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
+import fer.leprogi.dvoranko.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,18 +21,19 @@ import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
 import fer.leprogi.dvoranko.service.ModeratorService;
 
 @RestController
-@RequestMapping("/api/moderator/request")
+@RequestMapping("/api/public/moderator/request")
 public class ModeratorRequestController {
 
     @Autowired
     private  ModeratorService moderatorService;
 
-    @GetMapping("/requestAdd")
-    public ResponseEntity<?> requestAdd(@RequestBody ZahtjevOglasDTO dto) {
+    @PostMapping("/requestAdd")
+    public ResponseEntity<ApiResponse<ZahtjevOglasDTO>> requestAdd(@RequestBody CreateZahtjevOglas request) {
 
+        ZahtjevOglasDTO created = moderatorService.createAddRequest(request);
 
-        ZahtjevOglas zahtjev = moderatorService.createAddRequest(dto);
-
-        return ResponseEntity.ok("Zahtjev poslan");
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(created, "Zahtjev successfully created"));
     }
 }

@@ -1,6 +1,9 @@
 package fer.leprogi.dvoranko.controller;
 
 
+import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.ZahtjevIznajmljivacDTO;
+import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.model.User;
@@ -10,7 +13,10 @@ import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
 import fer.leprogi.dvoranko.service.AdminService;
 
+import fer.leprogi.dvoranko.utils.ApiResponse;
+import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +26,11 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/public/admin")
 public class AdminController {
 
     @Autowired
-    private  AdminService adminService;
+    private AdminService adminService;
 
 
     @GetMapping("/dashboard")
@@ -52,18 +58,37 @@ public class AdminController {
 
 
     @PostMapping("/requests/{id}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> approve(@PathVariable Long id) {
-        Dvorana dvorana = adminService.approveOglasRequest(id);   
+//    @PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse<DvoranaDTO>> approve(@PathVariable Long id) {
+        DvoranaDTO dvorana = adminService.approveOglasRequest(id);
 
-		return ResponseEntity.ok("Zahtjev odobren");
+		return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(dvorana, "Zahtjev odobren, dvorana kreirana"));
 	}
 
 	@PostMapping("/requests/{id}/reject")
-    @PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> reject(@PathVariable Long id) {
+//    @PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse<Null>> reject(@PathVariable Long id) {
+
         adminService.rejectOglasRequest(id);
-		return ResponseEntity.ok("Zahtjev odbijen");
+		return ResponseEntity
+                .status(200)
+                .body(ApiResponse.success(null, "Zahtjev odbijen"));
 	}
+
+    @GetMapping("/getall/zahtjeviznajmljivac")
+    //@PreAuthorize("hasRole('ADMIN')") OVO KASNIJE TREBA OBAVITI!!!
+    public ResponseEntity<ApiResponse<Iterable<ZahtjevIznajmljivacDTO>>> getAllZahtjeviznamljivac() {
+        Iterable<ZahtjevIznajmljivacDTO> zahtjeviIznajmljivac = adminService.getAllIznajmljivacRequests();
+        return ResponseEntity.ok(ApiResponse.success(zahtjeviIznajmljivac, "zahtjevi za iznajmljivac retrieved succesfully"));
+    }
+
+    @GetMapping("/getall/zahtjevidvorana")
+    //@PreAuthorize("hasRole('ADMIN')") OVO TREBA KASNIJE OBAVITI!!!
+    public ResponseEntity<ApiResponse<Iterable<ZahtjevOglasDTO>>> getAllZahtjevidvorana() {
+        Iterable<ZahtjevOglasDTO> zahtjeviOglas = adminService.getAllDvoranaRequests();
+        return ResponseEntity.ok(ApiResponse.success(zahtjeviOglas, "zahtjevi za dvorane retrieved succesfully"));
+    }
 
 }
