@@ -23,5 +23,4 @@ function AddressAutocomplete({value, onSelect, onChange}) {
         />
     );
 }
-
 export default AddressAutocomplete;
