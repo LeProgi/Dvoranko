@@ -40,6 +40,40 @@ const AdminPage = () => {
     fetchRequests();
   }, []);
 
+  const handleAcceptIznajmljivac = (id) => { 
+    try {
+      const res = fetch(`${url}/api/public/admin/request/moderator/${id}/accept`, {
+        method: "POST",
+        credentials: "include",
+      });
+      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+
+      // Ukloni prihvaćeni zahtjev iz stanja  
+      setZahtjevIznajmljivac((prevRequests) =>
+        prevRequests.filter((request) => request.id !== id)
+      );
+    } catch (err) {
+      console.error("Kume error tijekom prihvaćanja zahtjeva za iznajmljivaca:", err);
+    }
+  };
+
+  const handleRejectIznajmljivac = async (id) => {
+    try {
+      const res = await fetch(`${url}/api/public/admin/request/moderator/${id}/reject`, {
+        method: "POST",
+        credentials: "include",
+      });
+      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+
+      // Ukloni odbijeni zahtjev iz stanja
+      setZahtjevIznajmljivac((prevRequests) =>
+        prevRequests.filter((request) => request.id !== id)
+      );
+    } catch (err) {
+      console.error("Kume error tijekom odbijanja zahtjeva za iznajmljivaca:", err);
+    }
+  };
+
 
 
   const handleAcceptDvorana = async (id) => {
@@ -168,10 +202,10 @@ const AdminPage = () => {
                 </div>
 
                 <div className="flex justify-between mt-4">
-                  <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                  <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptIznajmljivac(request.id)}>
                     PRIHVATI
                   </button>
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectIznajmljivac(request.id)}>
                     ODBIJ
                   </button>
                 </div>

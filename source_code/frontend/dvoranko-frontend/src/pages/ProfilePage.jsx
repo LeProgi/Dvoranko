@@ -7,6 +7,20 @@ import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
+const zahtjevIznajmljivac = () => { 
+    try {
+      const res = fetch(`${url}/api/user/request/getModerator`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+    } catch (err) {
+      console.error("Error pri pokušaju slanja zahtjva:", err);
+    }
+  };
+    
+
+
 const ProfilePage = () => {
     const location = useLocation();
     
@@ -94,6 +108,7 @@ const ProfilePage = () => {
                         <button
                             className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
                             onClick={() => {
+                                zahtjevIznajmljivac();
                                 setSeeCheck(false);
                             }}
                         >
@@ -111,30 +126,18 @@ const ProfilePage = () => {
             </div>
 )}
 
-        {user.role === "MODERATOR" && (
+        {user.role === "MODERATOR"  && (
             <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                 <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
-                <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition"
-                onClick={() => setSeeForm(true)}>
+                <Link to="/form" >
+                <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition">
                     +
                 </button>
-            </div>
-        )}
-        {seeForm && (
-            <div  className="w-3/4 bg-white rounded-lg shadow-md p-6 m-6">
-                <Form/>
-                <button 
-                    onClick={() => setSeeForm(false)}
-                    className="mt-6 bg-red-500 text-white py-2 px-4 rounded  hover:bg-red-600 transition"
-                >
-                    Zatvori
-                </button>
+                </Link>
+                
             </div>
         )}
 
-
-
-      
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
             <h2 className="text-xl font-semibold mb-6 text-[#3B5B80]">
             Moje rezervacije
@@ -143,9 +146,7 @@ const ProfilePage = () => {
             <p className="text-gray-600">Trenutno nemate rezervacija.</p>
         </div>
 
-        <Link to="/form" className="w-[50vw] block">
-            <Button variant="default" title="Iznajmite dvoranu"/>
-        </Link>
+
 
         <Footer />
     </div>

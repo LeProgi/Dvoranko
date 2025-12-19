@@ -43,14 +43,14 @@ public class AdminController {
     }
 
     @PostMapping("request/moderator/{id}/accept")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
         User user = adminService.acceptIznajmljivacRequest(id);
         return ResponseEntity.ok("user promoted");
     }
 
     @PostMapping("/request/moderator/{id}/reject")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> rejectRequest(@PathVariable Long id) {
         User user = adminService.rejectIznajmljivacRequest(id);
         return ResponseEntity.ok("request rejected");
