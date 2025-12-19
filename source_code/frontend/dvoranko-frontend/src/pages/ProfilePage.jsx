@@ -4,22 +4,44 @@ import { Link } from "react-router-dom";
 import { url } from "../main.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 const ProfilePage = () => {
     const location = useLocation();
-    const { user } = location.state;
     
     const [seeForm, setSeeForm] = useState(false);
     const [seeCheck, setSeeCheck] = useState(false);
      
+    const [user, setUser] = useState(location.state?.user ?? null);
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        if (user) return;
 
-    
+        fetch(`${url}/api/auth/user`, {
+            credentials: "include",
+        })
+            .then((res) => {
+            if (!res.ok) throw new Error("Not logged in");
+            return res.json();
+            })
+            .then((data) => setUser(data))
+            .catch(() => {
+                setUser(null);
+                navigate("/", { replace: true });
+            });
+    }, [user, navigate]);
 
+    if (!user) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+            <p>Učitavanje profila...</p>
+            </div>
+        );
+    }
 
-  return (
+    return (
     <div className="flex flex-col min-h-screen items-center bg-gray-100">
       
         <div className="relative bg-[#3B5B80] w-full pb-5 px-[5vw] flex flex-row justify-between items-center text-white">
@@ -120,6 +142,10 @@ const ProfilePage = () => {
 
             <p className="text-gray-600">Trenutno nemate rezervacija.</p>
         </div>
+
+        <Link to="/form" className="w-[50vw] block">
+            <Button variant="default" title="Iznajmite dvoranu"/>
+        </Link>
 
         <Footer />
     </div>

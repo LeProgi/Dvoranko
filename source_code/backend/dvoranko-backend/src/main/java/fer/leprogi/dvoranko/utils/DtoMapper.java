@@ -87,4 +87,49 @@ public class DtoMapper {
         return dto;
     }
 
+    public ZahtjevIznajmljivacDTO toZahtjevIznajmljivacDTO(ZahtjevIznajmljivac zahtjev) {
+
+        if (zahtjev == null) return null;
+
+        ZahtjevIznajmljivacDTO dto = new ZahtjevIznajmljivacDTO();
+        dto.setId(zahtjev.getId());
+
+        if (zahtjev.getUser() != null) {
+            UserDTO userDTO = new UserDTO();
+
+            userDTO.setId(zahtjev.getUser().getId());
+            userDTO.setName(zahtjev.getUser().getName());
+            userDTO.setEmail(zahtjev.getUser().getEmail());
+            userDTO.setPictureUrl(zahtjev.getUser().getPictureUrl());
+            userDTO.setRole(zahtjev.getUser().getRole());
+
+            dto.setUser(userDTO);
+        }
+
+        return dto;
+    }
+
+    public ZahtjevOglasDTO toZahtjevOglasDTO(ZahtjevOglas zahtjev) {
+        if (zahtjev == null) return null;
+
+        ZahtjevOglasDTO dto = new ZahtjevOglasDTO();
+
+        dto.setId(zahtjev.getId());
+        dto.setOwner(toUserDTO(zahtjev.getOwner()));
+
+        dto.setNaziv(zahtjev.getNaziv());
+        dto.setOpis(zahtjev.getOpis());
+        dto.setKapacitet(zahtjev.getKapacitet());
+
+        dto.setPostalCode(zahtjev.getPostalCode());
+        dto.setCity(zahtjev.getCity());
+        dto.setStreet(zahtjev.getStreet());
+        dto.setStreetNumber(zahtjev.getStreetNumber());
+        dto.setLatitude(zahtjev.getLatitude());
+        dto.setLongitude(zahtjev.getLongitude());
+
+        return dto;
+    }
+
+
 }

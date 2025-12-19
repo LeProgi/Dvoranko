@@ -1,5 +1,8 @@
 package fer.leprogi.dvoranko.service;
 
+import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
+import fer.leprogi.dvoranko.model.User;
+import fer.leprogi.dvoranko.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
@@ -17,17 +20,29 @@ public class ModeratorService {
     @Autowired
     private ZahtjevOglasRepository zahtjevRepository;
 
+    @Autowired
+    private DtoMapper dtoMapper;
 
 
-    public ZahtjevOglas createAddRequest(ZahtjevOglasDTO dto) {
+    public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request) {
         ZahtjevOglas zahtjev = new ZahtjevOglas();
-        zahtjev.setNaziv(dto.getNaziv());
-        zahtjev.setOpis(dto.getOpis());
-        zahtjev.setKapacitet(dto.getKapacitet());
-        zahtjev.setAdresa(dto.getAdresa());
-        //zahtjev.setKategorija(dto.getKategorija());
-        zahtjev.setLatitude(dto.getLatitude());
-        zahtjev.setLongitude(dto.getLongitude());
-        return zahtjevRepository.save(zahtjev);
+
+        User owner = userRepository.findById(request.getIdOwner())
+                        .orElseThrow(() -> new IllegalArgumentException("User with id " + request.getIdOwner() + " not found"));
+
+        zahtjev.setOwner(owner);
+        zahtjev.setNaziv(request.getNaziv());
+        zahtjev.setOpis(request.getOpis());
+        zahtjev.setKapacitet(request.getKapacitet());
+        zahtjev.setPostalCode(request.getPostalCode());
+        zahtjev.setCity(request.getCity());
+        zahtjev.setStreet(request.getStreet());
+        zahtjev.setStreetNumber(request.getStreetNumber());
+        zahtjev.setLatitude(request.getLat());
+        zahtjev.setLongitude(request.getLng());
+
+        ZahtjevOglas saved = zahtjevRepository.save(zahtjev);
+
+        return dtoMapper.toZahtjevOglasDTO(saved);
     }
 }
