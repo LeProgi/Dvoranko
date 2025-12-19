@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import CategorySelector from "./CategorySelector.jsx";
 import TimeDropdown from "./TimeDropdown.jsx";
 import { url } from "../main.jsx";
 
 function Form() {
+    const navigate = useNavigate();
     const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
     const [selectedCategories, setselectedCategories] = useState([]);
     const timesOd = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
@@ -212,6 +213,11 @@ function Form() {
         const payload = { idOwner: ownerIdLocal, naziv, kapacitet, selectedCategories, opis, ...address, daysOpen, image };
             console.log("Payload to be sent:", payload);
             await postDvorana(payload);
+            setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
+            setTimeout(() => {
+                navigate("/my-profile");
+            }, 100);
+
         } catch (err) {
             console.error(err);
             setFormError("Greška pri slanju zahtjeva. Pokušajte ponovno.");
