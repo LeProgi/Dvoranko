@@ -17,7 +17,7 @@ const AdminPage = () => {
           method: "GET",
           credentials: "include",
         });
-
+        console.log(resDvorana);
         if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
         const dataDvorana = await resDvorana.json();
         setZahtjevDvorana(dataDvorana.data); 
@@ -28,7 +28,7 @@ const AdminPage = () => {
           method: "GET",
           credentials: "include", 
         });
-
+        console.log(resIznajmljivac);
         if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
         const dataIznajmljivac = await resIznajmljivac.json();
         setZahtjevIznajmljivac(dataIznajmljivac.data); 

@@ -121,6 +121,14 @@ public class DtoMapper {
         dto.setOpis(zahtjev.getOpis());
         dto.setKapacitet(zahtjev.getKapacitet());
 
+
+        Set<KategorijaDTO> kategorijeDTO = zahtjev.getKategorije()
+                .stream()
+                .map(this::toKategorijaDTO)
+                .collect(Collectors.toSet());
+        dto.setKategorije(kategorijeDTO);
+
+
         dto.setPostalCode(zahtjev.getPostalCode());
         dto.setCity(zahtjev.getCity());
         dto.setStreet(zahtjev.getStreet());

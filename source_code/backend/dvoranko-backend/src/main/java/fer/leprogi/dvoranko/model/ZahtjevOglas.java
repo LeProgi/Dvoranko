@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -39,7 +40,7 @@ public class ZahtjevOglas {
             joinColumns = @JoinColumn(name = "idZahtjevOglas"),
             inverseJoinColumns = @JoinColumn(name = "idKategorija")
     )
-    private Set<Kategorija> kategorije;
+    private Set<Kategorija> kategorije = new HashSet<>();
 
     private Long postalCode;
     private String city;

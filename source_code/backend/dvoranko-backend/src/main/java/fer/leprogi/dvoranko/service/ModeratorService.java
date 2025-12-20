@@ -4,12 +4,15 @@ import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
 import fer.leprogi.dvoranko.model.Kategorija;
 import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.utils.DtoMapper;
+import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
 import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.repository.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +31,7 @@ public class ModeratorService {
     @Autowired
     private KategorijaRepository kategorijaRepository;
 
-
+    @Transactional
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request) {
         ZahtjevOglas zahtjev = new ZahtjevOglas();
 
@@ -46,10 +49,17 @@ public class ModeratorService {
         zahtjev.setLatitude(request.getLat());
         zahtjev.setLongitude(request.getLng());
 
-        Set<Kategorija> kategorije = new HashSet<>(kategorijaRepository.findAllById(request.getIdKategorije()));
-        zahtjev.setKategorije(kategorije);
+        if (request.getIdKategorije() != null && !request.getIdKategorije().isEmpty()) {
+            Set<Kategorija> kategorije = new HashSet<>();
+            for (Long idKategorija : request.getIdKategorije()) {
+                Kategorija kategorija = kategorijaRepository.findById(idKategorija)
+                        .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
+                kategorije.add(kategorija);
+            }
+            zahtjev.setKategorije(kategorije);
+        }
 
-        ZahtjevOglas saved = zahtjevRepository.save(zahtjev);
+        ZahtjevOglas saved = zahtjevRepository.saveAndFlush(zahtjev);
 
         return dtoMapper.toZahtjevOglasDTO(saved);
     }

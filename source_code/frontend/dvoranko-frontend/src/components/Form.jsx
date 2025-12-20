@@ -9,8 +9,6 @@ function Form() {
     const navigate = useNavigate();
     // const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
     const [categories, setCategories] = useState([]);
-    const [categoriesLoading, setCategoriesLoading] = useState(true);
-    const [categoriesError, setCategoriesError] = useState("");
 
     const [selectedCategories, setselectedCategories] = useState([]);
     const timesOd = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
@@ -56,8 +54,6 @@ function Form() {
             } catch (err) {
                 console.error(err);
                 setCategoriesError("Ne mogu dohvatiti kategorije.");
-            } finally {
-                setCategoriesLoading(false);
             }
         };
 
@@ -233,7 +229,7 @@ function Form() {
             const userData = await userRes.json();
             const ownerIdLocal = userData.id;
 
-        const payload = { idOwner: ownerIdLocal, naziv, kapacitet, selectedCategories, opis, ...address, daysOpen, image };
+        const payload = { idOwner: ownerIdLocal, naziv, kapacitet, idKategorije: selectedCategories, opis, ...address, daysOpen, image };
             console.log("Payload to be sent:", payload);
             await postDvorana(payload);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");

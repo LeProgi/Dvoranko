@@ -10,6 +10,7 @@ import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
 import fer.leprogi.dvoranko.model.*;
 import fer.leprogi.dvoranko.repository.MjestoRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminService {
@@ -123,8 +125,12 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ZahtjevOglasDTO> getAllDvoranaRequests() {
-        return zahtjevOglasRepository.findAll()
+        List<ZahtjevOglas> zahtjevi = zahtjevOglasRepository.findAll();
+        zahtjevi.forEach(zahtjev -> zahtjev.getKategorije().size());
+
+        return zahtjevi
                 .stream()
                 .map(dtoMapper::toZahtjevOglasDTO)
                 .collect(Collectors.toList());

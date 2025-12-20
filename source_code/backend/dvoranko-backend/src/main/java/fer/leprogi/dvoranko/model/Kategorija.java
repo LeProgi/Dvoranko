@@ -28,4 +28,5 @@ public class Kategorija {
     @ManyToMany(mappedBy = "kategorije")
     @JsonIgnore
     public Set<Dvorana> dvorane;
+
 }
