@@ -2,6 +2,7 @@ package fer.leprogi.dvoranko.controller;
 
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.UserDTO;
 import fer.leprogi.dvoranko.dto.ZahtjevIznajmljivacDTO;
 import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
@@ -42,7 +43,7 @@ public class AdminController {
         ));
     }
 
-    @PostMapping("request/moderator/{id}/accept")
+    @PostMapping("/request/moderator/{id}/accept")
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
         User user = adminService.acceptIznajmljivacRequest(id);
@@ -89,6 +90,33 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Iterable<ZahtjevOglasDTO>>> getAllZahtjevidvorana() {
         Iterable<ZahtjevOglasDTO> zahtjeviOglas = adminService.getAllDvoranaRequests();
         return ResponseEntity.ok(ApiResponse.success(zahtjeviOglas, "zahtjevi za dvorane retrieved succesfully"));
+    }
+
+    @GetMapping("/getall/dvorane")
+    public ResponseEntity<ApiResponse<Iterable<DvoranaDTO>>> getAllDvorane(){
+        Iterable<DvoranaDTO> dvorane = adminService.getAllDvorane();
+        return ResponseEntity.ok(ApiResponse.success(dvorane, "Dvorane retrieved successfully"));
+    }
+
+    @GetMapping("/getall/users")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Iterable<UserDTO>>> getAllUsers() {
+        Iterable<UserDTO> users = adminService.getAllUsers();
+        return ResponseEntity.ok(ApiResponse.success(users, "Users retrieved successfully"));
+    }
+
+    @DeleteMapping("/delete/user/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<UserDTO>> deleteUser(@PathVariable Long id) {
+        adminService.deleteUser(id);
+        return ResponseEntity.ok(ApiResponse.success(null, "User deleted successfully"));
+    }
+
+    @DeleteMapping("/delete/dvorana/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<DvoranaDTO>> deleteDvorana(@PathVariable Long id) {
+        adminService.deleteDvorana(id);
+        return ResponseEntity.ok(ApiResponse.success(null, "Dvorana deleted successfully"));
     }
 
 }
