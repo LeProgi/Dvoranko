@@ -14,8 +14,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "dvorane")
-
+@EqualsAndHashCode(exclude = {"dvorane", "zahtjeviOglas"})
 public class Kategorija {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +28,8 @@ public class Kategorija {
     @JsonIgnore
     public Set<Dvorana> dvorane;
 
+
+    @ManyToMany(mappedBy = "kategorije")
+    @JsonIgnore
+    public Set<ZahtjevOglas> zahtjeviOglas;
 }

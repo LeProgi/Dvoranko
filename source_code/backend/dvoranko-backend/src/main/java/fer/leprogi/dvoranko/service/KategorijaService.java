@@ -2,14 +2,19 @@ package fer.leprogi.dvoranko.service;
 
 import fer.leprogi.dvoranko.dto.KategorijaDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateKategorijaRequest;
+import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.Kategorija;
+import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.repository.KategorijaRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,10 +65,30 @@ public class KategorijaService {
         return dtoMapper.toKategorijaDTO(saved);
     }
 
-    public void deleteKategorija(Long idKategorija){
-        if (!kategorijaRepository.existsById(idKategorija)) {
-            throw new ResourceNotFoundException("Kategorija with idKategorija " + idKategorija + " does not exist");
+//    public void deleteKategorija(Long idKategorija){
+//        if (!kategorijaRepository.existsById(idKategorija)) {
+//            throw new ResourceNotFoundException("Kategorija with idKategorija " + idKategorija + " does not exist");
+//        }
+//        kategorijaRepository.deleteById(idKategorija);
+//    }
+
+    @Transactional
+    public void deleteKategorija(Long idKategorija) {
+
+        Kategorija kategorija = kategorijaRepository.findById(idKategorija)
+                .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
+
+        Hibernate.initialize(kategorija.getDvorane());
+        Hibernate.initialize(kategorija.getZahtjeviOglas());
+
+        for (Dvorana dvorana : new HashSet<>(kategorija.getDvorane())) {
+            dvorana.getKategorije().remove(kategorija);
         }
-        kategorijaRepository.deleteById(idKategorija);
+
+        for (ZahtjevOglas zahtjev : new HashSet<>(kategorija.getZahtjeviOglas())) {
+            zahtjev.getKategorije().remove(kategorija);
+        }
+
+        kategorijaRepository.delete(kategorija);
     }
 }
