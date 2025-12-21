@@ -1,19 +1,21 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import CategorySelector from "./CategorySelector.jsx";
 import TimeDropdown from "./TimeDropdown.jsx";
 import { url } from "../main.jsx";
 
 function Form() {
-    const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
+    const navigate = useNavigate();
+    // const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
+    const [categories, setCategories] = useState([]);
+
     const [selectedCategories, setselectedCategories] = useState([]);
     const timesOd = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
     const timesDo = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
-    const [name, setName] = useState("");
-    const [capacity, setCapacity] = useState("");
-    const [description, setDescription] = useState("");
+    const [naziv, setName] = useState("");
+    const [kapacitet, setCapacity] = useState("");
+    const [opis, setDescription] = useState("");
     const [address, setAddress] = useState(null);
     const [addressError, setAddressError] = useState(false);
     const [addressText, setAddressText] = useState("");
@@ -39,7 +41,25 @@ function Form() {
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
     const [formError, setFormError] = useState("");
-    const [ownerId, setOwnerId] = useState(null);
+
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch(`${url}/api/public/kategorije`);
+                if (!res.ok) throw new Error("Greška pri dohvaćanju kategorija");
+                const data = await res.json();
+                // console.log("Fetched categories:", data);
+                setCategories(data.data);
+            } catch (err) {
+                console.error(err);
+                setCategoriesError("Ne mogu dohvatiti kategorije.");
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
 
     useEffect (() => {
         if (addressText.trim() === "") {
@@ -103,27 +123,47 @@ function Form() {
     };
 
     const postDvorana = async (data) => {
-        const url = "/api/moderator/request/requestAdd";
         try {
-            const response = await axios.post(url, data);
-            console.log("Response from server:", response.data);
+            const response = await fetch(`${url}/api/public/moderator/request/requestAdd`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+
+            const text = await response.text();
+            let respData;
+            try {
+                respData = text ? JSON.parse(text) : null;
+            } catch {
+                respData = text;
+            }
+
+            if (!response.ok) {
+                console.error("Server returned error:", response.status, respData);
+                throw new Error(respData?.message || `Server error ${response.status}`);
+            }
+
+            console.log("Response from server:", respData);
+            return respData;
         } catch (error) {
             console.error("Error submitting data:", error);
+            throw error;
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!name.trim()) {
+        if (!naziv.trim()) {
             setFormError("Molimo unesite naziv dvorane.");
             return;
         }
 
-        if (!capacity.trim()) {
+        if (!kapacitet.trim()) {
             setFormError("Molimo unesite kapacitet dvorane.");
             return;
-        } else if (!/^([1-9]\d*)$/.test(capacity.trim())) {
+        } else if (!/^([1-9]\d*)$/.test(kapacitet.trim())) {
             setFormError("Molimo da kapacitet bude pozitivan cijeli broj.");
             return;
         }
@@ -133,7 +173,7 @@ function Form() {
             return;
         }
 
-        if (!description.trim()) {
+        if (!opis.trim()) {
             setFormError("Molimo unesite opis dvorane.");
             return;
         }
@@ -183,22 +223,24 @@ function Form() {
             }
         });
 
-        fetch(`${url}/api/auth/user`, {
-            credentials: "include",
-        })
-        .then((res) =>  {
-            if(res.status === 200) return res.json();
-            throw new Error("Nije ulogiran");
-        })
-        .then((data) => {
-            setOwnerId(data.id);
-        })
+        try {
+            const userRes = await fetch(`${url}/api/auth/user`, { credentials: "include" });
+            if (userRes.status !== 200) throw new Error("Nije ulogiran");
+            const userData = await userRes.json();
+            const ownerIdLocal = userData.id;
 
-        //const payload = { name, capacity, selectedCategories, description, address, daysOpen, image };
-        const payload = { ownerId, name, capacity, description, address };
-        console.log("SUBMITTED DATA:", payload);
+        const payload = { idOwner: ownerIdLocal, naziv, kapacitet, idKategorije: selectedCategories, opis, ...address, daysOpen, image };
+            console.log("Payload to be sent:", payload);
+            await postDvorana(payload);
+            setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
+            setTimeout(() => {
+                navigate("/my-profile");
+            }, 100);
 
-        //postDvorana(payload);
+        } catch (err) {
+            console.error(err);
+            setFormError("Greška pri slanju zahtjeva. Pokušajte ponovno.");
+        }
     };
 
     return (
@@ -222,7 +264,7 @@ function Form() {
                                     <label>Naziv dvorane</label>
                                     <input
                                         type="text"
-                                        value={name}
+                                        value={naziv}
                                         onChange={(e) => setName(e.target.value)}
                                         required
                                         placeholder="Naziv dvorane"
@@ -234,7 +276,7 @@ function Form() {
                                     <label>Kapacitet dvorane</label>
                                     <input
                                         type="text"
-                                        value={capacity}
+                                        value={kapacitet}
                                         onChange={(e) => setCapacity(e.target.value)}
                                         required
                                         placeholder="Kapacitet dvorane"
@@ -254,7 +296,7 @@ function Form() {
                                 <div className="mb-[5px] flex flex-col items-center">
                                     <label>Opis</label>
                                     <textarea
-                                        value={description}
+                                        value={opis}
                                         onChange={(e) => setDescription(e.target.value)}
                                         rows={4}
                                         required

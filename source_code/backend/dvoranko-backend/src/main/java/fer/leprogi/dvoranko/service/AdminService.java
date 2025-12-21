@@ -10,6 +10,7 @@ import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
 import fer.leprogi.dvoranko.model.*;
 import fer.leprogi.dvoranko.repository.MjestoRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
+import fer.leprogi.dvoranko.repository.DvoranaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminService {
@@ -28,6 +31,8 @@ public class AdminService {
     @Autowired
     private ZahtjevOglasRepository zahtjevOglasRepository;
     @Autowired
+    private DvoranaRepository dvoranaRepository;
+    @Autowired
     private DtoMapper dtoMapper;
     @Autowired
     private MjestoRepository mjestoRepository;
@@ -37,6 +42,7 @@ public class AdminService {
     private AdresaService adresaService;
     @Autowired
     private DvoranaService dvoranaService;
+
 
 
     public User acceptIznajmljivacRequest(Long requestId) {
@@ -67,6 +73,7 @@ public class AdminService {
     }
 
 
+    @Transactional
     public DvoranaDTO approveOglasRequest(Long requestId) {
         ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("request not found"));
@@ -88,13 +95,16 @@ public class AdminService {
                 mjestoSaved.getIdMjesto()
         ));
 
+        zahtjev.getKategorije().size();
+        Set<Long> kategorije = zahtjev.getKategorije().stream().map(Kategorija::getIdKategorija).collect(Collectors.toSet());
 
         DvoranaDTO novaDvorana = dvoranaService.createDvorana(new CreateDvoranaRequest(
                 zahtjev.getNaziv(),
                 zahtjev.getKapacitet(),
                 zahtjev.getOpis(),
                 adresaSaved.getIdAdresa(),
-                new HashSet<Long>(),
+//                new HashSet<>(),
+                kategorije,
                 zahtjev.getOwner().getId()
         ));
 
@@ -123,11 +133,45 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ZahtjevOglasDTO> getAllDvoranaRequests() {
-        return zahtjevOglasRepository.findAll()
+        List<ZahtjevOglas> zahtjevi = zahtjevOglasRepository.findAll();
+        zahtjevi.forEach(zahtjev -> zahtjev.getKategorije().size());
+
+        return zahtjevi
                 .stream()
                 .map(dtoMapper::toZahtjevOglasDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Iterable<DvoranaDTO> getAllDvorane(){
+        return dvoranaRepository
+                .findAll()
+                .stream()
+                .map(dtoMapper::toDvoranaDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Iterable<UserDTO> getAllUsers(){
+        return userRepository
+                .findAll()
+                .stream()
+                .map(dtoMapper::toUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    public User deleteUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if(user == null) throw new IllegalArgumentException("user that you want to delete not found");
+        userRepository.delete(user);
+        return user;
+    }
+
+    public Dvorana deleteDvorana(Long id) {
+        Dvorana dvorana = dvoranaRepository.findById(id).orElse(null);
+        if(dvorana == null) throw new IllegalArgumentException("dvorana that you want to delete not found");
+        dvoranaRepository.delete(dvorana);
+        return dvorana;
     }
 }
 

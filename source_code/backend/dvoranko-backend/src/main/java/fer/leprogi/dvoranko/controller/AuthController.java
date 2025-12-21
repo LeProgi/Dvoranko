@@ -1,6 +1,7 @@
 package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.UserDTO;
+import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private UserService userService;
 
     @GetMapping("/user")
@@ -22,7 +25,8 @@ public class AuthController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        UserDTO userDTO = userService.convertToDTO(principal.getUser());
+
+        UserDTO userDTO = userService.convertToDTO(userRepository.findByEmail(principal.getUser().getEmail()).get());
         return ResponseEntity.ok(userDTO);
     }
 }
