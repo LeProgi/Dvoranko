@@ -2,6 +2,8 @@ package fer.leprogi.dvoranko.dto.createRequest;
 
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 public class CreateZahtjevOglas {
     private Long idOwner;
@@ -9,6 +11,8 @@ public class CreateZahtjevOglas {
     private String naziv;
     private String opis;
     private Integer kapacitet;
+
+    private Set<Long> idKategorije;
 
     private Long postalCode;
     private String city;

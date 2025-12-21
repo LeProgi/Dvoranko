@@ -1,3 +1,4 @@
+import Form from "../components/Form.jsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { url } from "../main.jsx";
@@ -6,13 +7,33 @@ import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
+const zahtjevIznajmljivac = () => { 
+    try {
+      const res = fetch(`${url}/api/user/request/getModerator`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+    } catch (err) {
+      console.error("Error pri pokušaju slanja zahtjva:", err);
+    }
+  };
+    
+
+
 const ProfilePage = () => {
     const location = useLocation();
+    
+    const [seeForm, setSeeForm] = useState(false);
+    const [seeCheck, setSeeCheck] = useState(false);
+     
     const [user, setUser] = useState(location.state?.user ?? null);
     const navigate = useNavigate();
 
+    const [myDvorane, setMyDvorane] = useState([]);
+    const [loadingDvorane, setLoadingDvorane] = useState(false);
+
     useEffect(() => {
-        if (user) return;
 
         fetch(`${url}/api/auth/user`, {
             credentials: "include",
@@ -27,6 +48,36 @@ const ProfilePage = () => {
                 navigate("/", { replace: true });
             });
     }, [user, navigate]);
+
+
+    useEffect(() => {
+        if (!user) return;
+        if (user.role !== "MODERATOR") return;
+
+        setLoadingDvorane(true);
+
+        fetch(`${url}/api/moderator/getMyDvorane`, {
+            method: "GET",
+            credentials: "include",
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Greška pri dohvaćanju dvorana");
+                return res.json();
+            })
+            .then(data => {
+                setMyDvorane(data);
+                console.log("My dvorane fetched:", data);
+            })
+            .catch(err => {
+                console.error(err);
+                setMyDvorane([]);
+            })
+            .finally(() => {
+                setLoadingDvorane(false);
+            });
+    }, [user]);
+
+
 
     if (!user) {
         return (
@@ -59,13 +110,66 @@ const ProfilePage = () => {
                 <Link to="/" className="w-[20vw] block">
                     <Button variant="default" title="Početna stranica" />
                 </Link>
-                <Link className="w-[20vw] block">
-                    <Button variant="default" title="Postani iznajmljivač" />
-                </Link>
+                {user.role === "USER" && (
+                    <button
+                    onClick={() => setSeeCheck(true)}
+                    className="w-[20vw]"
+                    >
+                        <Button variant="default" title="Postani iznajmljivač" />
+                    </button>
+                )}
             </div>
         </div>
 
-      
+        {seeCheck && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+
+        
+                <div
+                    className="absolute inset-0 backdrop-blur-sm"
+                    onClick={() => setSeeCheck(false)}
+                />
+
+        
+                <div className="relative bg-white rounded-lg shadow-2xl px-16 py-14 w-[450px] z-20">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+                        Poslati zahtjev za postati iznajmljivač?
+                    </h2>
+
+                    <div className="flex gap-3">
+                        <button
+                            className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+                            onClick={() => {
+                                zahtjevIznajmljivac();
+                                setSeeCheck(false);
+                            }}
+                        >
+                            DA
+                        </button>
+
+                        <button
+                            className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition"
+                            onClick={() => setSeeCheck(false)}
+                        >
+                            NE
+                        </button>
+                    </div>
+                </div>
+            </div>
+)}
+
+        {user.role === "MODERATOR"  && (
+            <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
+                <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
+                <Link to="/form" >
+                <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition">
+                    +
+                </button>
+                </Link>
+                
+            </div>
+        )}
+
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
             <h2 className="text-xl font-semibold mb-6 text-[#3B5B80]">
             Moje rezervacije
@@ -74,9 +178,7 @@ const ProfilePage = () => {
             <p className="text-gray-600">Trenutno nemate rezervacija.</p>
         </div>
 
-        <Link to="/form" className="w-[50vw] block">
-            <Button variant="default" title="Iznajmite dvoranu"/>
-        </Link>
+
 
         <Footer />
     </div>

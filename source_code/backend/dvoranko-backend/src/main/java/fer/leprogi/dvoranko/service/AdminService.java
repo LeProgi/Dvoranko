@@ -10,6 +10,7 @@ import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
 import fer.leprogi.dvoranko.model.*;
 import fer.leprogi.dvoranko.repository.MjestoRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
 import fer.leprogi.dvoranko.repository.DvoranaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminService {
@@ -71,6 +73,7 @@ public class AdminService {
     }
 
 
+    @Transactional
     public DvoranaDTO approveOglasRequest(Long requestId) {
         ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("request not found"));
@@ -92,13 +95,16 @@ public class AdminService {
                 mjestoSaved.getIdMjesto()
         ));
 
+        zahtjev.getKategorije().size();
+        Set<Long> kategorije = zahtjev.getKategorije().stream().map(Kategorija::getIdKategorija).collect(Collectors.toSet());
 
         DvoranaDTO novaDvorana = dvoranaService.createDvorana(new CreateDvoranaRequest(
                 zahtjev.getNaziv(),
                 zahtjev.getKapacitet(),
                 zahtjev.getOpis(),
                 adresaSaved.getIdAdresa(),
-                new HashSet<Long>(),
+//                new HashSet<>(),
+                kategorije,
                 zahtjev.getOwner().getId()
         ));
 
@@ -127,8 +133,12 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ZahtjevOglasDTO> getAllDvoranaRequests() {
-        return zahtjevOglasRepository.findAll()
+        List<ZahtjevOglas> zahtjevi = zahtjevOglasRepository.findAll();
+        zahtjevi.forEach(zahtjev -> zahtjev.getKategorije().size());
+
+        return zahtjevi
                 .stream()
                 .map(dtoMapper::toZahtjevOglasDTO)
                 .collect(Collectors.toList());

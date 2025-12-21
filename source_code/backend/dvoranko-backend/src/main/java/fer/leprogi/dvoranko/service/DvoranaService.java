@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -117,6 +119,16 @@ public class DvoranaService {
 
         return dvoranaRepository.findByKategorijeIdKategorija(idKategorija)
                 .stream()
+                .map(dtoMapper::toDvoranaDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    public Iterable<DvoranaDTO> getDvoraneByOwner(Long idOwner) {
+
+        List<Dvorana> dvorane = dvoranaRepository.findAllByVlasnik_Id(idOwner);
+
+        return dvorane.stream()
                 .map(dtoMapper::toDvoranaDTO)
                 .collect(Collectors.toList());
     }

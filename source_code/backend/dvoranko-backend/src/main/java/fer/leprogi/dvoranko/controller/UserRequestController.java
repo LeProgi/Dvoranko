@@ -24,7 +24,7 @@ public class UserRequestController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/getModerator")
+    @PostMapping("/getModerator")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createModeratorRequest(@AuthenticationPrincipal CustomOAuth2User principal) {
 

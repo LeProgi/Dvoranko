@@ -20,8 +20,8 @@ const AdminPage = () => {
           method: "GET",
           credentials: "include",
         });
-
-        if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+        console.log(resDvorana);
+        if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin1");
         const dataDvorana = await resDvorana.json();
         setZahtjevDvorana(dataDvorana.data); 
         console.log(dataDvorana);
@@ -31,8 +31,9 @@ const AdminPage = () => {
           method: "GET",
           credentials: "include", 
         });
+        console.log(resIznajmljivac);
 
-        if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+        if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin2");
         const dataIznajmljivac = await resIznajmljivac.json();
         setZahtjevIznajmljivac(dataIznajmljivac.data); 
       } catch (err) {
@@ -67,6 +68,40 @@ const AdminPage = () => {
 
     fetchRequests();
   }, []);
+
+  const handleAcceptIznajmljivac = (id) => { 
+    try {
+      const res = fetch(`${url}/api/public/admin/request/moderator/${id}/accept`, {
+        method: "POST",
+        credentials: "include",
+      });
+      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+
+      // Ukloni prihvaćeni zahtjev iz stanja  
+      setZahtjevIznajmljivac((prevRequests) =>
+        prevRequests.filter((request) => request.id !== id)
+      );
+    } catch (err) {
+      console.error("Kume error tijekom prihvaćanja zahtjeva za iznajmljivaca:", err);
+    }
+  };
+
+  const handleRejectIznajmljivac = async (id) => {
+    try {
+      const res = await fetch(`${url}/api/public/admin/request/moderator/${id}/reject`, {
+        method: "POST",
+        credentials: "include",
+      });
+      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+
+      // Ukloni odbijeni zahtjev iz stanja
+      setZahtjevIznajmljivac((prevRequests) =>
+        prevRequests.filter((request) => request.id !== id)
+      );
+    } catch (err) {
+      console.error("Kume error tijekom odbijanja zahtjeva za iznajmljivaca:", err);
+    }
+  };
 
 
 
@@ -222,9 +257,12 @@ const AdminPage = () => {
                       <span className="font-semibold">Adresa:</span>
                       <span>{request.street} {request.streetNumber}, {request.city}, {request.postalCode}</span>
 
-                      <span className="font-semibold">Opis:</span>
-                      <span>{request.opis}</span>
-                      
+                  <span className="font-semibold">Kategorije:</span>
+                  <span>{request.kategorije?.map((kategorija) => kategorija.nazivKategorije).join(", ")}</span>
+
+                  <span className="font-semibold">Opis:</span>
+                  <span>{request.opis}</span>
+                  
 
                       <span className="font-semibold">Slike:</span>
                       <span>{request.images ? request.images.join(", ") : "Nema slika"}</span>
