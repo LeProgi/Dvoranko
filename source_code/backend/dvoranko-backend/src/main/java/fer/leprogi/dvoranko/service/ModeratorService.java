@@ -1,8 +1,11 @@
 package fer.leprogi.dvoranko.service;
 
+import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
+import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.Kategorija;
 import fer.leprogi.dvoranko.model.User;
+import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
 import org.hibernate.Hibernate;
@@ -30,6 +33,10 @@ public class ModeratorService {
     private DtoMapper dtoMapper;
     @Autowired
     private KategorijaRepository kategorijaRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private DvoranaService dvoranaService;
 
     @Transactional
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request) {
@@ -62,5 +69,13 @@ public class ModeratorService {
         ZahtjevOglas saved = zahtjevRepository.saveAndFlush(zahtjev);
 
         return dtoMapper.toZahtjevOglasDTO(saved);
+    }
+
+
+    public Iterable<DvoranaDTO> getAllDvoranaForModerator(CustomOAuth2User principal) {
+
+        Long ownerId = userService.getIdForPrincipal(principal);
+
+        return dvoranaService.getDvoraneByOwner(ownerId);
     }
 }
