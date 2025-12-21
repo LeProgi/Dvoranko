@@ -5,6 +5,7 @@ import { url } from "../main.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
+import VenueCard from "../components/VenueCard.jsx";
 
 
 const zahtjevIznajmljivac = () => { 
@@ -24,7 +25,7 @@ const zahtjevIznajmljivac = () => {
 const ProfilePage = () => {
     const location = useLocation();
     
-    const [seeForm, setSeeForm] = useState(false);
+    
     const [seeCheck, setSeeCheck] = useState(false);
      
     const [user, setUser] = useState(location.state?.user ?? null);
@@ -124,7 +125,6 @@ const ProfilePage = () => {
         {seeCheck && (
             <div className="fixed inset-0 z-50 flex items-center justify-center">
 
-        
                 <div
                     className="absolute inset-0 backdrop-blur-sm"
                     onClick={() => setSeeCheck(false)}
@@ -167,6 +167,36 @@ const ProfilePage = () => {
                 </button>
                 </Link>
                 
+            </div>
+        )}
+
+        {user.role === "MODERATOR" && (
+            <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
+                <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
+                    moje dvorane
+                </h2>
+
+                {loadingDvorane && <p>Učitavanje...</p>}
+
+                {!loadingDvorane && (!myDvorane.data || myDvorane.data.length === 0) && (
+                    <p>Nemate oglašenih dvorana.</p>
+                )}
+                <div className="flex flex-col items-center gap-3 w-full">
+                    {myDvorane.data?.map((dvorana) => (
+                        <Link key = {dvorana.idDvorana} to = {`/venue/${dvorana.idDvorana}`} className="w-11/12 block">
+                            <VenueCard 
+                            name = {dvorana.nazivDvorana}
+                            adresa = {dvorana.adresa
+                                        ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
+                                        : "Adresa nije dostupna"
+                                    }
+                            
+                            />
+                        </Link>   
+                    ))}
+                    
+                </div>
+
             </div>
         )}
 
