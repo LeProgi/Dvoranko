@@ -142,35 +142,6 @@ const AdminPage = () => {
     }
   };
 
-  const handleAcceptIznajmljivac = async(id) =>{
-      try {
-        const res = await fetch(`${url}/api/public/admin/request/moderator/${id}/accept`, {
-          method: "POST",
-          credentials: "include",
-        })
-        setZahtjevIznajmljivac((prevRequests) =>
-          prevRequests.filter((request ) => request.id !== id)
-        );
-      }
-      catch (err){
-        console.error("Kume error tijekom prihvacanja zahtjeva za iznajmljivaca");
-      }
-  }
-
-  const handleRejectIznajmljivac = async(id) => {
-    try {
-      const res = await fetch(`${url}/api/public/admin/request/moderator/${id}/reject`, {
-        method: "POST", 
-        credentials: "include",
-      })
-      setZahtjevIznajmljivac((prevRequests) => 
-        prevRequests.filter((request) => request.id !== id)
-      );
-    }
-    catch(err){
-      console.error("Kume error tijekom odbijanja zahtjeva za iznajmljivaca")
-    }
-  }
 
   const handleDeleteDvorana = async(id) => {
     try {
