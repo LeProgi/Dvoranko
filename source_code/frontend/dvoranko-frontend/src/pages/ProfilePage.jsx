@@ -176,29 +176,32 @@ const ProfilePage = () => {
                     moje dvorane
                 </h2>
 
-                {loadingDvorane && <p>Učitavanje...</p>}
-
-                {!loadingDvorane && (!myDvorane.data || myDvorane.data.length === 0) && (
-                    <p>Nemate oglašenih dvorana.</p>
+                
+                {myDvorane === null && (
+                    <p>Ucitavanje...</p>
                 )}
-                <div className="flex flex-col items-center gap-3 w-full">
-                    {myDvorane.data?.map((dvorana) => (
-                        <Link key = {dvorana.idDvorana} to = {`/venue/${dvorana.idDvorana}`} className="w-11/12 block">
-                            <VenueCard 
-                            name = {dvorana.nazivDvorana}
-                            adresa = {dvorana.adresa
-                                        ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
-                                        : "Adresa nije dostupna"
-                                    }
+                {myDvorane?.data?.length === 0 && (
+                    <p>Nemate oglašenih dvorana</p>
+                )}
+                {myDvorane?.data?.length > 0 &&(
+                    <div className="flex flex-col items-center gap-3 w-full">
+                        {myDvorane.data?.map((dvorana) => (
+                            <Link key = {dvorana.idDvorana} to = {`/venue/${dvorana.idDvorana}`} className="w-11/12 block">
+                                <VenueCard 
+                                name = {dvorana.nazivDvorana}
+                                adresa = {dvorana.adresa
+                                            ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
+                                            : "Adresa nije dostupna"
+                                        }
                             
-                            />
-                        </Link>   
-                    ))}
+                                />
+                            </Link>   
+                        ))}
                     
+                    </div>
+                )}
                 </div>
-
-            </div>
-        )}
+         )}
 
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
             <h2 className="text-xl font-semibold mb-6 text-[#3B5B80]">
