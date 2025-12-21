@@ -34,7 +34,6 @@ const ProfilePage = () => {
     const [loadingDvorane, setLoadingDvorane] = useState(false);
 
     useEffect(() => {
-        if (user) return;
 
         fetch(`${url}/api/auth/user`, {
             credentials: "include",
