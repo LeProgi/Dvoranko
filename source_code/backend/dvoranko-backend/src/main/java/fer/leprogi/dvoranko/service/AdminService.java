@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
+import fer.leprogi.dvoranko.repository.DvoranaRepository;
 
 @Service
 public class AdminService {
@@ -28,6 +29,8 @@ public class AdminService {
     @Autowired
     private ZahtjevOglasRepository zahtjevOglasRepository;
     @Autowired
+    private DvoranaRepository dvoranaRepository;
+    @Autowired
     private DtoMapper dtoMapper;
     @Autowired
     private MjestoRepository mjestoRepository;
@@ -37,6 +40,7 @@ public class AdminService {
     private AdresaService adresaService;
     @Autowired
     private DvoranaService dvoranaService;
+
 
 
     public User acceptIznajmljivacRequest(Long requestId) {
@@ -128,6 +132,36 @@ public class AdminService {
                 .stream()
                 .map(dtoMapper::toZahtjevOglasDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Iterable<DvoranaDTO> getAllDvorane(){
+        return dvoranaRepository
+                .findAll()
+                .stream()
+                .map(dtoMapper::toDvoranaDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Iterable<UserDTO> getAllUsers(){
+        return userRepository
+                .findAll()
+                .stream()
+                .map(dtoMapper::toUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    public User deleteUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if(user == null) throw new IllegalArgumentException("user that you want to delete not found");
+        userRepository.delete(user);
+        return user;
+    }
+
+    public Dvorana deleteDvorana(Long id) {
+        Dvorana dvorana = dvoranaRepository.findById(id).orElse(null);
+        if(dvorana == null) throw new IllegalArgumentException("dvorana that you want to delete not found");
+        dvoranaRepository.delete(dvorana);
+        return dvorana;
     }
 }
 
