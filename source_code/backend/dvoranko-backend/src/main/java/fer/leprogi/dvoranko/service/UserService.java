@@ -60,6 +60,12 @@ public class UserService {
     }
 
 
+    public Long getIdForPrincipal(CustomOAuth2User principal) {
+        if (principal == null) throw new IllegalArgumentException("Principal cannot be null");
+        if (principal.getUser() == null) throw new IllegalArgumentException("User cannot be null");
+
+        return principal.getUser().getId();
+    }
 
 
 }

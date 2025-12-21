@@ -114,12 +114,20 @@ public class DtoMapper {
 
         ZahtjevOglasDTO dto = new ZahtjevOglasDTO();
 
-        dto.setId(zahtjev.getId());
+        dto.setId(zahtjev.getIdZahtjevOglas());
         dto.setOwner(toUserDTO(zahtjev.getOwner()));
 
         dto.setNaziv(zahtjev.getNaziv());
         dto.setOpis(zahtjev.getOpis());
         dto.setKapacitet(zahtjev.getKapacitet());
+
+
+        Set<KategorijaDTO> kategorijeDTO = zahtjev.getKategorije()
+                .stream()
+                .map(this::toKategorijaDTO)
+                .collect(Collectors.toSet());
+        dto.setKategorije(kategorijeDTO);
+
 
         dto.setPostalCode(zahtjev.getPostalCode());
         dto.setCity(zahtjev.getCity());

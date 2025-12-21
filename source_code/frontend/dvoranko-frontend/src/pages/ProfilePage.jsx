@@ -30,6 +30,9 @@ const ProfilePage = () => {
     const [user, setUser] = useState(location.state?.user ?? null);
     const navigate = useNavigate();
 
+    const [myDvorane, setMyDvorane] = useState([]);
+    const [loadingDvorane, setLoadingDvorane] = useState(false);
+
     useEffect(() => {
         if (user) return;
 
@@ -46,6 +49,36 @@ const ProfilePage = () => {
                 navigate("/", { replace: true });
             });
     }, [user, navigate]);
+
+
+    useEffect(() => {
+        if (!user) return;
+        if (user.role !== "MODERATOR") return;
+
+        setLoadingDvorane(true);
+
+        fetch(`${url}/api/moderator/getMyDvorane`, {
+            method: "GET",
+            credentials: "include",
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Greška pri dohvaćanju dvorana");
+                return res.json();
+            })
+            .then(data => {
+                setMyDvorane(data);
+                console.log("My dvorane fetched:", data);
+            })
+            .catch(err => {
+                console.error(err);
+                setMyDvorane([]);
+            })
+            .finally(() => {
+                setLoadingDvorane(false);
+            });
+    }, [user]);
+
+
 
     if (!user) {
         return (

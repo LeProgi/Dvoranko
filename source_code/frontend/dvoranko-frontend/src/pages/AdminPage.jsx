@@ -17,8 +17,8 @@ const AdminPage = () => {
           method: "GET",
           credentials: "include",
         });
-
-        if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+        console.log(resDvorana);
+        if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin1");
         const dataDvorana = await resDvorana.json();
         setZahtjevDvorana(dataDvorana.data); 
         console.log(dataDvorana);
@@ -28,8 +28,9 @@ const AdminPage = () => {
           method: "GET",
           credentials: "include", 
         });
+        console.log(resIznajmljivac);
 
-        if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+        if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin2");
         const dataIznajmljivac = await resIznajmljivac.json();
         setZahtjevIznajmljivac(dataIznajmljivac.data); 
       } catch (err) {
@@ -154,6 +155,9 @@ const AdminPage = () => {
 
                   <span className="font-semibold">Adresa:</span>
                   <span>{request.street} {request.streetNumber}, {request.postalCode}, {request.city}</span>
+
+                  <span className="font-semibold">Kategorije:</span>
+                  <span>{request.kategorije?.map((kategorija) => kategorija.nazivKategorije).join(", ")}</span>
 
                   <span className="font-semibold">Opis:</span>
                   <span>{request.opis}</span>
