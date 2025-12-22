@@ -189,7 +189,7 @@ const ProfilePage = () => {
         {user.role === "MODERATOR" && (
             <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
                 <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
-                    moje dvorane
+                    Moje dvorane
                 </h2>
 
                 
