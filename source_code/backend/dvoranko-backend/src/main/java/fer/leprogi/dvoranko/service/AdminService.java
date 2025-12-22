@@ -42,6 +42,8 @@ public class AdminService {
     private AdresaService adresaService;
     @Autowired
     private DvoranaService dvoranaService;
+    @Autowired
+    private SessionAdminService sessionAdminService;
 
 
 
@@ -56,6 +58,8 @@ public class AdminService {
             throw new IllegalArgumentException("user not found");
         }
         user.setRole(Role.MODERATOR);
+        sessionAdminService.logoutUserEverywhere(user.getGoogleId());
+
         userRepository.save(user);
         zahtjevIznajmljivacRepository.delete(zahtjev);
         return user;
