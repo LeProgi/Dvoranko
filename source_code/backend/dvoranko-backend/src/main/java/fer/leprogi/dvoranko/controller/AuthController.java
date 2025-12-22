@@ -26,7 +26,7 @@ public class AuthController {
             return ResponseEntity.status(401).build();
         }
 
-        UserDTO userDTO = userService.convertToDTO(userRepository.findByEmail(principal.getUser().getEmail()).get());
+        UserDTO userDTO = userService.convertToDTO(userRepository.findByGoogleId(principal.getUser().getGoogleId()).get());
         return ResponseEntity.ok(userDTO);
     }
 }

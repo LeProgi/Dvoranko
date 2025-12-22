@@ -75,7 +75,7 @@ const Home = () => {
             <Link to="/maps" className="w-[50vw] block">
                 <Button variant="default" title="Karta" />
             </Link>
-            <Button variant="default" title="O nama" />
+            
             {user ? (
                 <Link to="/my-profile" state ={{ user }}>
                <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md hover:scale-105 transition-transform duration-200">
@@ -87,7 +87,7 @@ const Home = () => {
                 />
             </div>
             </Link>
-            ):<Button variant="default" title="prijavi se"  onClick={handleGoogleLogin}/>
+            ):<Button variant="default" title="Prijavi se"  onClick={handleGoogleLogin}/>
 }
             
         </div>
