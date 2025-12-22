@@ -178,8 +178,13 @@ function Form() {
             return;
         }
 
-        if (!address) {
-            setFormError("Molimo unesite adresu dvorane.");
+        if (!address || !address.street || !address.streetNumber || !address.city || !address.postalCode || !address.country) {
+            if (!address.street) setFormError("Molimo unesite ulicu u adresi dvorane.");
+            else if (!address.streetNumber) setFormError("Molimo unesite kućni broj u adresi dvorane.");
+            else if (!address.city) setFormError("Molimo unesite grad u adresi dvorane.");
+            else if (!address.postalCode) setFormError("Molimo unesite poštanski broj u adresi dvorane.");
+            else if (!address.country) setFormError("Molimo unesite državu u adresi dvorane.");
+            else setFormError("Molimo unesite adresu dvorane.");
             return;
         }
 
@@ -233,9 +238,9 @@ function Form() {
             console.log("Payload to be sent:", payload);
             await postDvorana(payload);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
-            setTimeout(() => {
-                navigate("/my-profile");
-            }, 100);
+            navigate("/my-profile");
+            // setTimeout(() => {
+            // }, 0);
 
         } catch (err) {
             console.error(err);

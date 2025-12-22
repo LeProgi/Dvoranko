@@ -92,7 +92,7 @@ const ProfilePage = () => {
             .finally(() => {
                 setLoadingDvorane(false);
             });
-    }, []);
+    }, [location.key, user]);
 
 
 
