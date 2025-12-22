@@ -136,10 +136,14 @@ public class DvoranaService {
 
     @Transactional
     public void deleteDvorana(Long idDvorana) {
-        if (!dvoranaRepository.existsById(idDvorana)) {
-            throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");
-        }
-        dvoranaRepository.deleteById(idDvorana);
+//        if (!dvoranaRepository.existsById(idDvorana)) {
+//            throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");
+//        }
+//        dvoranaRepository.deleteById(idDvorana);
+
+        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
+                .orElseThrow(() -> new ResourceNotFoundException("dvorana that you want to delete not found"));
+        dvoranaRepository.delete(dvorana);
     }
 
 }

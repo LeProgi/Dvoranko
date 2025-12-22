@@ -148,13 +148,6 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<DvoranaDTO> getAllDvorane(){
-        return dvoranaRepository
-                .findAll()
-                .stream()
-                .map(dtoMapper::toDvoranaDTO)
-                .collect(Collectors.toList());
-    }
 
     public Iterable<UserDTO> getAllUsers(){
         return userRepository
@@ -169,13 +162,6 @@ public class AdminService {
         if(user == null) throw new IllegalArgumentException("user that you want to delete not found");
         userRepository.delete(user);
         return user;
-    }
-
-    public Dvorana deleteDvorana(Long id) {
-        Dvorana dvorana = dvoranaRepository.findById(id).orElse(null);
-        if(dvorana == null) throw new IllegalArgumentException("dvorana that you want to delete not found");
-        dvoranaRepository.delete(dvorana);
-        return dvorana;
     }
 }
 

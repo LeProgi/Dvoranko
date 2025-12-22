@@ -14,6 +14,7 @@ import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
 import fer.leprogi.dvoranko.service.AdminService;
 
+import fer.leprogi.dvoranko.service.DvoranaService;
 import fer.leprogi.dvoranko.utils.ApiResponse;
 import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private DvoranaService dvoranaService;
 
 
     @GetMapping("/dashboard")
@@ -94,7 +97,7 @@ public class AdminController {
 
     @GetMapping("/getall/dvorane")
     public ResponseEntity<ApiResponse<Iterable<DvoranaDTO>>> getAllDvorane(){
-        Iterable<DvoranaDTO> dvorane = adminService.getAllDvorane();
+        Iterable<DvoranaDTO> dvorane = dvoranaService.getAllDvorane();
         return ResponseEntity.ok(ApiResponse.success(dvorane, "Dvorane retrieved successfully"));
     }
 
@@ -114,8 +117,9 @@ public class AdminController {
 
     @DeleteMapping("/delete/dvorana/{id}")
     //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<DvoranaDTO>> deleteDvorana(@PathVariable Long id) {
-        adminService.deleteDvorana(id);
+    public ResponseEntity<ApiResponse<Null>> deleteDvorana(@PathVariable Long id) {
+//        adminService.deleteDvorana(id);
+        dvoranaService.deleteDvorana(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Dvorana deleted successfully"));
     }
 
