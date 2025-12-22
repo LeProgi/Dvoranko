@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -122,12 +124,26 @@ public class DvoranaService {
     }
 
 
+    public Iterable<DvoranaDTO> getDvoraneByOwner(Long idOwner) {
+
+        List<Dvorana> dvorane = dvoranaRepository.findAllByVlasnik_Id(idOwner);
+
+        return dvorane.stream()
+                .map(dtoMapper::toDvoranaDTO)
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional
     public void deleteDvorana(Long idDvorana) {
-        if (!dvoranaRepository.existsById(idDvorana)) {
-            throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");
-        }
-        dvoranaRepository.deleteById(idDvorana);
+//        if (!dvoranaRepository.existsById(idDvorana)) {
+//            throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");
+//        }
+//        dvoranaRepository.deleteById(idDvorana);
+
+        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
+                .orElseThrow(() -> new ResourceNotFoundException("dvorana that you want to delete not found"));
+        dvoranaRepository.delete(dvorana);
     }
 
 }

@@ -1,29 +1,40 @@
 package fer.leprogi.dvoranko.controller;
 
+import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
+import fer.leprogi.dvoranko.security.CustomOAuth2User;
+import fer.leprogi.dvoranko.service.DvoranaService;
+import fer.leprogi.dvoranko.service.ModeratorService;
+import fer.leprogi.dvoranko.utils.ApiResponse;
+import jakarta.validation.constraints.Null;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/moderator")
 public class ModeratorController {
 
-    @Autowired
-    private ZahtjevOglasRepository zahtjevRepo;
 
-    @GetMapping("/dashboard")
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<Map<String, String>> moderatorDashboard() {
-        return ResponseEntity.ok(Map.of(
-                "message", "Welcome to moderator dashboard",
-                "access", "MODERATOR, ADMIN"
-        ));
+    private final ModeratorService moderatorService;
+
+    @GetMapping("/getMyDvorane")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<Iterable<DvoranaDTO>>> getAllDvoraneForModerator(@AuthenticationPrincipal CustomOAuth2User principal) {
+
+        Iterable<DvoranaDTO> dvorane = moderatorService.getAllDvoranaForModerator(principal);
+
+        return ResponseEntity.ok(ApiResponse.success(dvorane, "My dvorane fetched successfully"));
     }
 
 
