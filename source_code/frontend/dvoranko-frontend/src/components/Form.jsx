@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+//import axios from "axios";
 import { Link } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import CategorySelector from "./CategorySelector.jsx";
