@@ -48,7 +48,7 @@ const ProfilePage = () => {
                 setUser(null);
                 navigate("/", { replace: true });
             });
-    }, [user, navigate]);
+    }, [navigate]);
 
 
     useEffect(() => {
@@ -62,7 +62,23 @@ const ProfilePage = () => {
             credentials: "include",
         })
             .then(res => {
-                if (!res.ok) throw new Error("Greška pri dohvaćanju dvorana");
+                if (!res.ok) {
+                    return res.json().then(errorData => {
+                        throw {
+                            status: res.status,
+                            statusText: res.statusText,
+                            message: errorData?.message || "Greška pri dohvaćanju dvorana",
+                            details: errorData
+                        };
+                    }).catch(() => {
+                        throw {
+                            status: res.status,
+                            statusText: res.statusText,
+                            message: `HTTP ${res.status}: ${res.statusText}`,
+                            details: null
+                        };
+                    });
+                }
                 return res.json();
             })
             .then(data => {
@@ -76,7 +92,7 @@ const ProfilePage = () => {
             .finally(() => {
                 setLoadingDvorane(false);
             });
-    }, [user]);
+    }, []);
 
 
 
