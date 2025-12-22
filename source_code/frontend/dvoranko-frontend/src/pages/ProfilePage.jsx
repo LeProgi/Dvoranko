@@ -76,7 +76,7 @@ const ProfilePage = () => {
             .finally(() => {
                 setLoadingDvorane(false);
             });
-    }, [user]);
+    }, []);
 
 
 
