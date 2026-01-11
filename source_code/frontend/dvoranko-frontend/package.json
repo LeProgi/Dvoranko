@@ -13,9 +13,11 @@
     "@react-google-maps/api": "^2.20.7",
     "@tailwindcss/postcss": "^4.1.16",
     "@tailwindcss/vite": "^4.1.17",
+    "axios": "^1.13.2",
     "class-variance-authority": "^0.7.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-google-autocomplete": "^2.7.5",
     "react-router-dom": "^7.9.5"
   },
   "devDependencies": {

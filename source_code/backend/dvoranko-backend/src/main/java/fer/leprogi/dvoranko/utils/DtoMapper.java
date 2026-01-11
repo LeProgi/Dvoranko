@@ -20,16 +20,17 @@ public class DtoMapper {
         dto.setOpis(dvorana.getOpis());
         dto.setAdresa(toAdresaDTO(dvorana.getAdresa()));
 
-        if (dvorana.getKategorije() != null) {
-            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
-                    .stream()
-                    .map(this::toKategorijaDTO)
-                    .collect(Collectors.toSet());
-            dto.setKategorije(kategorijeDTO);
-        }
+//        if (dvorana.getKategorije() != null) {
+//            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
+//                    .stream()
+//                    .map(this::toKategorijaDTO)
+//                    .collect(Collectors.toSet());
+//            dto.setKategorije(kategorijeDTO);
+//        }
 
         dto.setVlasnik(toUserDTO(dvorana.getVlasnik()));
-        dto.setSlika(toSlikaDvoranaDTO(dvorana.getSlika()));
+        //ovo kasnije?
+        //dto.setSlika(toSlikaDvoranaDTO(dvorana.getSlika()));
 
         return dto;
     }
@@ -86,5 +87,58 @@ public class DtoMapper {
         dto.setImageData(slikaDvorana.getImageData());
         return dto;
     }
+
+    public ZahtjevIznajmljivacDTO toZahtjevIznajmljivacDTO(ZahtjevIznajmljivac zahtjev) {
+
+        if (zahtjev == null) return null;
+
+        ZahtjevIznajmljivacDTO dto = new ZahtjevIznajmljivacDTO();
+        dto.setId(zahtjev.getId());
+
+        if (zahtjev.getUser() != null) {
+            UserDTO userDTO = new UserDTO();
+
+            userDTO.setId(zahtjev.getUser().getId());
+            userDTO.setName(zahtjev.getUser().getName());
+            userDTO.setEmail(zahtjev.getUser().getEmail());
+            userDTO.setPictureUrl(zahtjev.getUser().getPictureUrl());
+            userDTO.setRole(zahtjev.getUser().getRole());
+
+            dto.setUser(userDTO);
+        }
+
+        return dto;
+    }
+
+    public ZahtjevOglasDTO toZahtjevOglasDTO(ZahtjevOglas zahtjev) {
+        if (zahtjev == null) return null;
+
+        ZahtjevOglasDTO dto = new ZahtjevOglasDTO();
+
+        dto.setId(zahtjev.getIdZahtjevOglas());
+        dto.setOwner(toUserDTO(zahtjev.getOwner()));
+
+        dto.setNaziv(zahtjev.getNaziv());
+        dto.setOpis(zahtjev.getOpis());
+        dto.setKapacitet(zahtjev.getKapacitet());
+
+
+        Set<KategorijaDTO> kategorijeDTO = zahtjev.getKategorije()
+                .stream()
+                .map(this::toKategorijaDTO)
+                .collect(Collectors.toSet());
+        dto.setKategorije(kategorijeDTO);
+
+
+        dto.setPostalCode(zahtjev.getPostalCode());
+        dto.setCity(zahtjev.getCity());
+        dto.setStreet(zahtjev.getStreet());
+        dto.setStreetNumber(zahtjev.getStreetNumber());
+        dto.setLatitude(zahtjev.getLatitude());
+        dto.setLongitude(zahtjev.getLongitude());
+
+        return dto;
+    }
+
 
 }
