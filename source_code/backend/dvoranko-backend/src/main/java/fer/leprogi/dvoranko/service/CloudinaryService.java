@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Service
 public class CloudinaryService {
-    
+
     private final Cloudinary cloudinary;
 
     public CloudinaryService(
@@ -26,8 +26,14 @@ public class CloudinaryService {
                 "secure", true));
     }
 
-    public String upload(MultipartFile file) throws IOException{
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+    public String upload(MultipartFile file, Long dvoranaId, Long imgNr) throws IOException{
+        Map options = ObjectUtils.asMap(
+                "folder", "dvorane/" + dvoranaId,
+                "public_id", "img_" + imgNr,
+                "overwrite", true
+        );
+
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), options);
         return uploadResult.get("secure_url").toString();
     }
 }

@@ -19,6 +19,6 @@ public class CloudinaryController {
 
     @PostMapping
     public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        return cloudinaryService.upload(file);
+        return cloudinaryService.upload(file, 2L, 1L);
     }
 }
