@@ -19,4 +19,5 @@ public class DvoranaDTO {
     private Iterable<KategorijaDTO> kategorije;
     private UserDTO vlasnik;
     private SlikaDvoranaDTO slika;
+    private String daysOpen;
 }

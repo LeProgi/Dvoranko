@@ -1,6 +1,7 @@
 package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.UserDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateTerminRequest;
 import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
 import fer.leprogi.dvoranko.repository.UserRepository;
@@ -33,5 +34,11 @@ public class UserRequestController {
         return ResponseEntity.ok("request created");
     }
 
+    @PostMapping
+    //@PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createTerminRequest(@RequestBody CreateTerminRequest request) {
+        userService.createTerminRequest(request);
+        return ResponseEntity.ok("termin request created");
+    }
 
 }

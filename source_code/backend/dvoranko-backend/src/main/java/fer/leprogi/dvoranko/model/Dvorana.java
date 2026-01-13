@@ -28,8 +28,12 @@ public class Dvorana {
 
     private Integer kapacitet;
 
+    @OneToMany(mappedBy = "dvorana", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Termin> termini;
+
     private String opis;
 
+    private String daysOpen;
 
     @NotNull
     @ManyToOne//(cascade = CascadeType.ALL)

@@ -37,5 +37,19 @@ public class ModeratorController {
         return ResponseEntity.ok(ApiResponse.success(dvorane, "My dvorane fetched successfully"));
     }
 
+    @PostMapping("/approveTeminRequest/{id}")
+    //@PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<Void>> approveTerminRequest(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User principal) {
+        moderatorService.approveTerminRequest(id, principal);
+        return ResponseEntity.ok(ApiResponse.success(null, "Termin request approved successfully"));
+    }
+
+    @PostMapping("/rejectTeminRequest/{id}")
+    //@PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<Void>> rejectTerminRequest(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User principal) {
+        moderatorService.rejectTerminRequest(id, principal);
+        return ResponseEntity.ok(ApiResponse.success(null, "Termin request rejected successfully"));
+    }
+
 
 }

@@ -11,6 +11,7 @@ public class CreateZahtjevOglas {
     private String naziv;
     private String opis;
     private Integer kapacitet;
+    private String daysOpen;
 
     private Set<Long> idKategorije;
 

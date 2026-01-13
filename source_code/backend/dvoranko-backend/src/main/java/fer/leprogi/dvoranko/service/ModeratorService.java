@@ -1,10 +1,9 @@
 package fer.leprogi.dvoranko.service;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.TerminDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
-import fer.leprogi.dvoranko.model.Dvorana;
-import fer.leprogi.dvoranko.model.Kategorija;
-import fer.leprogi.dvoranko.model.User;
+import fer.leprogi.dvoranko.model.*;
 import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
 import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
-import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +26,10 @@ public class ModeratorService {
     private UserRepository userRepository;
     @Autowired
     private ZahtjevOglasRepository zahtjevRepository;
+    @Autowired
+    private ZahtjevTerminRepository zahtjevTerminRepository;
+    @Autowired
+    private DvoranaRepository dvoranaRepository;
 
     @Autowired
     private DtoMapper dtoMapper;
@@ -37,6 +39,8 @@ public class ModeratorService {
     private UserService userService;
     @Autowired
     private DvoranaService dvoranaService;
+    @Autowired
+    private TerminService terminService;
 
     @Transactional
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request) {
@@ -55,6 +59,7 @@ public class ModeratorService {
         zahtjev.setStreetNumber(request.getStreetNumber());
         zahtjev.setLatitude(request.getLat());
         zahtjev.setLongitude(request.getLng());
+        zahtjev.setDaysOpen(request.getDaysOpen());
 
         if (request.getIdKategorije() != null && !request.getIdKategorije().isEmpty()) {
             Set<Kategorija> kategorije = new HashSet<>();
@@ -77,5 +82,32 @@ public class ModeratorService {
         Long ownerId = userService.getIdForPrincipal(principal);
 
         return dvoranaService.getDvoraneByOwner(ownerId);
+    }
+
+
+    public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
+        Long ownerId = userService.getIdForPrincipal(principal);
+
+        ZahtjevTermin zahtjev = zahtjevTerminRepository.findByIdZahtjevTermin(idZahtjev)
+                .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
+
+        TerminDTO terminDTO = new TerminDTO();
+        terminDTO.setDatumVrijemeStart(zahtjev.getDatumVrijemeStart());
+        terminDTO.setDatumVrijemeEnd(zahtjev.getDatumVrijemeEnd());
+        terminDTO.setJeJavniEvent(zahtjev.getJeJavniEvent());
+        terminDTO.setIdKorisnik(zahtjev.getIdKorisnik());
+        terminDTO.setIdDvorana(zahtjev.getIdDvorana());
+
+        terminService.create(terminDTO);
+        zahtjevTerminRepository.delete(zahtjev);
+    }
+
+    public void rejectTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
+        Long ownerId = userService.getIdForPrincipal(principal);
+
+        ZahtjevTermin zahtjev = zahtjevTerminRepository.findByIdZahtjevTermin(idZahtjev)
+                .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
+
+        zahtjevTerminRepository.delete(zahtjev);
     }
 }

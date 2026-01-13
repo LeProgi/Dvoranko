@@ -141,4 +141,20 @@ public class DtoMapper {
     }
 
 
+    public static TerminDTO toTerminDto(Termin termin) {
+        if (termin == null) {
+            return null;
+        }
+
+        TerminDTO dto = new TerminDTO();
+        dto.setDatumVrijemeStart(termin.getDatumVrijemeStart());
+        dto.setDatumVrijemeEnd(termin.getDatumVrijemeEnd());
+        dto.setIdDvorana(termin.getDvorana().getIdDvorana());
+        dto.setJeJavniEvent(termin.getJeJavniEvent());
+        dto.setCijena(termin.getCijena());
+        dto.setIdKorisnik(termin.getKorisnik().getId());
+
+        return dto;
+    }
+
 }
