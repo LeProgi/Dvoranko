@@ -1,6 +1,8 @@
 package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
+import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
 import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
@@ -9,6 +11,7 @@ import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.service.DvoranaService;
 import fer.leprogi.dvoranko.service.ModeratorService;
 import fer.leprogi.dvoranko.utils.ApiResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,14 @@ public class ModeratorController {
         Iterable<DvoranaDTO> dvorane = moderatorService.getAllDvoranaForModerator(principal);
 
         return ResponseEntity.ok(ApiResponse.success(dvorane, "My dvorane fetched successfully"));
+    }
+
+    @PutMapping("/dvorana/{id}")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable("id") Long id, @Valid @RequestBody CreateDvoranaRequest request){
+        DvoranaDTO updated = moderatorService.updateDvorana(id, request);
+
+        return ResponseEntity.ok(ApiResponse.success(updated, "Dvorana updated successfully"));
     }
 
 

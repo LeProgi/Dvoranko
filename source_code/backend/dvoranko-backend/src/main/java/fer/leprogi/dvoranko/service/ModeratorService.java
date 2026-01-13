@@ -1,10 +1,12 @@
 package fer.leprogi.dvoranko.service;
 
+import fer.leprogi.dvoranko.dto.AdresaDTO;
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.MjestoDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
+import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
-import fer.leprogi.dvoranko.model.Dvorana;
-import fer.leprogi.dvoranko.model.Kategorija;
-import fer.leprogi.dvoranko.model.User;
+import fer.leprogi.dvoranko.model.*;
 import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
 import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
-import fer.leprogi.dvoranko.model.ZahtjevOglas;
 import fer.leprogi.dvoranko.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,10 @@ public class ModeratorService {
     private UserRepository userRepository;
     @Autowired
     private ZahtjevOglasRepository zahtjevRepository;
-
+    @Autowired
+    private DvoranaRepository dvoranaRepository;
+    @Autowired
+    private AdresaRepository adresaRepository;
     @Autowired
     private DtoMapper dtoMapper;
     @Autowired
@@ -37,13 +41,15 @@ public class ModeratorService {
     private UserService userService;
     @Autowired
     private DvoranaService dvoranaService;
+    @Autowired
+    private MjestoService mjestoService;
 
     @Transactional
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request) {
         ZahtjevOglas zahtjev = new ZahtjevOglas();
 
         User owner = userRepository.findById(request.getIdOwner())
-                        .orElseThrow(() -> new IllegalArgumentException("User with id " + request.getIdOwner() + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User with id " + request.getIdOwner() + " not found"));
 
         zahtjev.setOwner(owner);
         zahtjev.setNaziv(request.getNaziv());
@@ -77,5 +83,35 @@ public class ModeratorService {
         Long ownerId = userService.getIdForPrincipal(principal);
 
         return dvoranaService.getDvoraneByOwner(ownerId);
+    }
+
+    @Transactional
+    public DvoranaDTO updateDvorana(Long idDvorana, CreateDvoranaRequest request) {
+        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist"));
+
+        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
+                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
+
+        dvorana.setNazivDvorana(request.getNazivDvorana());
+        dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setOpis(request.getOpis());
+        dvorana.setAdresa(adresa);
+
+        if (request.getIdKategorija() != null) {
+            Set<Kategorija> kategorije = new HashSet<>();
+            for (Long idKategorija : request.getIdKategorija()) {
+                Kategorija kategorija = kategorijaRepository.findById(idKategorija)
+                        .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
+                kategorije.add(kategorija);
+            }
+            dvorana.setKategorije(kategorije);
+        } else {
+            dvorana.getKategorije().clear();
+        }
+
+        Dvorana updated = dvoranaRepository.save(dvorana);
+
+        return dtoMapper.toDvoranaDTO(updated);
     }
 }

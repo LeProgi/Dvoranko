@@ -202,18 +202,25 @@ const ProfilePage = () => {
                 {myDvorane?.data?.length > 0 &&(
                     <div className="flex flex-col items-center gap-3 w-full">
                         {myDvorane.data?.map((dvorana) => (
-                            <Link key = {dvorana.idDvorana} to = {`/venue/${dvorana.idDvorana}`} className="w-11/12 block">
-                                <VenueCard 
-                                name = {dvorana.nazivDvorana}
-                                adresa = {dvorana.adresa
-                                            ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
-                                            : "Adresa nije dostupna"
-                                        }
-                            
-                                />
-                            </Link>   
+                            <div className ="flex items-center gap-3 w-11/12">
+                                <Link key = {dvorana.idDvorana} to = {`/venue/${dvorana.idDvorana}`} className="w-11/12 block">
+                                    <VenueCard 
+                                    name = {dvorana.nazivDvorana}
+                                    adresa = {dvorana.adresa
+                                                ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
+                                                : "Adresa nije dostupna"
+                                            }
+                                
+                                    />
+                                </Link>   
+                                <div 
+                                className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
+                                    <Link key = {dvorana.idDvorana} to = {`/editform/${dvorana.idDvorana}`}>
+                                    Uredi dvoranu
+                                    </Link>
+                                </div>
+                            </div>
                         ))}
-                    
                     </div>
                 )}
                 </div>
