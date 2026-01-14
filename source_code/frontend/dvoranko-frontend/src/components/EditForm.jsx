@@ -73,7 +73,9 @@ function Form() {
                     setCapacity((dvorana.kapacitet).toString())
                     setDescription(dvorana.opis)
                     setAddress(dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`: ''); //a valjda nemre dvorana promjenit adresu 
-                    setAddressId(dvorana.adresa.idAdresa) 
+                    setAddressId(dvorana.adresa.idAdresa)
+                    setselectedCategories(dvorana.kategorije.map(kategorija => kategorija.idKategorija));
+                    console.log(dvorana.kategorije)
                     console.log("uspjesno dohvacanje dvorane kumeeee laooo")
                 })
             } catch (err){
@@ -225,7 +227,7 @@ function Form() {
             console.log(selectedCategories)
             console.log(userData.id)
 
-        const payload = { nazivDvorana: naziv, kapacitet, opis, idAdresa: addressId, idKategorije: selectedCategories, idVlasnik: userData.id};
+        const payload = {nazivDvorana: naziv, kapacitet, opis, idAdresa: addressId, idKategorija: selectedCategories, idVlasnik: userData.id};
             console.log("Payload to be sent:", payload);
             await updateDvorana(payload);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");

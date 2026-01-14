@@ -251,7 +251,7 @@ function Form() {
     return (
         <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative w-full px-4">
             <form
-                className="w-full max-w-full overflow-x-auto px-4"
+                className="w-full max-w-full overflow-x-auto px-4" 
                 onSubmit={handleSubmit}
                 noValidate
                 onKeyDown={(e) => {
@@ -313,7 +313,7 @@ function Form() {
                             </div>
 
                             <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-l xl:border-black px-4">
-                                <div className="mb-[5px]">
+                                <div className="flex flex-col items-center gap-1 w-full">
                                     <label>Adresa</label>
                                     <AddressAutocomplete
                                         onSelect={handleAddressSelect}
@@ -324,6 +324,7 @@ function Form() {
                                             setAddress(null);
                                             setAddressError(true);
                                         }}
+                                        className="w-full"
                                     />
                                 </div>
 

@@ -90,22 +90,23 @@ public class ModeratorService {
         Dvorana dvorana = dvoranaRepository.findById(idDvorana)
                 .orElseThrow(() -> new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist"));
 
-        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
-                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
+//        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
+//                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
 
         dvorana.setNazivDvorana(request.getNazivDvorana());
         dvorana.setKapacitet(request.getKapacitet());
         dvorana.setOpis(request.getOpis());
-        dvorana.setAdresa(adresa);
+        //dvorana.setAdresa(adresa);
 
-        if (request.getIdKategorija() != null) {
+        if (!request.getIdKategorija().isEmpty()) {
             Set<Kategorija> kategorije = new HashSet<>();
             for (Long idKategorija : request.getIdKategorija()) {
                 Kategorija kategorija = kategorijaRepository.findById(idKategorija)
                         .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
                 kategorije.add(kategorija);
             }
-            dvorana.setKategorije(kategorije);
+            dvorana.getKategorije().clear();
+            dvorana.getKategorije().addAll(kategorije);
         } else {
             dvorana.getKategorije().clear();
         }

@@ -20,13 +20,13 @@ public class DtoMapper {
         dto.setOpis(dvorana.getOpis());
         dto.setAdresa(toAdresaDTO(dvorana.getAdresa()));
 
-//        if (dvorana.getKategorije() != null) {
-//            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
-//                    .stream()
-//                    .map(this::toKategorijaDTO)
-//                    .collect(Collectors.toSet());
-//            dto.setKategorije(kategorijeDTO);
-//        }
+        if (dvorana.getKategorije() != null) {
+            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
+                    .stream()
+                    .map(this::toKategorijaDTO)
+                    .collect(Collectors.toSet());
+            dto.setKategorije(kategorijeDTO);
+        }
 
         dto.setVlasnik(toUserDTO(dvorana.getVlasnik()));
         //ovo kasnije?
