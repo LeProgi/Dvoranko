@@ -127,8 +127,9 @@ function Form() {
             const response = await fetch(`${url}/api/public/moderator/request/requestAdd`, {
                 method: "POST",
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                // headers: { "Content-Type": "application/json" },
+                // body: JSON.stringify(data),
+                body: data,
             });
 
             const text = await response.text();
@@ -234,9 +235,15 @@ function Form() {
             const userData = await userRes.json();
             const ownerIdLocal = userData.id;
 
-        const payload = { idOwner: ownerIdLocal, naziv, kapacitet, idKategorije: selectedCategories, opis, ...address, daysOpen, image };
+            const { country, ...addressWithOutCountry } = address;
+            const payload = { idOwner: ownerIdLocal, naziv, kapacitet, idKategorije: selectedCategories, opis, ...addressWithOutCountry }; //, daysOpen };
+
+            const formData = new FormData();
+            formData.append("files", image);
+            formData.append("request", JSON.stringify(payload));
+
             console.log("Payload to be sent:", payload);
-            await postDvorana(payload);
+            await postDvorana(formData);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
             navigate("/my-profile");
             // setTimeout(() => {

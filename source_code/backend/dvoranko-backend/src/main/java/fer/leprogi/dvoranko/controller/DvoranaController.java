@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/public/dvorane")
@@ -19,8 +22,8 @@ public class DvoranaController {
     private final DvoranaService dvoranaService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<DvoranaDTO>> createDvorana(@Valid @RequestBody CreateDvoranaRequest request){
-        DvoranaDTO dvorana = dvoranaService.createDvorana(request);
+    public ResponseEntity<ApiResponse<DvoranaDTO>> createDvorana(@Valid @RequestBody CreateDvoranaRequest request, @RequestParam("files") List<MultipartFile> files){
+        DvoranaDTO dvorana = dvoranaService.createDvorana(request, files);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

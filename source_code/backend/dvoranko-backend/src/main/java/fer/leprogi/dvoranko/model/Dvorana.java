@@ -1,6 +1,5 @@
 package fer.leprogi.dvoranko.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -46,10 +45,11 @@ public class Dvorana {
     @JoinColumn(name = "idVlasnik")
     private User vlasnik;
 
-
-
-    @OneToOne(mappedBy = "dvorana")
-    @JsonIgnore
-    private SlikaDvorana slika;
+    @OneToMany(
+            mappedBy = "dvorana",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<SlikaDvorana> slike;
 
 }

@@ -19,7 +19,13 @@ public class SlikaDvorana {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idSlika;
 
+    private String poredakSlike;
     private String urlSlika;
+
+    @ManyToOne
+    @JoinColumn(name = "idDvorana", nullable = false)
+    private Dvorana dvorana;
+
 
 //    @Lob
 //    @NotNull

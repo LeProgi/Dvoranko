@@ -108,10 +108,9 @@ public class AdminService {
                 zahtjev.getKapacitet(),
                 zahtjev.getOpis(),
                 adresaSaved.getIdAdresa(),
-//                new HashSet<>(),
                 kategorije,
                 zahtjev.getOwner().getId()
-        ));
+        ), Collections.emptyList());
 
         zahtjevOglasRepository.delete(zahtjev);
 

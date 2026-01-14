@@ -2,11 +2,14 @@ package fer.leprogi.dvoranko.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import fer.leprogi.dvoranko.utils.FolderName;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -26,14 +29,19 @@ public class CloudinaryService {
                 "secure", true));
     }
 
-    public String upload(MultipartFile file, Long dvoranaId, Long imgNr) throws IOException{
+    public String upload(MultipartFile file, Long dvoranaId, int id, FolderName folder) throws IOException{
+
+//        ArrayList<String> urls = new ArrayList<>();
+//        int i = 0;
+//        for (MultipartFile file : files) {}
         Map options = ObjectUtils.asMap(
-                "folder", "dvorane/" + dvoranaId,
-                "public_id", "img_" + imgNr,
+                "folder", folder.toString() + "/" + dvoranaId,
+                "public_id", "img_" + id,
                 "overwrite", true
         );
 
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), options);
+
         return uploadResult.get("secure_url").toString();
     }
 }
