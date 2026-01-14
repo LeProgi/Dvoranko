@@ -44,6 +44,7 @@ public class DvoranaService {
         dvorana.setKapacitet(request.getKapacitet());
         dvorana.setOpis(request.getOpis());
         dvorana.setAdresa(adresa);
+        dvorana.setDaysOpen(request.getDaysOpen());
 
         if (request.getIdKategorija() != null && !request.getIdKategorija().isEmpty()) {
             Set<Kategorija> kategorije = new HashSet<>();

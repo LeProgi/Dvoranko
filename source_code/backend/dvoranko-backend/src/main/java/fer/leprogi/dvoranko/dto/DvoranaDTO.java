@@ -19,5 +19,6 @@ public class DvoranaDTO {
     private AdresaDTO adresa;
     private Iterable<KategorijaDTO> kategorije;
     private UserDTO vlasnik;
+    private String daysOpen;
     private List<SlikaDvoranaDTO> slike;
 }

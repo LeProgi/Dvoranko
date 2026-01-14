@@ -6,6 +6,4 @@ import { urlLocal as url } from './URL.js'
 
 export { url };
 
-createRoot(document.getElementById('root')).render(
-    <App />
-)
+createRoot(document.getElementById("root")).render(<App />);

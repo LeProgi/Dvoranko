@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-//@Data
-//@AllArgsConstructor
-//@NoArgsConstructor
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -40,6 +40,9 @@ public class User {
     @OneToMany(mappedBy = "vlasnik", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Dvorana> dvorane;
 
+    @OneToMany(mappedBy = "korisnik", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Termin> termini;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -51,8 +54,6 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    // Constructors
-    public User() {}
 
     public User(String email, String name, String googleId, Role role) {
         this.email = email;
