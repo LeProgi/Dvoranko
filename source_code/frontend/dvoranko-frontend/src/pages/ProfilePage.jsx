@@ -213,12 +213,10 @@ const ProfilePage = () => {
                                 
                                     />
                                 </Link>   
-                                <div 
-                                className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
-                                    <Link key = {dvorana.idDvorana} to = {`/editform/${dvorana.idDvorana}`}>
+                                    <Link key = {dvorana.idDvorana} to = {`/editform/${dvorana.idDvorana}`}
+                                    className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
                                     Uredi dvoranu
                                     </Link>
-                                </div>
                             </div>
                         ))}
                     </div>
