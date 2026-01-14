@@ -249,22 +249,23 @@ function Form() {
     };
 
     return (
-        <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative">
+        <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative w-full px-4">
             <form
+                className="w-full max-w-full overflow-x-auto px-4"
                 onSubmit={handleSubmit}
                 noValidate
                 onKeyDown={(e) => {
                     if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
                 }}
             >
-                <div className="flex flex-row items-center gap-[8vw] flex-wrap">
-                    <div className="w-[45vw] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
+                <div className="flex flex-col xl:flex-row items-center gap-10 w-full">
+                    <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
                         <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
                             <label>Nova lokacija</label>
                         </div>
 
-                        <div className="flex flex-row w-full">
-                            <div className="flex flex-col gap-[5px] border-r border-black w-[50%]">
+                        <div className="flex flex-col xl:flex-row w-full">
+                            <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-r xl:border-black px-4">
                                 <div className="mb-[5px]">
                                     <label>Naziv dvorane</label>
                                     <input
@@ -273,7 +274,7 @@ function Form() {
                                         onChange={(e) => setName(e.target.value)}
                                         required
                                         placeholder="Naziv dvorane"
-                                        className="w-[90%] h-[40px] border-2 border-black rounded-[4px] bg-white"
+                                        className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>
 
@@ -285,7 +286,7 @@ function Form() {
                                         onChange={(e) => setCapacity(e.target.value)}
                                         required
                                         placeholder="Kapacitet dvorane"
-                                        className="w-[90%] h-[40px] border-2 border-black rounded-[4px] bg-white"
+                                        className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>
 
@@ -311,7 +312,7 @@ function Form() {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col gap-[5px] w-[50%] border-l border-black">
+                            <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-l xl:border-black px-4">
                                 <div className="mb-[5px]">
                                     <label>Adresa</label>
                                     <AddressAutocomplete
@@ -333,8 +334,8 @@ function Form() {
                                         const day = days[key];
 
                                         return (
-                                        <div key={key} className="flex items-center">
-                                            <div className="flex justify-center items-center flex-row w-[40%] gap-[5px]">
+                                        <div key={key} className="flex justify-center items-start gap-4 mx-auto w-full max-w-[400px]">
+                                            <div className="flex items-center gap-2 flex-shrink-0 w-[120px]">
                                                 <label>{label}</label>
 
                                                 <input
@@ -355,7 +356,7 @@ function Form() {
                                                 />
                                             </div>
 
-                                            <div className="flex justify-center items-center flex-row w-[60%]">
+                                            <div className="flex items-center gap-2 w-full">
                                                 <label className="mr-[5px]">Od:</label>
 
                                                 <TimeDropdown
@@ -398,7 +399,7 @@ function Form() {
                         </div>
                     </div>
 
-                    <div className="p-[10px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[10px] w-[30vw] h-fit min-h-[20vh]">
+                    <div className="p-[10px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[10px] w-full max-w-[400px] h-fit min-h-[20vh]">
                         <label>Slika dvorane</label>
 
                         <input
