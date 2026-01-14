@@ -21,12 +21,13 @@ const Home = () => {
             .then(res => res.json())
             .then(data => {
                 if(data){
-                console.log("datadohvacen");
+                console.log(data);
                 }
                 const formatted = data.data.map(dvorana=>({
                     id: dvorana.idDvorana,
                     name: dvorana.nazivDvorana,
-                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : ""
+                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : "",
+                    imgUrl: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "",
 
 
                 }));
@@ -100,7 +101,7 @@ const Home = () => {
                 <div className="flex flex-col items-center gap-4 w-full">
                     {venues.map((venue) =>(
                         <Link key={venue.id} to = {`/venue/${venue.id}`} className="w-11/12 block">
-                            <VenueCard name = {venue.name} adresa = {venue.adresa}/>
+                            <VenueCard name = {venue.name} adresa = {venue.adresa} imgUrl = {venue.imgUrl} />
                         </Link>
                     ))}
                 </div>

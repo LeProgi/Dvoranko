@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,6 @@ public class Dvorana {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<SlikaDvorana> slike;
+    private List<SlikaDvorana> slike = new ArrayList<>();
 
 }

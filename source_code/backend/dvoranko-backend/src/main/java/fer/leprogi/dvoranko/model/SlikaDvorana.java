@@ -26,26 +26,4 @@ public class SlikaDvorana {
     @JoinColumn(name = "idDvorana", nullable = false)
     private Dvorana dvorana;
 
-
-//    @Lob
-//    @NotNull
-//    private byte[] imageData;
-//
-//    @OneToOne
-//    @JoinColumn(name = "idDvorana", nullable = false)
-//    private Dvorana dvorana;
-
-
-//    @ManyToOne
-//    @JoinColumn(name = "idDvorana", nullable = false)
-//    private Dvorana dvorana;
-//
-//    @Override
-//    public String toString() {
-//        return "SlikaDvorana{" +
-//                "idSlika=" + idSlika +
-//                ", imageData=" + Arrays.toString(imageData) +
-//                ", dvorana=" + dvorana +
-//                '}';
-//    }
 }

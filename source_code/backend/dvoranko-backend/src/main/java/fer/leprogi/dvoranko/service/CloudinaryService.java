@@ -44,4 +44,32 @@ public class CloudinaryService {
 
         return uploadResult.get("secure_url").toString();
     }
+
+
+    public String confirmImage(String imgUrl, Long idDvorane) throws IOException {
+        String parts[] = imgUrl.split("/");
+        String oldPublicId = parts[parts.length - 3] + "/" + parts[parts.length - 2] + "/" + parts[parts.length - 1].split("\\.")[0];
+        String newPublicId = FolderName.dvorane.toString() + "/" + idDvorane + "/" + parts[parts.length - 1].split("\\.")[0];
+
+        Map result = cloudinary.uploader().rename(oldPublicId, newPublicId, ObjectUtils.emptyMap());
+
+        return result.get("secure_url").toString();
+    }
+
+
+    public void deleteEmptyFolder (String folderName) throws Exception {
+        Map result = cloudinary.api().resources(
+                ObjectUtils.asMap(
+                        "type", "upload",
+                        "prefix", folderName + "/", // OBAVEZNO /
+                        "max_results", 1
+                ));
+
+        List resources = (List) result.get("resources");
+
+        if (resources.isEmpty())
+            cloudinary.api().deleteFolder(folderName, ObjectUtils.emptyMap());
+    }
+
+
 }

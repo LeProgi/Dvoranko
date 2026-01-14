@@ -110,7 +110,7 @@ public class AdminService {
                 adresaSaved.getIdAdresa(),
                 kategorije,
                 zahtjev.getOwner().getId()
-        ), Collections.emptyList());
+        ), zahtjev.getSlike());
 
         zahtjevOglasRepository.delete(zahtjev);
 

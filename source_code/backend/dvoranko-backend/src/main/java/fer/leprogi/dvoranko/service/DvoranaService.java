@@ -3,10 +3,7 @@ package fer.leprogi.dvoranko.service;
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.model.*;
-import fer.leprogi.dvoranko.repository.AdresaRepository;
-import fer.leprogi.dvoranko.repository.DvoranaRepository;
-import fer.leprogi.dvoranko.repository.KategorijaRepository;
-import fer.leprogi.dvoranko.repository.UserRepository;
+import fer.leprogi.dvoranko.repository.*;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,10 +30,12 @@ public class DvoranaService {
     private final DtoMapper dtoMapper;
     private final UserRepository userRepository;
     private final SlikaDvoranaService slikaDvoranaService;
+    private final CloudinaryService cloudinaryService;
+    private final SlikaDvoranaRepository slikaDvoranaRepository;
 
 
     @Transactional
-    public DvoranaDTO createDvorana(CreateDvoranaRequest request, List<MultipartFile> images) {
+    public DvoranaDTO createDvorana(CreateDvoranaRequest request, List<ZahtjevSlika> images) {
         Adresa adresa = adresaRepository.findById(request.getIdAdresa())
                 .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
 
@@ -63,10 +63,25 @@ public class DvoranaService {
         Dvorana saved = dvoranaRepository.save(dvorana);
 
         try {
-            List<SlikaDvorana> slikeDvorana = slikaDvoranaService.saveSlikeDvorana(images, saved.getIdDvorana());
-            saved.getSlike().addAll(slikeDvorana);
-//            dvorana.setSlika(slikeDvorana);
-//            saved = dvoranaRepository.save(dvorana);
+            for (ZahtjevSlika zahtjevSlika : images) {
+                SlikaDvorana slikaDvorana = new SlikaDvorana();
+
+                String noviUrl = cloudinaryService.confirmImage(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
+                
+                slikaDvorana.setUrlSlika(noviUrl);
+                slikaDvorana.setPoredakSlike(zahtjevSlika.getPoredakSlike());
+                slikaDvorana.setDvorana(saved);
+
+                saved.getSlike().add(slikaDvorana);
+
+                slikaDvoranaRepository.save(slikaDvorana);
+            }
+
+            String parts[] = images.get(0).getUrlSlika().split("/");
+            String folderName = parts[parts.length - 3] + "/" + parts[parts.length - 2];
+
+            cloudinaryService.deleteEmptyFolder(folderName);
+
         }catch (Exception e){}
 
         return dtoMapper.toDvoranaDTO(saved);
@@ -149,6 +164,37 @@ public class DvoranaService {
         Dvorana dvorana = dvoranaRepository.findById(idDvorana)
                 .orElseThrow(() -> new ResourceNotFoundException("dvorana that you want to delete not found"));
         dvoranaRepository.delete(dvorana);
+    }
+
+    @Transactional
+    public DvoranaDTO createDvorana(CreateDvoranaRequest request) {
+        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
+                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
+
+        Dvorana dvorana = new Dvorana();
+        dvorana.setNazivDvorana(request.getNazivDvorana());
+        dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setOpis(request.getOpis());
+        dvorana.setAdresa(adresa);
+
+        if (request.getIdKategorija() != null && !request.getIdKategorija().isEmpty()) {
+            Set<Kategorija> kategorije = new HashSet<>();
+            for (Long idKategorija : request.getIdKategorija()) {
+                Kategorija kategorija = kategorijaRepository.findById(idKategorija)
+                        .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
+                kategorije.add(kategorija);
+            }
+            dvorana.setKategorije(kategorije);
+        }
+
+        User vlasnik = userRepository.findById(request.getIdVlasnik())
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + request.getIdVlasnik() + " does not exist"));
+
+        dvorana.setVlasnik(vlasnik);
+
+        Dvorana saved = dvoranaRepository.save(dvorana);
+
+        return dtoMapper.toDvoranaDTO(saved);
     }
 
 }
