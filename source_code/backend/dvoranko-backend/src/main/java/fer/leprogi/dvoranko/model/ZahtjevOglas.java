@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -50,6 +49,15 @@ public class ZahtjevOglas {
     private String streetNumber;
     private Double latitude;
     private Double longitude;
+
+
+    @OneToMany(
+            mappedBy = "zahtjevOglas",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ZahtjevSlika> slike = new ArrayList<>();
+
 
     @PrePersist
     protected void onCreate() {

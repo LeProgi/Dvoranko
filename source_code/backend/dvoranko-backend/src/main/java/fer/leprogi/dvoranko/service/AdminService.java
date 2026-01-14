@@ -44,7 +44,8 @@ public class AdminService {
     private DvoranaService dvoranaService;
     @Autowired
     private SessionAdminService sessionAdminService;
-
+    @Autowired
+    private MailService mailService;
 
 
     public User acceptIznajmljivacRequest(Long requestId) {
@@ -107,28 +108,31 @@ public class AdminService {
                 zahtjev.getKapacitet(),
                 zahtjev.getOpis(),
                 adresaSaved.getIdAdresa(),
-//                new HashSet<>(),
                 kategorije,
                 zahtjev.getOwner().getId(),
                 zahtjev.getDaysOpen()
-        ));
+        ), zahtjev.getSlike());
 
         zahtjevOglasRepository.delete(zahtjev);
+
+        mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odobren", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je odobren i dvorana je sada dostupna na platformi Dvoranko.\n\nHvala vam što koristite našu uslugu!\n\nLijep pozdrav,\nDvoranko tim");
 
         return novaDvorana;
     }
 
     public void rejectOglasRequest(Long requestId) {
 
-//        ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
-//                .orElseThrow(() -> new IllegalArgumentException("request not found"));
+        ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("request not found"));
 //
 //        zahtjevOglasRepository.delete(zahtjev);
 
-        if (!zahtjevOglasRepository.existsById(requestId)) {
-            throw new IllegalArgumentException("request not found");
-        }
+//        if (!zahtjevOglasRepository.existsById(requestId)) {
+//            throw new IllegalArgumentException("request not found");
+//        }
         zahtjevOglasRepository.deleteById(requestId);
+
+        mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odbijen", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je nažalost odbijen.\n\nZa dodatne informacije ili pitanja, slobodno nas kontaktirajte.\n\nLijep pozdrav,\nDvoranko tim");
     }
 
     public List<ZahtjevIznajmljivacDTO> getAllIznajmljivacRequests() {

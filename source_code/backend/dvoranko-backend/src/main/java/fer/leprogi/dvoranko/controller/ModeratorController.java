@@ -2,6 +2,8 @@ package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
+import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
 import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
@@ -10,6 +12,7 @@ import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.service.DvoranaService;
 import fer.leprogi.dvoranko.service.ModeratorService;
 import fer.leprogi.dvoranko.utils.ApiResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +53,15 @@ public class ModeratorController {
     public ResponseEntity<ApiResponse<Void>> rejectTerminRequest(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User principal) {
         moderatorService.rejectTerminRequest(id, principal);
         return ResponseEntity.ok(ApiResponse.success(null, "Termin request rejected successfully"));
+    }
+      
+      
+    @PutMapping("/dvorana/{id}")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable("id") Long id, @Valid @RequestBody CreateDvoranaRequest request){
+        DvoranaDTO updated = moderatorService.updateDvorana(id, request);
+
+        return ResponseEntity.ok(ApiResponse.success(updated, "Dvorana updated successfully"));
     }
 
 

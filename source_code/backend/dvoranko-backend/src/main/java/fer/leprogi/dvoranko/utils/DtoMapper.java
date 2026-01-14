@@ -20,17 +20,21 @@ public class DtoMapper {
         dto.setOpis(dvorana.getOpis());
         dto.setAdresa(toAdresaDTO(dvorana.getAdresa()));
 
-//        if (dvorana.getKategorije() != null) {
-//            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
-//                    .stream()
-//                    .map(this::toKategorijaDTO)
-//                    .collect(Collectors.toSet());
-//            dto.setKategorije(kategorijeDTO);
-//        }
+        if (dvorana.getKategorije() != null) {
+            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
+                    .stream()
+                    .map(this::toKategorijaDTO)
+                    .collect(Collectors.toSet());
+            dto.setKategorije(kategorijeDTO);
+        }
 
         dto.setVlasnik(toUserDTO(dvorana.getVlasnik()));
-        //ovo kasnije?
-        //dto.setSlika(toSlikaDvoranaDTO(dvorana.getSlika()));
+
+        dto.setSlike(dvorana.getSlike()
+                .stream()
+                .map(this::toSlikaDvoranaDTO)
+                .collect(Collectors.toList())
+        );
 
         return dto;
     }
@@ -84,7 +88,8 @@ public class DtoMapper {
 
         SlikaDvoranaDTO dto = new SlikaDvoranaDTO();
         dto.setIdSlika(slikaDvorana.getIdSlika());
-        dto.setImageData(slikaDvorana.getImageData());
+        dto.setPoredakSlike(slikaDvorana.getPoredakSlike());
+        dto.setUrlSlika(slikaDvorana.getUrlSlika());
         return dto;
     }
 
