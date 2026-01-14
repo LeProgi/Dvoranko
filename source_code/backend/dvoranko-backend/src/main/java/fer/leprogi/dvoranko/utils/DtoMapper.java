@@ -151,7 +151,6 @@ public class DtoMapper {
         dto.setDatumVrijemeEnd(termin.getDatumVrijemeEnd());
         dto.setIdDvorana(termin.getDvorana().getIdDvorana());
         dto.setJeJavniEvent(termin.getJeJavniEvent());
-        dto.setCijena(termin.getCijena());
         dto.setIdKorisnik(termin.getKorisnik().getId());
 
         return dto;

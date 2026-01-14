@@ -2,11 +2,13 @@ package fer.leprogi.dvoranko.dto.createRequest;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class CreateTerminRequest {
 
-    private String datumVrijemeStart;
-    private String datumVrijemeEnd;
+    private LocalDateTime datumVrijemeStart;
+    private LocalDateTime datumVrijemeEnd;
     private Long idDvorana;
     private Integer jeJavniEvent;
     private Long idKorisnik;

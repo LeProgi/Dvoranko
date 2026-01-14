@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -16,11 +18,11 @@ public class Termin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "datum_vrijeme_start", length = 8, nullable = false)
-    private String datumVrijemeStart;
+    @Column(name = "datum_vrijeme_start",  nullable = false)
+    private LocalDateTime datumVrijemeStart;
 
-    @Column(name = "datum_vrijeme_end", length = 8, nullable = false)
-    private String datumVrijemeEnd;
+    @Column(name = "datum_vrijeme_end",  nullable = false)
+    private LocalDateTime datumVrijemeEnd;
 
     @Column(name = "je_javni_event")
     private Integer jeJavniEvent;

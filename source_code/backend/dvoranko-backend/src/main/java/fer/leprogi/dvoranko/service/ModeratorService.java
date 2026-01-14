@@ -88,7 +88,7 @@ public class ModeratorService {
     public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
         Long ownerId = userService.getIdForPrincipal(principal);
 
-        ZahtjevTermin zahtjev = zahtjevTerminRepository.findByIdZahtjevTermin(idZahtjev)
+        ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
 
         TerminDTO terminDTO = new TerminDTO();
@@ -105,7 +105,7 @@ public class ModeratorService {
     public void rejectTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
         Long ownerId = userService.getIdForPrincipal(principal);
 
-        ZahtjevTermin zahtjev = zahtjevTerminRepository.findByIdZahtjevTermin(idZahtjev)
+        ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
 
         zahtjevTerminRepository.delete(zahtjev);
