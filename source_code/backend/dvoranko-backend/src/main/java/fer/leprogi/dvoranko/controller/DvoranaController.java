@@ -1,5 +1,7 @@
 package fer.leprogi.dvoranko.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.model.Dvorana;
@@ -10,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/public/dvorane")
@@ -19,7 +24,10 @@ public class DvoranaController {
     private final DvoranaService dvoranaService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<DvoranaDTO>> createDvorana(@Valid @RequestBody CreateDvoranaRequest request){
+    public ResponseEntity<ApiResponse<DvoranaDTO>> createDvorana(@Valid @RequestPart("request") String requestJson, @RequestPart("files") List<MultipartFile> files) throws JsonProcessingException {
+
+        CreateDvoranaRequest request = new ObjectMapper().readValue(requestJson, CreateDvoranaRequest.class);
+
         DvoranaDTO dvorana = dvoranaService.createDvorana(request);
 
         return ResponseEntity

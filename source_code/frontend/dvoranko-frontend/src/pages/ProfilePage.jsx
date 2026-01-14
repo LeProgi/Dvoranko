@@ -205,18 +205,18 @@ const ProfilePage = () => {
                             <div className ="flex items-center gap-3 w-11/12">
                                 <Link key = {dvorana.idDvorana} to = {`/venue/${dvorana.idDvorana}`} className="w-11/12 block">
                                     <VenueCard 
-                                    name = {dvorana.nazivDvorana}
-                                    adresa = {dvorana.adresa
-                                                ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
-                                                : "Adresa nije dostupna"
-                                            }
-                                
+                                      name = {dvorana.nazivDvorana}
+                                      adresa = {dvorana.adresa
+                                                  ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
+                                                  : "Adresa nije dostupna"
+                                              }
+                                      imgUrl={ dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "" }
                                     />
                                 </Link>   
-                                    <Link key = {dvorana.idDvorana} to = {`/editform/${dvorana.idDvorana}`}
-                                    className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
-                                    Uredi dvoranu
-                                    </Link>
+                                <Link key = {dvorana.idDvorana} to = {`/editform/${dvorana.idDvorana}`}
+                                  className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
+                                  Uredi dvoranu
+                                </Link>
                             </div>
                         ))}
                     </div>
