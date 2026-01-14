@@ -17,13 +17,15 @@ const VenuePage = () => {
         })
             .then(res => res.json())
             .then(data => {
+                console.log(data);
                 const dvorana = data.data;
                 setVenue({
                     name: dvorana.nazivDvorana,
                     adresa: dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`:
                     "",
                     kapacitet: dvorana.kapacitet,
-                    opis: dvorana.opis
+                    opis: dvorana.opis,
+                    slika: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : ""
                 });                
             })
             .catch(err => console.error("neuspjelo dohvacanje dvorane", err));
@@ -38,7 +40,8 @@ const VenuePage = () => {
                 
                 
                 <div className="bg-[#3B5B80] w-1/3 flex items-center justify-center rounded-l-[20px]">
-                    <p className="text-white text-lg">Slika prostora</p>
+                    {/* <p className="text-white text-lg">Slika prostora</p> */}
+                    <img src={venue.slika} alt="Slika dvorane" />
                 </div>
 
                 
