@@ -1,0 +1,22 @@
+.fc {
+  background-color: white;
+}
+
+.open-day :hover {
+  background-color: #f0f0f0;
+}
+
+.fc-daygrid-day-top {
+  justify-content: center;
+}
+
+.open-day {
+  background-color: #ffffff !important;
+  cursor: pointer;
+}
+
+.closed-day {
+  background-color: #e9e9e9 !important;
+  cursor: not-allowed;
+  opacity: 0.3;
+}

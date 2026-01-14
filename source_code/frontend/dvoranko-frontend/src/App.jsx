@@ -9,6 +9,7 @@ import MapPage from './pages/MapPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import FormPage from './pages/FormPage';
+import Reservation from './pages/ReservationPage';
 
 const App = () => {
   
@@ -22,6 +23,7 @@ const App = () => {
         <Route path='/my-profile' element={<ProfilePage/>}/>
         <Route path='/admin' element ={<AdminPage/>}/>
         <Route path='/form' element={<FormPage/>}/>
+        <Route path='/reservation' element={<Reservation/>}/>
       </Routes>
     </Router>
   )

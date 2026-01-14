@@ -67,11 +67,13 @@ const VenuePage = () => {
 
                     
                     <div className="self-end mt-8">
-                        <Button 
-                            variant="default"
-                            title="Rezerviraj dvoranu"
-                            className="bg-[#3B5B80] text-white px-6 py-2 rounded-lg hover:bg-[#2F4B6A]"
-                        />
+                        <Link to="/reservation" state={{ venueId: id }}>
+                            <Button 
+                                variant="default"
+                                title="Rezerviraj dvoranu"
+                                className="bg-[#3B5B80] text-white px-6 py-2 rounded-lg hover:bg-[#2F4B6A]"
+                            />
+                        </Link>
                     </div>
                 </div>
             </div>
