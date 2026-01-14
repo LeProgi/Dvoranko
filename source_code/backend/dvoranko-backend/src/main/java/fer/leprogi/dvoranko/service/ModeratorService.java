@@ -2,6 +2,7 @@ package fer.leprogi.dvoranko.service;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.TerminDTO;
+import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
 import fer.leprogi.dvoranko.model.*;
 import fer.leprogi.dvoranko.security.CustomOAuth2User;
@@ -84,9 +85,29 @@ public class ModeratorService {
         return dvoranaService.getDvoraneByOwner(ownerId);
     }
 
+    public Iterable<ZahtjevTerminDTO> getAllTerminRequestsForModerator(CustomOAuth2User principal) {
+
+        Long moderatorId = userService.getIdForPrincipal(principal);
+
+        Set<ZahtjevTermin> sviZahtjevi = new HashSet<>();
+
+        Iterable<Dvorana> dvoraneModerator = dvoranaRepository.findAllByVlasnik_Id(moderatorId);
+        for (Dvorana dvorana : dvoraneModerator) {
+            Iterable<ZahtjevTermin> zahtjeviDvorana = zahtjevTerminRepository.findByIdDvorana(dvorana.getIdDvorana());
+            for (ZahtjevTermin zahtjev : zahtjeviDvorana) {
+                sviZahtjevi.add(zahtjev);
+            }
+        }
+
+        Set<ZahtjevTerminDTO> sviZahtjeviDTO = new HashSet<>();
+        for (ZahtjevTermin zahtjev : sviZahtjevi) {
+            sviZahtjeviDTO.add(dtoMapper.toZahtjevTerminDTO(zahtjev));
+        }
+
+        return sviZahtjeviDTO;
+    }
 
     public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
-        Long ownerId = userService.getIdForPrincipal(principal);
 
         ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
@@ -103,11 +124,12 @@ public class ModeratorService {
     }
 
     public void rejectTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
-        Long ownerId = userService.getIdForPrincipal(principal);
 
         ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
 
         zahtjevTerminRepository.delete(zahtjev);
     }
+
+
 }

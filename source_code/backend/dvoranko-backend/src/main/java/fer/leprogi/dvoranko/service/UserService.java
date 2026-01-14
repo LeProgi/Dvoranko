@@ -1,18 +1,23 @@
 package fer.leprogi.dvoranko.service;
 
+import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.TerminDTO;
 import fer.leprogi.dvoranko.dto.UserDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateTerminRequest;
+import fer.leprogi.dvoranko.model.Termin;
 import fer.leprogi.dvoranko.model.User;
 
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
 import fer.leprogi.dvoranko.model.ZahtjevTermin;
-import fer.leprogi.dvoranko.repository.UserRepository;
-import fer.leprogi.dvoranko.repository.ZahtjevIznajmljivacRepository;
-import fer.leprogi.dvoranko.repository.ZahtjevTerminRepository;
+import fer.leprogi.dvoranko.repository.*;
 import fer.leprogi.dvoranko.security.CustomOAuth2User;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import fer.leprogi.dvoranko.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -25,10 +30,16 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private TerminRepository terminRepository;
+
+    @Autowired
     private ZahtjevIznajmljivacRepository zahtjevRepository;
 
     @Autowired
     private ZahtjevTerminRepository zahtjevTerminRepository;
+
+    @Autowired
+    private DtoMapper dtoMapper;
 
 
     public UserDTO convertToDTO(User user) {
@@ -87,4 +98,17 @@ public class UserService {
     }
 
 
+    public Iterable<TerminDTO> getAllReservationsForUser(Principal principal) {
+        Long userId = getIdForPrincipal((CustomOAuth2User) principal);
+
+        Iterable<Termin> termini = terminRepository.findByKorisnikId(userId);
+
+        List<TerminDTO> terminiDTO = new ArrayList<>();
+
+        for (Termin termin : termini) {
+            TerminDTO dto = dtoMapper.toTerminDTO(termin);
+            terminiDTO.add(dto);
+        }
+        return terminiDTO;
+    }
 }

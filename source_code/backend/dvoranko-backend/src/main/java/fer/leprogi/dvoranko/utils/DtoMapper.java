@@ -141,7 +141,22 @@ public class DtoMapper {
     }
 
 
-    public static TerminDTO toTerminDto(Termin termin) {
+
+    public ZahtjevTerminDTO toZahtjevTerminDTO(ZahtjevTermin zahtjev) {
+        if (zahtjev == null) return null;
+
+        ZahtjevTerminDTO dto = new ZahtjevTerminDTO();
+        dto.setId(zahtjev.getId());
+        dto.setDatumVrijemeStart(zahtjev.getDatumVrijemeStart());
+        dto.setDatumVrijemeEnd(zahtjev.getDatumVrijemeEnd());
+        dto.setJeJavniEvent(zahtjev.getJeJavniEvent());
+        dto.setIdKorisnik(zahtjev.getIdKorisnik());
+        dto.setIdDvorana(zahtjev.getIdDvorana());
+
+        return dto;
+    }
+
+    public TerminDTO toTerminDTO(Termin termin) {
         if (termin == null) {
             return null;
         }
@@ -155,5 +170,4 @@ public class DtoMapper {
 
         return dto;
     }
-
 }

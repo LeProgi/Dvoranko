@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user/request")
+@RequestMapping("/api/public/user/request")
 public class UserRequestController {
 
     @Autowired
@@ -34,7 +34,7 @@ public class UserRequestController {
         return ResponseEntity.ok("request created");
     }
 
-    @PostMapping
+    @PostMapping("/createZahtjevTermin")
     //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createTerminRequest(@RequestBody CreateTerminRequest request) {
         userService.createTerminRequest(request);

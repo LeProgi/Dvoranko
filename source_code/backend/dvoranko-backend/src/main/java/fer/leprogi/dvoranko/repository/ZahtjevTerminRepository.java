@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface ZahtjevTerminRepository extends JpaRepository<ZahtjevTermin, Long> {
     public Optional<ZahtjevTermin> findById(Long id);
+
+    Iterable<ZahtjevTermin> findByIdDvorana(Long idDvorana);
 }

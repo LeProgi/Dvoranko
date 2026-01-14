@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ZahtjevTerminDto {
-
+public class ZahtjevTerminDTO {
+    private Long id;
     private LocalDateTime datumVrijemeStart;
     private LocalDateTime datumVrijemeEnd;
     private Long idDvorana;

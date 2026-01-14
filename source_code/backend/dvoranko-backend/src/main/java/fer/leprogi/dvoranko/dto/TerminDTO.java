@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TerminDTO {
-
+    private Long id;
     private LocalDateTime datumVrijemeStart;
     private LocalDateTime datumVrijemeEnd;
     private Long idDvorana;

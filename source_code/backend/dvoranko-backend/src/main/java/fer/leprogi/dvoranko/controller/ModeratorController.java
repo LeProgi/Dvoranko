@@ -1,6 +1,7 @@
 package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.User;
 import fer.leprogi.dvoranko.model.ZahtjevOglas;
@@ -52,4 +53,12 @@ public class ModeratorController {
     }
 
 
+    @GetMapping("/getMyZahtjevTermin")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<Iterable<ZahtjevTerminDTO>>> getAllTerminRequestsForModerator(@AuthenticationPrincipal CustomOAuth2User principal) {
+
+        Iterable<ZahtjevTerminDTO> termini = moderatorService.getAllTerminRequestsForModerator(principal);
+
+        return ResponseEntity.ok(ApiResponse.success(termini, "My termin requests fetched successfully"));
+    }
 }
