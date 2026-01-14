@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -18,5 +19,5 @@ public class DvoranaDTO {
     private AdresaDTO adresa;
     private Iterable<KategorijaDTO> kategorije;
     private UserDTO vlasnik;
-    private SlikaDvoranaDTO slika;
+    private List<SlikaDvoranaDTO> slike;
 }

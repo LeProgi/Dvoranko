@@ -209,7 +209,7 @@ const ProfilePage = () => {
                                             ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
                                             : "Adresa nije dostupna"
                                         }
-                            
+                                imgUrl={ dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "" }        
                                 />
                             </Link>   
                         ))}

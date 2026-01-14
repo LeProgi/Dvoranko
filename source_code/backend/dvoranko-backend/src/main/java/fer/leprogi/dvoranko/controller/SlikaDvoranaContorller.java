@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/public/images")
@@ -18,16 +19,16 @@ public class SlikaDvoranaContorller {
     private final SlikaDvoranaService slikaDvoranaService;
 
     @PostMapping
-    public ResponseEntity<SlikaDvorana> uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("dvorana") Long idDvorana) throws IOException {
-        return ResponseEntity.ok(slikaDvoranaService.saveSlikaDvorana(file, idDvorana));
+    public ResponseEntity<List<SlikaDvorana>> uploadImage(@RequestParam("files") List<MultipartFile> files, @RequestParam("dvorana") Long idDvorana) throws IOException {
+        return ResponseEntity.ok(slikaDvoranaService.saveSlikeDvorana(files, idDvorana));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<String> getImage(@PathVariable Long id){
-        SlikaDvorana img = slikaDvoranaService.getSlikaDvorana(id);
-        String base64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(img.getImageData());
+//        SlikaDvorana img = slikaDvoranaService.getSlikaDvorana(id);
+//        String base64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(img.getImageData());
 
-        return ResponseEntity.ok(base64);
+        return ResponseEntity.ok("");
     }
 
 

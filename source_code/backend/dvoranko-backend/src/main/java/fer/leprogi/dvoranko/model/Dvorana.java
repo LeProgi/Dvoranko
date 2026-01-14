@@ -1,6 +1,5 @@
 package fer.leprogi.dvoranko.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,10 +46,11 @@ public class Dvorana {
     @JoinColumn(name = "idVlasnik")
     private User vlasnik;
 
-
-
-    @OneToOne(mappedBy = "dvorana")
-    @JsonIgnore
-    private SlikaDvorana slika;
+    @OneToMany(
+            mappedBy = "dvorana",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<SlikaDvorana> slike = new ArrayList<>();
 
 }
