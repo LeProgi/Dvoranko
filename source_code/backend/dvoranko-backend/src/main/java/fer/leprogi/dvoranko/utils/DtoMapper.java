@@ -142,9 +142,24 @@ public class DtoMapper {
         dto.setLatitude(zahtjev.getLatitude());
         dto.setLongitude(zahtjev.getLongitude());
 
+        dto.setSlike(zahtjev.getSlike()
+                .stream()
+                .map(this::toZahtjevSlikaDto)
+                .collect(Collectors.toList())
+        );
+
         return dto;
     }
 
+    public ZahtjevSlikaDTO toZahtjevSlikaDto(ZahtjevSlika zahtjevSlika) {
+        if (zahtjevSlika == null) return null;
+
+        ZahtjevSlikaDTO dto = new ZahtjevSlikaDTO();
+        dto.setPoredakSlike(zahtjevSlika.getPoredakSlike());
+        dto.setUrlSlike(zahtjevSlika.getUrlSlika());
+
+        return dto;
+    }
 
 
     public ZahtjevTerminDTO toZahtjevTerminDTO(ZahtjevTermin zahtjev) {

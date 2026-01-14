@@ -25,5 +25,6 @@ public class ZahtjevOglasDTO {
     private Double longitude;
 
 
+    private Iterable<ZahtjevSlikaDTO> slike;
 
 }
