@@ -4,6 +4,7 @@ import VenueCard from "../components/VenueCard";
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Form from "../components/Form";
+import Filter from "../components/Filter.jsx"
 import { url } from "../main.jsx";
 const Home = () => {
     
@@ -94,8 +95,8 @@ const Home = () => {
 
         <h1 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Dvoranko</h1>
       </div>
-      
-        <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
+        <Filter></Filter>
+        <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
                 <div className="flex flex-col items-center gap-4 w-full">
                     {venues.map((venue) =>(
