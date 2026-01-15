@@ -10,9 +10,8 @@ const Home = () => {
     
     const [hasLoggedIn, setHasLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
-        const [venues, setVenues] = useState([
-]);
-
+    const [venues, setVenues] = useState([]);
+    const [filteredVenues, setFilteredVenues] = useState([]);
     
     useEffect(() =>{
         console.log(`${url}/api/public/dvorane`);
@@ -27,11 +26,14 @@ const Home = () => {
                 const formatted = data.data.map(dvorana=>({
                     id: dvorana.idDvorana,
                     name: dvorana.nazivDvorana,
+                    kapacitet: dvorana.kapacitet,
+                    postanskiBroj: dvorana.adresa?.mjesto?.postanskiBroj,
                     adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : ""
 
 
                 }));
                 setVenues(formatted);
+                setFilteredVenues(formatted);
             })
             .catch(err => console.error("neuspjelo dohvacanje dvorane", err));
     }, []);
@@ -62,6 +64,31 @@ const Home = () => {
     // window.location.href = "https://dvoranko.onrender.com/oauth2/authorization/google";
     console.log(`${url}/oauth2/authorization/google`);
         window.location.href = `${url}/oauth2/authorization/google`;
+    };
+
+    const applyFilters = (filters) => {
+        let result = [...venues];
+
+        // Kapacitet
+        if (filters.capacity) {
+            result = result.filter(v => {
+                const cap = v.kapacitet;
+                if (filters.capacity === "0-20") return cap <= 20;
+                if (filters.capacity === "20-50") return cap > 20 && cap <= 50;
+                if (filters.capacity === "50-70") return cap > 50 && cap <= 70;
+                if (filters.capacity === "70+") return cap > 70;
+                return true;
+            });
+        }
+
+        // Poštanski broj
+        if (filters.zip) {
+            result = result.filter(v =>
+                String(v.postanskiBroj).startsWith(filters.zip)
+            );
+        }
+
+        setFilteredVenues(result);
     };
 
     return (
@@ -95,13 +122,13 @@ const Home = () => {
 
         <h1 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Dvoranko</h1>
       </div>
-        <Filter></Filter>
+        <Filter onApply={applyFilters} />
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
                 <div className="flex flex-col items-center gap-4 w-full">
-                    {venues.map((venue) =>(
-                        <Link key={venue.id} to = {`/venue/${venue.id}`} className="w-11/12 block">
-                            <VenueCard name = {venue.name} adresa = {venue.adresa}/>
+                    {filteredVenues.map((venue) => (
+                        <Link key={venue.id} to={`/venue/${venue.id}`} className="w-11/12 block">
+                            <VenueCard name={venue.name} adresa={venue.adresa} />
                         </Link>
                     ))}
                 </div>
