@@ -24,6 +24,7 @@ const VenuePage = () => {
                     adresa: dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`:
                     "",
                     kapacitet: dvorana.kapacitet,
+                    cijenaPoSatu: dvorana.cijenaPoSatu,
                     opis: dvorana.opis,
                     slika: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : ""
                 });                
@@ -57,6 +58,11 @@ const VenuePage = () => {
                         <p className="text-[#1C2D3A] mb-2">
                             <span className="font-semibold">Kapacitet: </span> {venue.kapacitet}
                         </p>
+                        {venue.cijenaPoSatu && (
+                            <p className="text-[#1C2D3A] mb-2">
+                                <span className="font-semibold">Cijena po satu: </span> {venue.cijenaPoSatu} €/h
+                            </p>
+                        )}
                         <p className="text-[#1C2D3A] mb-2">
                             <span className="font-semibold">Opis prostora:</span> 
                             {venue.opis}

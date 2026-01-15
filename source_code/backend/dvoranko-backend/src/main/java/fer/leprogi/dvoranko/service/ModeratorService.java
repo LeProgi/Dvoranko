@@ -176,6 +176,7 @@ public class ModeratorService {
 
         dvorana.setNazivDvorana(request.getNazivDvorana());
         dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
         dvorana.setOpis(request.getOpis());
         //dvorana.setAdresa(adresa);
 

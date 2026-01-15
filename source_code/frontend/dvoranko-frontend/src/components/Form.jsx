@@ -237,7 +237,17 @@ function Form() {
             const ownerIdLocal = userData.id;
 
             const { country, ...addressWithOutCountry } = address;
-            const payload = { idOwner: ownerIdLocal, naziv,  cijenaPoSatu ,kapacitet, idKategorije: selectedCategories, opis, ...addressWithOutCountry , daysOpen };
+            const payload = { 
+                idOwner: ownerIdLocal, 
+                naziv, 
+                cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null,
+                kapacitet: parseInt(kapacitet), 
+                idKategorije: selectedCategories, 
+                opis, 
+                ...addressWithOutCountry,
+                postalCode: parseInt(addressWithOutCountry.postalCode),
+                daysOpen 
+            };
 
             const formData = new FormData();
             formData.append("files", image);
