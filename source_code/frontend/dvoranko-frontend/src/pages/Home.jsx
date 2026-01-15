@@ -12,6 +12,8 @@ const Home = () => {
     const [user, setUser] = useState(null);
     const [venues, setVenues] = useState([]);
     const [filteredVenues, setFilteredVenues] = useState([]);
+    const [imagesLoaded, setImagesLoaded] = useState(false);
+
     
     useEffect(() =>{
         console.log(`${url}/api/public/dvorane`);
@@ -21,14 +23,16 @@ const Home = () => {
             .then(res => res.json())
             .then(data => {
                 if(data){
-                console.log("datadohvacen");
+                console.log(data);
                 }
                 const formatted = data.data.map(dvorana=>({
                     id: dvorana.idDvorana,
                     name: dvorana.nazivDvorana,
                     kapacitet: dvorana.kapacitet,
                     postanskiBroj: dvorana.adresa?.mjesto?.postanskiBroj,
-                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : ""
+                    
+                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : "",
+                    imgUrl: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "",
 
 
                 }));
@@ -59,6 +63,25 @@ const Home = () => {
             
         });
     }, []);
+
+
+    useEffect(() => {
+        if (venues.length === 0) return;
+
+        const preloadImages = venues
+            .filter(v => v.imgUrl)
+            .map(v => {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    img.src = v.imgUrl;
+                    img.onload = () => resolve(v.imgUrl);
+                    img.onerror = () => resolve(v.imgUrl); // greške ignoriramo
+                });
+            });
+
+        Promise.all(preloadImages).then(() => setImagesLoaded(true));
+    }, [venues]);
+
 
     const handleGoogleLogin = () => {
     // window.location.href = "https://dvoranko.onrender.com/oauth2/authorization/google";
@@ -125,13 +148,22 @@ const Home = () => {
         <Filter onApply={applyFilters} />
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
-                <div className="flex flex-col items-center gap-4 w-full">
+
+                {!imagesLoaded ? (
+                    
+                    <div className="flex flex-col justify-center items-center w-full py-10 gap-4">
+                        <p className="text-gray-500">Učitavanje dvorana...</p>
+                        <div className="border-4 border-gray-300 border-t-4 border-t-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center gap-4 w-full">
                     {filteredVenues.map((venue) => (
                         <Link key={venue.id} to={`/venue/${venue.id}`} className="w-11/12 block">
-                            <VenueCard name={venue.name} adresa={venue.adresa} />
+                            <VenueCard name={venue.name} adresa={venue.adresa} imgUrl = {venue.imgUrl}/>
                         </Link>
                     ))}
                 </div>
+                )}
         </div>
         
         <Footer/>
