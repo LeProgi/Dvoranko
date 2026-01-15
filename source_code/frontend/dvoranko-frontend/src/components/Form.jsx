@@ -237,7 +237,7 @@ function Form() {
             const ownerIdLocal = userData.id;
 
             const { country, ...addressWithOutCountry } = address;
-            const payload = { idOwner: ownerIdLocal, naziv,  cijenaPoSatu ,kapacitet, idKategorije: selectedCategories, opis, ...addressWithOutCountry }; //, daysOpen };
+            const payload = { idOwner: ownerIdLocal, naziv,  cijenaPoSatu ,kapacitet, idKategorije: selectedCategories, opis, ...addressWithOutCountry , daysOpen };
 
             const formData = new FormData();
             formData.append("files", image);
