@@ -15,6 +15,7 @@ function Form() {
     const timesDo = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
     const [naziv, setName] = useState("");
     const [kapacitet, setCapacity] = useState("");
+    const [cijenaPoSatu, setPricePerHour] = useState("");
     const [opis, setDescription] = useState("");
     const [address, setAddress] = useState(null);
     const [addressError, setAddressError] = useState(false);
@@ -236,7 +237,7 @@ function Form() {
             const ownerIdLocal = userData.id;
 
             const { country, ...addressWithOutCountry } = address;
-            const payload = { idOwner: ownerIdLocal, naziv, kapacitet, idKategorije: selectedCategories, opis, ...addressWithOutCountry }; //, daysOpen };
+            const payload = { idOwner: ownerIdLocal, naziv,  cijenaPoSatu ,kapacitet, idKategorije: selectedCategories, opis, ...addressWithOutCountry }; //, daysOpen };
 
             const formData = new FormData();
             formData.append("files", image);
@@ -293,6 +294,17 @@ function Form() {
                                         onChange={(e) => setCapacity(e.target.value)}
                                         required
                                         placeholder="Kapacitet dvorane"
+                                        className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
+                                    />
+                                </div>
+                                <div className="mb-[5px]">
+                                    <label>Cijena po satu</label>
+                                    <input
+                                        type="text"
+                                        value={cijenaPoSatu}
+                                        onChange={(e) => setPricePerHour(e.target.value)}
+                                        required
+                                        placeholder="Cijena po satu"
                                         className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>
