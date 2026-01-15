@@ -16,6 +16,8 @@ const ReservationPage = () => {
    const [startTime, setStartTime] = useState(null);
    const [endTime, setEndTime] = useState(null);
    const [notStartTimes, setNotStartTimes] = useState([]);
+   const [javno, setJavno] = useState(null);
+   const [privatno, setPrivatno] = useState(null);
 
    useEffect(() => {
       //fetch termini pomocu venueId string i napunit i wokringHours
@@ -85,6 +87,16 @@ const ReservationPage = () => {
       }
    };
 
+   const handleClickJavno = () => {
+      setJavno(true);
+      setPrivatno(false);
+   }
+
+   const handleClickPrivatno = () => {
+      setJavno(false);
+      setPrivatno(true);
+   }
+
    return (
       <div className="bg-[#5B7692] min-h-screen flex justify-center items-center">
          <div className="flex justify-between bg-white rounded-[20px] w-[80vw] h-[80vh] p-5">
@@ -105,39 +117,73 @@ const ReservationPage = () => {
                         </div>
                      ) : (
                         <div>
-                           <p className="text-xl font-semibold mb-2">
-                              Termini za {selectedDate}
-                           </p>
+                           <div className="mb-1">
+                              <p className="text-xl font-semibold mb-2">
+                                 Termini za {selectedDate}
+                              </p>
+                              <hr></hr>
+                              <p className="opacity-40">
+                                 Molimo izaberite vrijeme početka pa vrijeme kraja termina
+                              </p>
+                              {availableTimes.map((time, idx) => {
+                                 const isEdge = edgeTimes.includes(time);
+                                 const isBetween = timesBetween.includes(time);
+                                 const isDisabled = disabledTimes.includes(time);
+                                 const isGray = grayTimes.includes(time);
+                                 return (
+                                 <button
+                                    key={idx}
+                                    onClick={() => !isDisabled && handleClick(time)}
+                                    className={`px-4 py-2 transition
+                                       ${isEdge && isDisabled
+                                       ? "bg-blue-500 text-white"
+                                       : isBetween
+                                       ? "bg-blue-300 text-white cursor-pointer hover:bg-blue-400"
+                                       : isEdge
+                                       ? "bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
+                                       : isDisabled
+                                       ? "bg-[#e9e9e9]"
+                                       : isGray
+                                       ? "bg-[#e9e9e9] cursor-pointer hover:bg-gray-300"
+                                       : "bg-white cursor-pointer hover:bg-gray-100"}`}
+                                    >
+                                    {time}
+                                 </button>
+                                 );
+                              })}
+                           </div>
+
                            <hr></hr>
-                           <p className="opacity-40">
-                              Molimo izaberite vrijeme početka pa vrijeme kraja termina
-                           </p>
-                           {availableTimes.map((time, idx) => {
-                              const isEdge = edgeTimes.includes(time);
-                              const isBetween = timesBetween.includes(time);
-                              const isDisabled = disabledTimes.includes(time);
-                              const isGray = grayTimes.includes(time);
-                              return (
-                              <button
-                                 key={idx}
-                                 onClick={() => !isDisabled && handleClick(time)}
-                                 className={`px-4 py-2 transition
-                                    ${isEdge && isDisabled
-                                    ? "bg-blue-500 text-white"
-                                    : isBetween
-                                    ? "bg-blue-300 text-white cursor-pointer hover:bg-blue-400"
-                                    : isEdge
-                                    ? "bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
-                                    : isDisabled
-                                    ? "bg-[#e9e9e9]"
-                                    : isGray
-                                    ? "bg-[#e9e9e9] cursor-pointer hover:bg-gray-300"
-                                    : "bg-white cursor-pointer hover:bg-gray-100"}`}
-                                 >
-                                 {time}
-                              </button>
-                              );
-                           })}
+                           
+                           <div className="mt-1">
+                              <div className="flex direction-row items-center justify-center">
+                                 <p className="mr-2 ml-2">
+                                    Događanje je:
+                                 </p>
+                                 <div className="relative">
+                                    <div className={`absolute top-0 left-0 z-0 javno-btn ${javno ? "bg-[#3B5B80] scale-[1.05]" : "bg-black scale-[0.95]"} w-[80px] h-[40px] rounded-l-xl -mr-1.5`}></div>
+                                    <button 
+                                       className={`javno-btn ${javno ? "bg-[#3B5B80] text-white" : "bg-[#FFFFFF] scale-[0.9]"} pr-1 w-[80px] h-[40px] text-center font-semibold cursor-pointer rounded-l-xl -mr-1.5`}
+                                       onClick={() => handleClickJavno()}
+                                    >Javno</button>
+                                 </div>
+                                 <div className="relative">
+                                    <div className={`absolute top-0 left-0 z-0 privatno-btn ${privatno ? "bg-[#3B5B80] scale-[1.05]" : "bg-black scale-[0.95]"} w-[80px] h-[40px] rounded-r-xl -ml-1.5`}></div>
+                                    <button 
+                                       className={`privatno-btn ${privatno ? "bg-[#3B5B80] text-white" : "bg-[#FFFFFF] scale-[0.9]"} pl-2 w-[80px] h-[40px] text-center font-semibold cursor-pointer rounded-r-xl -ml-1.5`}
+                                       onClick={() => handleClickPrivatno()}
+                                    >Privatno</button>
+                                 </div>
+                              </div>
+
+                              <div className="flex direction-row items-center justify-center">
+                                 Broj ljudi:
+                              </div>
+
+                              <div className="flex direction-row items-center justify-end">
+                                 Submit
+                              </div>
+                           </div>
                         </div>
                      )}
                   </div>

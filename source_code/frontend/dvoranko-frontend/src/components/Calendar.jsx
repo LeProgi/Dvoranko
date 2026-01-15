@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const Calendar = ({handleDateClick}) => {
 
-    const termini = "pon:05-22;uto:07-12;pet:10-19;";
+    const termini = "pon:05-22;uto:03-19;sri:07-12;pet:10-19;";
     const dani = termini.split(";").filter(x => x !== "");
     const daysOpen = dani.map(dan => dan.substring(0, 3));
     //const [events, setEvents] = useState([]);
