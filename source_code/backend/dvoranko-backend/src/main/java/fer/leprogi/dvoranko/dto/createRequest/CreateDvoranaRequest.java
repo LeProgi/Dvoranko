@@ -17,4 +17,5 @@ public class CreateDvoranaRequest {
     private Set<Long> idKategorija;
     private Long idVlasnik;
     private String daysOpen;
+    private Float cijenaPoSatu;
 }

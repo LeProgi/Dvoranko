@@ -15,6 +15,7 @@ function Form() {
     const timesDo = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
     const [naziv, setName] = useState("");
     const [kapacitet, setCapacity] = useState("");
+    const [cijenaPoSatu, setPricePerHour] = useState("");
     const [opis, setDescription] = useState("");
     const [address, setAddress] = useState(null);
     const [addressId, setAddressId] = useState(null)
@@ -72,6 +73,7 @@ function Form() {
                     setName(dvorana.nazivDvorana)
                     setCapacity((dvorana.kapacitet).toString())
                     setDescription(dvorana.opis)
+                    setPricePerHour(dvorana.cijenaPoSatu ? (dvorana.cijenaPoSatu).toString() : "")
                     setAddress(dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`: ''); //a valjda nemre dvorana promjenit adresu 
                     setAddressId(dvorana.adresa.idAdresa)
                     setselectedCategories(dvorana.kategorije.map(kategorija => kategorija.idKategorija));
@@ -164,6 +166,11 @@ function Form() {
             setFormError("Molimo da kapacitet bude pozitivan cijeli broj.");
             return;
         }
+        
+        if(cijenaPoSatu.trim() && !/^([1-9]\d*)$/.test(cijenaPoSatu.trim())) {
+            setFormError("Molimo da cijena po satu bude pozitivan cijeli broj.");
+            return;
+        }
 
         if (selectedCategories.length === 0) {
             setFormError("Molimo odaberite barem jednu kategoriju.");
@@ -222,12 +229,21 @@ function Form() {
             const ownerIdLocal = userData.id;
             console.log(naziv)
             console.log(kapacitet)
+            console.log(cijenaPoSatu)
             console.log(opis)
             console.log(addressId)
             console.log(selectedCategories)
             console.log(userData.id)
 
-        const payload = {nazivDvorana: naziv, kapacitet, opis, idAdresa: addressId, idKategorija: selectedCategories, idVlasnik: userData.id};
+        const payload = {
+            nazivDvorana: naziv, 
+            kapacitet: parseInt(kapacitet), 
+            opis, 
+            cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
+            idAdresa: addressId, 
+            idKategorija: selectedCategories, 
+            idVlasnik: userData.id
+        };
             console.log("Payload to be sent:", payload);
             await updateDvorana(payload);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
@@ -279,6 +295,17 @@ function Form() {
                                         onChange={(e) => setCapacity(e.target.value)}
                                         required
                                         placeholder="Kapacitet dvorane"
+                                        className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
+                                    />
+                                </div>
+
+                                <div className="mb-[5px]">
+                                    <label>Cijena po satu</label>
+                                    <input
+                                        type="text"
+                                        value={cijenaPoSatu}
+                                        onChange={(e) => setPricePerHour(e.target.value)}
+                                        placeholder="Cijena po satu"
                                         className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>

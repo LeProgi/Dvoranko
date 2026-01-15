@@ -33,7 +33,7 @@ const Home = () => {
                     
                     adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : "",
                     imgUrl: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "",
-
+                    cijenaPoSatu: dvorana.cijenaPoSatu
 
                 }));
                 setVenues(formatted);
@@ -159,7 +159,7 @@ const Home = () => {
                     <div className="flex flex-col items-center gap-4 w-full">
                     {filteredVenues.map((venue) => (
                         <Link key={venue.id} to={`/venue/${venue.id}`} className="w-11/12 block">
-                            <VenueCard name={venue.name} adresa={venue.adresa} imgUrl = {venue.imgUrl}/>
+                            <VenueCard name={venue.name} adresa={venue.adresa} imgUrl = {venue.imgUrl}  cijenaPoSatu={venue.cijenaPoSatu}/>
                         </Link>
                     ))}
                 </div>

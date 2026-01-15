@@ -19,6 +19,8 @@ public class DtoMapper {
         dto.setKapacitet(dvorana.getKapacitet());
         dto.setOpis(dvorana.getOpis());
         dto.setAdresa(toAdresaDTO(dvorana.getAdresa()));
+        dto.setDaysOpen(dvorana.getDaysOpen());
+        dto.setCijenaPoSatu(dvorana.getCijenaPoSatu());
 
         if (dvorana.getKategorije() != null) {
             Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
@@ -126,6 +128,8 @@ public class DtoMapper {
         dto.setNaziv(zahtjev.getNaziv());
         dto.setOpis(zahtjev.getOpis());
         dto.setKapacitet(zahtjev.getKapacitet());
+        dto.setDaysOpen(zahtjev.getDaysOpen());
+        dto.setCijenaPoSatu(zahtjev.getCijenaPoSatu());
 
 
         Set<KategorijaDTO> kategorijeDTO = zahtjev.getKategorije()

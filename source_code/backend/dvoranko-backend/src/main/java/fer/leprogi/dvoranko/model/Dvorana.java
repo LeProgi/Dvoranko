@@ -35,6 +35,8 @@ public class Dvorana {
 
     private String daysOpen;
 
+    private Float cijenaPoSatu;
+
     @NotNull
     @ManyToOne//(cascade = CascadeType.ALL)
     @JoinColumn(name = "idAdresa", nullable = false)

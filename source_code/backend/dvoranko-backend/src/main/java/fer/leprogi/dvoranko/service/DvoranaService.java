@@ -45,6 +45,7 @@ public class DvoranaService {
         dvorana.setOpis(request.getOpis());
         dvorana.setAdresa(adresa);
         dvorana.setDaysOpen(request.getDaysOpen());
+        dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
 
         if (request.getIdKategorija() != null && !request.getIdKategorija().isEmpty()) {
             Set<Kategorija> kategorije = new HashSet<>();
@@ -113,6 +114,7 @@ public class DvoranaService {
 
         dvorana.setNazivDvorana(request.getNazivDvorana());
         dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
         dvorana.setOpis(request.getOpis());
         dvorana.setAdresa(adresa);
 
@@ -177,6 +179,8 @@ public class DvoranaService {
         dvorana.setKapacitet(request.getKapacitet());
         dvorana.setOpis(request.getOpis());
         dvorana.setAdresa(adresa);
+        dvorana.setDaysOpen(request.getDaysOpen());
+        dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
 
         if (request.getIdKategorija() != null && !request.getIdKategorija().isEmpty()) {
             Set<Kategorija> kategorije = new HashSet<>();

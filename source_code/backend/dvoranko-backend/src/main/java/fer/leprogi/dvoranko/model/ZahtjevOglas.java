@@ -31,7 +31,10 @@ public class ZahtjevOglas {
     @Column(name = "opis", columnDefinition = "TEXT")
     private String opis;
 
+
     private String daysOpen;
+
+    private Float cijenaPoSatu;
 
     private Integer kapacitet;
 
