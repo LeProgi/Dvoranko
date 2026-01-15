@@ -75,6 +75,7 @@ public class ModeratorService {
         zahtjev.setLatitude(request.getLat());
         zahtjev.setLongitude(request.getLng());
         zahtjev.setDaysOpen(request.getDaysOpen());
+        zahtjev.setCijenaPoSatu(request.getCijenaPoSatu());
 
         if (request.getIdKategorije() != null && !request.getIdKategorije().isEmpty()) {
             Set<Kategorija> kategorije = new HashSet<>();

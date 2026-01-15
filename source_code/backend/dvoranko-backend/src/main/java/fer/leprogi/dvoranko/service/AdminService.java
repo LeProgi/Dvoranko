@@ -110,7 +110,8 @@ public class AdminService {
                 adresaSaved.getIdAdresa(),
                 kategorije,
                 zahtjev.getOwner().getId(),
-                zahtjev.getDaysOpen()
+                zahtjev.getDaysOpen(),
+                zahtjev.getCijenaPoSatu()
         ), zahtjev.getSlike());
 
         zahtjevOglasRepository.delete(zahtjev);
