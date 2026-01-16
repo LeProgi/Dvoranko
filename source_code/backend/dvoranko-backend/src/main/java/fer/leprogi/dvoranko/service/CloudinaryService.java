@@ -58,7 +58,7 @@ public class CloudinaryService {
     }
 
 
-    public String potvrdiSliku(String urlSlike, Long idDvorane) throws Exception {
+    public String confirmImage(String urlSlike, Long idDvorane) throws Exception {
 
         String oldPublicId = extractPublicId(urlSlike);
         String fileName = oldPublicId.substring(oldPublicId.lastIndexOf("/") + 1);
@@ -74,17 +74,6 @@ public class CloudinaryService {
                         "invalidate", true
                 )
         );
-
-        return result.get("secure_url").toString();
-    }
-
-
-    public String confirmImage(String imgUrl, Long idDvorane) throws IOException {
-        String parts[] = imgUrl.split("/");
-        String oldPublicId = parts[parts.length - 3] + "/" + parts[parts.length - 2] + "/" + parts[parts.length - 1].split("\\.")[0];
-        String newPublicId = FolderName.dvorane.toString() + "/" + idDvorane + "/" + parts[parts.length - 1].split("\\.")[0];
-
-        Map result = cloudinary.uploader().rename(oldPublicId, newPublicId, ObjectUtils.emptyMap());
 
         return result.get("secure_url").toString();
     }

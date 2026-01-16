@@ -68,8 +68,7 @@ public class DvoranaService {
             for (ZahtjevSlika zahtjevSlika : images) {
                 SlikaDvorana slikaDvorana = new SlikaDvorana();
 
-//                String noviUrl = cloudinaryService.confirmImage(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
-                String noviUrl = cloudinaryService.potvrdiSliku(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
+                String noviUrl = cloudinaryService.confirmImage(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
 
                 slikaDvorana.setUrlSlika(noviUrl);
                 slikaDvorana.setPoredakSlike(zahtjevSlika.getPoredakSlike());

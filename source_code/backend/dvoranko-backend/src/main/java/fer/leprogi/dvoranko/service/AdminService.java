@@ -128,8 +128,6 @@ public class AdminService {
     public void rejectOglasRequest(Long requestId) {
         System.out.println("PROBNI PRINT");
 
-//        ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
-//                .orElseThrow(() -> new IllegalArgumentException("request not found"));
         ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
                 .map(z -> {
                     z.getSlike().size(); // prisilno inicijalizira lazy listu
@@ -137,15 +135,10 @@ public class AdminService {
                 })
                 .orElseThrow(() -> new IllegalArgumentException("request not found"));
 
-        System.out.println("DRUGI PRINT");
-//        zahtjevOglasRepository.delete(zahtjev);
-
-//        if (!zahtjevOglasRepository.existsById(requestId)) {
-//            throw new IllegalArgumentException("request not found");
-//        }
-        System.out.println(zahtjev.toString());
-        System.out.println(zahtjev.getSlike().toString());
-        System.out.println("TRECI PRINT");
+//        System.out.println("DRUGI PRINT");
+//        System.out.println(zahtjev.toString());
+//        System.out.println(zahtjev.getSlike().toString());
+//        System.out.println("TRECI PRINT");
         for (ZahtjevSlika slika : zahtjev.getSlike()) {
             try{
                 cloudinaryService.deleteImage(slika.getUrlSlika());
