@@ -19,7 +19,7 @@ const Footer = () => {
 
         <div className="text-center md:text-right text-sm text-gray-200">
           <p>
-            Kontakt: info@dvoranko.hr
+            Kontakt: leprogi.dvornako@gmail.com
             
           </p>
           <p>Verzija: 1.0.0</p>

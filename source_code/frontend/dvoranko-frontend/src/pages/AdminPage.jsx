@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import { url } from "../main";
+import { all } from "axios";
 
 const AdminPage = () => {
 
@@ -36,6 +37,7 @@ const AdminPage = () => {
         if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin2");
         const dataIznajmljivac = await resIznajmljivac.json();
         setZahtjevIznajmljivac(dataIznajmljivac.data); 
+
       } catch (err) {
         console.error("Kume error tijekom hvacanja zahtjeva za iznajmljivaca:", err);
       }
@@ -63,6 +65,7 @@ const AdminPage = () => {
         if (resAllDvorane.ok) {
           const dataAllDvorane = await resAllDvorane.json();
           setAllDvorane(dataAllDvorane.data);
+          console.log("Sve dvorane:", dataAllDvorane);
         }
     };
 
@@ -236,7 +239,12 @@ const AdminPage = () => {
                   
 
                       <span className="font-semibold">Slike:</span>
-                      <span>{request.images ? request.images.join(", ") : "Nema slika"}</span>
+                      {request.slike && request.slike.length > 0 ? (
+                        <a href={request.slike[0]?.urlSlike} target="_blank" rel="noopener noreferrer"> Slika</a>
+                      ) : (
+                        <span>Nema slika</span>
+                      )}
+                      {/* <span>{request.slike ? request.slike[0]?.urlSlike : "Nema slika"}</span> */}
                     </div>
 
                 <div className="flex justify-between mt-4">
@@ -267,7 +275,13 @@ const AdminPage = () => {
                     <span className="font-semibold">Opis:</span>
                     <span>{d.opis}</span>
                     <span className="font-semibold">Slike:</span>
-                    <span>{d.images ? d.images.join(", ") : "Nema slika"}</span>
+                    {d.slike && d.slike.length > 0 ? (
+                      <span>
+                        <a href={d.slike[0]?.urlSlika} target="_blank" rel="noopener noreferrer"> Slika </a>
+                      </span>
+                      ) : (
+                        <span>Nema slika</span>
+                      )}
                   </div>
                   <div className="flex justify-center mt-4">
                   <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleDeleteDvorana(d.idDvorana)}>
@@ -300,7 +314,9 @@ const AdminPage = () => {
                     <span>{request.user?.email}</span>
 
                     <span className="font-semibold">Slika:</span>
+                    
                     <span>{request.image ? request.image : "Nema slike"}</span>
+                    
                   </div>
 
                   <div className="flex justify-between mt-4">

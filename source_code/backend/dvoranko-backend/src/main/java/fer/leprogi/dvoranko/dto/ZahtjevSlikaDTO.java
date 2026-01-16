@@ -3,8 +3,7 @@ package fer.leprogi.dvoranko.dto;
 import lombok.Data;
 
 @Data
-public class SlikaDvoranaDTO {
-    private Long idSlika;
+public class ZahtjevSlikaDTO {
+    private String urlSlike;
     private String poredakSlike;
-    private String urlSlika;
 }

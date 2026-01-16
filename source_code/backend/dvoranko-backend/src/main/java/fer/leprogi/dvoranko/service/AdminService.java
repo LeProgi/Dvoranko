@@ -10,6 +10,7 @@ import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
 import fer.leprogi.dvoranko.model.*;
 import fer.leprogi.dvoranko.repository.MjestoRepository;
 import fer.leprogi.dvoranko.utils.DtoMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import fer.leprogi.dvoranko.repository.ZahtjevOglasRepository;
 import fer.leprogi.dvoranko.repository.DvoranaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class AdminService {
 
@@ -44,7 +46,10 @@ public class AdminService {
     private DvoranaService dvoranaService;
     @Autowired
     private SessionAdminService sessionAdminService;
-
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
 
     public User acceptIznajmljivacRequest(Long requestId) {
@@ -107,27 +112,44 @@ public class AdminService {
                 zahtjev.getKapacitet(),
                 zahtjev.getOpis(),
                 adresaSaved.getIdAdresa(),
-//                new HashSet<>(),
                 kategorije,
-                zahtjev.getOwner().getId()
-        ));
+                zahtjev.getOwner().getId(),
+                zahtjev.getDaysOpen(),
+                zahtjev.getCijenaPoSatu()
+        ), zahtjev.getSlike());
 
         zahtjevOglasRepository.delete(zahtjev);
+
+        mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odobren", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je odobren i dvorana je sada dostupna na platformi Dvoranko.\n\nHvala vam što koristite našu uslugu!\n\nLijep pozdrav,\nDvoranko tim");
 
         return novaDvorana;
     }
 
     public void rejectOglasRequest(Long requestId) {
+        System.out.println("PROBNI PRINT");
 
-//        ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
-//                .orElseThrow(() -> new IllegalArgumentException("request not found"));
-//
-//        zahtjevOglasRepository.delete(zahtjev);
+        ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
+                .map(z -> {
+                    z.getSlike().size(); // prisilno inicijalizira lazy listu
+                    return z;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("request not found"));
 
-        if (!zahtjevOglasRepository.existsById(requestId)) {
-            throw new IllegalArgumentException("request not found");
+//        System.out.println("DRUGI PRINT");
+//        System.out.println(zahtjev.toString());
+//        System.out.println(zahtjev.getSlike().toString());
+//        System.out.println("TRECI PRINT");
+        for (ZahtjevSlika slika : zahtjev.getSlike()) {
+            try{
+                cloudinaryService.deleteImage(slika.getUrlSlika());
+            }catch (Exception e){
+                log.warn("Error deleting image on cloudinary");
+            }
         }
+
         zahtjevOglasRepository.deleteById(requestId);
+
+        mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odbijen", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je nažalost odbijen.\n\nZa dodatne informacije ili pitanja, slobodno nas kontaktirajte.\n\nLijep pozdrav,\nDvoranko tim");
     }
 
     public List<ZahtjevIznajmljivacDTO> getAllIznajmljivacRequests() {

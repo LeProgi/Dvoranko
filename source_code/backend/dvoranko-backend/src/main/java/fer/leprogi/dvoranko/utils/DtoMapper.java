@@ -19,18 +19,24 @@ public class DtoMapper {
         dto.setKapacitet(dvorana.getKapacitet());
         dto.setOpis(dvorana.getOpis());
         dto.setAdresa(toAdresaDTO(dvorana.getAdresa()));
+        dto.setDaysOpen(dvorana.getDaysOpen());
+        dto.setCijenaPoSatu(dvorana.getCijenaPoSatu());
 
-//        if (dvorana.getKategorije() != null) {
-//            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
-//                    .stream()
-//                    .map(this::toKategorijaDTO)
-//                    .collect(Collectors.toSet());
-//            dto.setKategorije(kategorijeDTO);
-//        }
+        if (dvorana.getKategorije() != null) {
+            Set<KategorijaDTO> kategorijeDTO = dvorana.getKategorije()
+                    .stream()
+                    .map(this::toKategorijaDTO)
+                    .collect(Collectors.toSet());
+            dto.setKategorije(kategorijeDTO);
+        }
 
         dto.setVlasnik(toUserDTO(dvorana.getVlasnik()));
-        //ovo kasnije?
-        //dto.setSlika(toSlikaDvoranaDTO(dvorana.getSlika()));
+
+        dto.setSlike(dvorana.getSlike()
+                .stream()
+                .map(this::toSlikaDvoranaDTO)
+                .collect(Collectors.toList())
+        );
 
         return dto;
     }
@@ -84,7 +90,8 @@ public class DtoMapper {
 
         SlikaDvoranaDTO dto = new SlikaDvoranaDTO();
         dto.setIdSlika(slikaDvorana.getIdSlika());
-        dto.setImageData(slikaDvorana.getImageData());
+        dto.setPoredakSlike(slikaDvorana.getPoredakSlike());
+        dto.setUrlSlika(slikaDvorana.getUrlSlika());
         return dto;
     }
 
@@ -121,6 +128,8 @@ public class DtoMapper {
         dto.setNaziv(zahtjev.getNaziv());
         dto.setOpis(zahtjev.getOpis());
         dto.setKapacitet(zahtjev.getKapacitet());
+        dto.setDaysOpen(zahtjev.getDaysOpen());
+        dto.setCijenaPoSatu(zahtjev.getCijenaPoSatu());
 
 
         Set<KategorijaDTO> kategorijeDTO = zahtjev.getKategorije()
@@ -137,8 +146,52 @@ public class DtoMapper {
         dto.setLatitude(zahtjev.getLatitude());
         dto.setLongitude(zahtjev.getLongitude());
 
+        dto.setSlike(zahtjev.getSlike()
+                .stream()
+                .map(this::toZahtjevSlikaDto)
+                .collect(Collectors.toList())
+        );
+
+        return dto;
+    }
+
+    public ZahtjevSlikaDTO toZahtjevSlikaDto(ZahtjevSlika zahtjevSlika) {
+        if (zahtjevSlika == null) return null;
+
+        ZahtjevSlikaDTO dto = new ZahtjevSlikaDTO();
+        dto.setPoredakSlike(zahtjevSlika.getPoredakSlike());
+        dto.setUrlSlike(zahtjevSlika.getUrlSlika());
+
         return dto;
     }
 
 
+    public ZahtjevTerminDTO toZahtjevTerminDTO(ZahtjevTermin zahtjev) {
+        if (zahtjev == null) return null;
+
+        ZahtjevTerminDTO dto = new ZahtjevTerminDTO();
+        dto.setId(zahtjev.getId());
+        dto.setDatumVrijemeStart(zahtjev.getDatumVrijemeStart());
+        dto.setDatumVrijemeEnd(zahtjev.getDatumVrijemeEnd());
+        dto.setJeJavniEvent(zahtjev.getJeJavniEvent());
+        dto.setIdKorisnik(zahtjev.getIdKorisnik());
+        dto.setIdDvorana(zahtjev.getIdDvorana());
+
+        return dto;
+    }
+
+    public TerminDTO toTerminDTO(Termin termin) {
+        if (termin == null) {
+            return null;
+        }
+
+        TerminDTO dto = new TerminDTO();
+        dto.setDatumVrijemeStart(termin.getDatumVrijemeStart());
+        dto.setDatumVrijemeEnd(termin.getDatumVrijemeEnd());
+        dto.setIdDvorana(termin.getDvorana().getIdDvorana());
+        dto.setJeJavniEvent(termin.getJeJavniEvent());
+        dto.setIdKorisnik(termin.getKorisnik().getId());
+
+        return dto;
+    }
 }

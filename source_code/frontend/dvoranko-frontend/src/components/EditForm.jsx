@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import CategorySelector from "./CategorySelector.jsx";
 import TimeDropdown from "./TimeDropdown.jsx";
+import { useParams } from "react-router-dom";
 import { url } from "../main.jsx";
 
 function Form() {
     const navigate = useNavigate();
     // const categories = ["Sportska", "Koncertna", "Kazališna", "Društvena", "Drugo(u opisu)"];
     const [categories, setCategories] = useState([]);
-
     const [selectedCategories, setselectedCategories] = useState([]);
     const timesOd = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
     const timesDo = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
@@ -18,6 +18,7 @@ function Form() {
     const [cijenaPoSatu, setPricePerHour] = useState("");
     const [opis, setDescription] = useState("");
     const [address, setAddress] = useState(null);
+    const [addressId, setAddressId] = useState(null)
     const [addressError, setAddressError] = useState(false);
     const [addressText, setAddressText] = useState("");
     const [days, setDays] = useState({
@@ -29,6 +30,7 @@ function Form() {
         sub: { enabled: false, start: "", end: "" },
         ned: { enabled: false, start: "", end: "" },
     });
+
     const DAY_LABELS = [
         { key: "pon", label: "Ponedjeljak" },
         { key: "uto", label: "Utorak" },
@@ -42,6 +44,9 @@ function Form() {
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
     const [formError, setFormError] = useState("");
+
+    const {id} = useParams();
+    const idNumber= +id;
 
 
     useEffect(() => {
@@ -58,7 +63,30 @@ function Form() {
             }
         };
 
+        const fetchDvorana = async () => {
+            try {
+                const res = await fetch(`${url}/api/public/dvorane/${id}`) //treba update taj api poziv da vraca i kategorije
+                .then(res => res.json())
+                .then(data => {
+                    const dvorana = data.data;
+                    //setselectedCategories(dvorana.categories) pogledaj komentar 4 linije iznad
+                    setName(dvorana.nazivDvorana)
+                    setCapacity((dvorana.kapacitet).toString())
+                    setDescription(dvorana.opis)
+                    setPricePerHour(dvorana.cijenaPoSatu ? (dvorana.cijenaPoSatu).toString() : "")
+                    setAddress(dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`: ''); //a valjda nemre dvorana promjenit adresu 
+                    setAddressId(dvorana.adresa.idAdresa)
+                    setselectedCategories(dvorana.kategorije.map(kategorija => kategorija.idKategorija));
+                    console.log(dvorana.kategorije)
+                    console.log("uspjesno dohvacanje dvorane kumeeee laooo")
+                })
+            } catch (err){
+                console.error("error tijekom dohvaćanja dvorana kume", err)
+            }
+        }
+
         fetchCategories();
+        fetchDvorana();
     }, []);
 
 
@@ -93,44 +121,13 @@ function Form() {
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
-    const handleAddressSelect = (place) => {
-        const get = (type) =>
-            place.address_components?.find((c) => c.types.includes(type))?.long_name || "";
-
-        setAddress({
-            street: get("route"),
-            streetNumber: get("street_number"),
-            city: get("locality"),
-            postalCode: get("postal_code"),
-            country: get("country"),
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-        });
-
-        setAddressText(place.formatted_address);
-        setAddressError(false);
-    };
-
-    const handleAddressChange = (text) => {
-        setAddressText(text);
-
-        if (text.trim() === "") {
-            setAddress(null);
-            setAddressError(false);
-        } else {
-            setAddress(null);
-            setAddressError(true);
-        }
-    };
-
-    const postDvorana = async (data) => {
+    const updateDvorana = async (data) => {
         try {
-            const response = await fetch(`${url}/api/public/moderator/request/requestAdd`, {
-                method: "POST",
+            const response = await fetch(`${url}/api/moderator/dvorana/${id}`, { //promjenit api poziv?
+                method: "PUT",
                 credentials: "include",
-                // headers: { "Content-Type": "application/json" },
-                // body: JSON.stringify(data),
-                body: data,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
             });
 
             const text = await response.text();
@@ -169,6 +166,11 @@ function Form() {
             setFormError("Molimo da kapacitet bude pozitivan cijeli broj.");
             return;
         }
+        
+        if(cijenaPoSatu.trim() && !/^([1-9]\d*)$/.test(cijenaPoSatu.trim())) {
+            setFormError("Molimo da cijena po satu bude pozitivan cijeli broj.");
+            return;
+        }
 
         if (selectedCategories.length === 0) {
             setFormError("Molimo odaberite barem jednu kategoriju.");
@@ -177,16 +179,6 @@ function Form() {
 
         if (!opis.trim()) {
             setFormError("Molimo unesite opis dvorane.");
-            return;
-        }
-
-        if (!address || !address.street || !address.streetNumber || !address.city || !address.postalCode || !address.country) {
-            if (!address.street) setFormError("Molimo unesite ulicu u adresi dvorane.");
-            else if (!address.streetNumber) setFormError("Molimo unesite kućni broj u adresi dvorane.");
-            else if (!address.city) setFormError("Molimo unesite grad u adresi dvorane.");
-            else if (!address.postalCode) setFormError("Molimo unesite poštanski broj u adresi dvorane.");
-            else if (!address.country) setFormError("Molimo unesite državu u adresi dvorane.");
-            else setFormError("Molimo unesite adresu dvorane.");
             return;
         }
 
@@ -235,26 +227,25 @@ function Form() {
             if (userRes.status !== 200) throw new Error("Nije ulogiran");
             const userData = await userRes.json();
             const ownerIdLocal = userData.id;
+            console.log(naziv)
+            console.log(kapacitet)
+            console.log(cijenaPoSatu)
+            console.log(opis)
+            console.log(addressId)
+            console.log(selectedCategories)
+            console.log(userData.id)
 
-            const { country, ...addressWithOutCountry } = address;
-            const payload = { 
-                idOwner: ownerIdLocal, 
-                naziv, 
-                cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null,
-                kapacitet: parseInt(kapacitet), 
-                idKategorije: selectedCategories, 
-                opis, 
-                ...addressWithOutCountry,
-                postalCode: parseInt(addressWithOutCountry.postalCode),
-                daysOpen 
-            };
-
-            const formData = new FormData();
-            formData.append("files", image);
-            formData.append("request", JSON.stringify(payload));
-
+        const payload = {
+            nazivDvorana: naziv, 
+            kapacitet: parseInt(kapacitet), 
+            opis, 
+            cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
+            idAdresa: addressId, 
+            idKategorija: selectedCategories, 
+            idVlasnik: userData.id
+        };
             console.log("Payload to be sent:", payload);
-            await postDvorana(formData);
+            await updateDvorana(payload);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
             navigate("/my-profile");
             // setTimeout(() => {
@@ -269,7 +260,7 @@ function Form() {
     return (
         <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative w-full px-4">
             <form
-                className="w-full max-w-full overflow-x-auto px-4" 
+                className="w-full max-w-full overflow-x-auto px-4"
                 onSubmit={handleSubmit}
                 noValidate
                 onKeyDown={(e) => {
@@ -279,7 +270,7 @@ function Form() {
                 <div className="flex flex-col xl:flex-row items-center gap-10 w-full">
                     <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
                         <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
-                            <label>Nova lokacija</label>
+                            <label>Uređivanje podataka o dvorani</label>
                         </div>
 
                         <div className="flex flex-col xl:flex-row w-full">
@@ -307,13 +298,13 @@ function Form() {
                                         className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
                                 </div>
+
                                 <div className="mb-[5px]">
                                     <label>Cijena po satu</label>
                                     <input
                                         type="text"
                                         value={cijenaPoSatu}
                                         onChange={(e) => setPricePerHour(e.target.value)}
-                                        required
                                         placeholder="Cijena po satu"
                                         className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
                                     />
@@ -342,19 +333,9 @@ function Form() {
                             </div>
 
                             <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-l xl:border-black px-4">
-                                <div className="flex flex-col items-center gap-1 w-full">
+                                <div className="mb-[5px]">
                                     <label>Adresa</label>
-                                    <AddressAutocomplete
-                                        onSelect={handleAddressSelect}
-                                        required
-                                        value={addressText}
-                                        onChange={handleAddressChange}
-                                        onInvalid={() => {
-                                            setAddress(null);
-                                            setAddressError(true);
-                                        }}
-                                        className="w-full"
-                                    />
+                                    <p className="text-x1 font-bold">{address}</p>
                                 </div>
 
                                 <div className="flex flex-col">
@@ -416,8 +397,8 @@ function Form() {
                             </div>
                         </div>
                         
-                        <button type="submit" className="h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
-                            Zatraži zahtjev za lokaciju
+                        <button type="submit" className="min-w-[220px] h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
+                            Promjeni podatke o dvorani
                         </button>
 
                         <div className="absolute bottom-[10px] right-[10px]">
