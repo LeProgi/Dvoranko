@@ -7,6 +7,7 @@ import Calendar from "../components/Calendar";
 const ReservationPage = () => {
    const { state } = useLocation();
    const venueId = state?.venueId;
+   const [daysOpen, setDaysOpen] = useState([]);
    const [selectedDate, setSelectedDate] = useState(null);
    const [allTimes, setallTimes] = useState(["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"]);
    const [availableTimes, setAvailableTimes] = useState([]);
@@ -20,10 +21,32 @@ const ReservationPage = () => {
    const [notStartTimes, setNotStartTimes] = useState([]);
    const [javno, setJavno] = useState(null);
    const [privatno, setPrivatno] = useState(null);
+   const [kapacitet, setKapacitet] = useState(null);
    const [brojLjudi, setBrojLjudi] = useState("");
    const [formError, setFormError] = useState("");
 
+   const fetchDvoranu = async (venueId) => {
+      try {
+         const response = await fetch(`${url}/api/public/dvorane/${venueId}`, {
+            method: "GET",
+            credentials: "include"
+         });
+
+         const text = await response.text();
+         const respData = JSON.parse(text);
+         setKapacitet(respData.data.kapacitet);
+         setDaysOpen(respData.data.daysOpen);
+
+         console.log("Response from server:", respData.data);
+         return respData;
+      } catch (error) {
+         console.error("Error fetching data:", error);
+         throw error;
+      }
+   }
+
    const handleDateClick = (info, terminiDay) => {
+      fetchDvoranu(venueId);
       const dateString = String(info.date.getDate()).padStart(2, "0") + "." + String(info.date.getMonth() + 1).padStart(2, "0") + "." + info.date.getFullYear() + ".";
       setSelectedDate(dateString);
       const start = terminiDay.substring(terminiDay.indexOf(":") + 1, terminiDay.indexOf("-"));
@@ -31,11 +54,12 @@ const ReservationPage = () => {
       const startIndex = allTimes.findIndex(time => time.startsWith(start));
       const endIndex = allTimes.findIndex(time => time.startsWith(end));
       setAvailableTimes(allTimes.slice(startIndex, endIndex + 1));
+      //fetch kapacitet
       fetchTakenTimes(dateString);
    };
 
    const fetchTakenTimes = (date) => {
-      //fetch zauzete termine i uredi availableTimes i taken
+      //fetch zauzete termine i zahtjeve za termine i uredi availableTimes i taken
       setStartTime(null);
       setEndTime(null);
       setTimesBetween([]);
@@ -126,9 +150,12 @@ const ReservationPage = () => {
       } else if (!/^([1-9]\d*)$/.test(brojLjudi.trim())) {
          setFormError("Molimo da broj ljudi bude pozitivan cijeli broj.");
          return;
+      } else if (parseInt(brojLjudi.trim()) > kapacitet) {
+         setFormError(`Broj ljudi ne smije prelaziti kapacitet dvorane (${kapacitet}).`);
+         return;
       }
-      //dodat provjeru kapaciteta
 
+      //poslati podatke
       setFormError("");
    }
 
@@ -136,7 +163,7 @@ const ReservationPage = () => {
       <div className="bg-[#5B7692] min-h-screen flex justify-center md:items-center h-auto">
          <div className="flex flex-col md:flex-row justify-between bg-white rounded-[20px] w-[90vw] md:h-[80vh] p-5 h-auto mt-5 md:mt-0 mb-5 md:mb-0">
             <div className="w-[100%] md:w-[50%] h-[550px] md:h-[100%]" >
-               <Calendar handleDateClick={handleDateClick}/>
+               <Calendar handleDateClick={handleDateClick} daysOpen={daysOpen}/>
             </div>
 
             <div className="w-[100%] md:w-[49%] h-auto md:h-[100%] flex items-center justify-center">
