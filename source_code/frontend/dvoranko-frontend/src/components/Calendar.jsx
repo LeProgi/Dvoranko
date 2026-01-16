@@ -10,27 +10,6 @@ const Calendar = ({handleDateClick}) => {
     const termini = "pon:05-22;uto:03-19;sri:07-12;pet:10-19;";
     const dani = termini.split(";").filter(x => x !== "");
     const daysOpen = dani.map(dan => dan.substring(0, 3));
-    //const [events, setEvents] = useState([]);
-
-    /*useEffect(() => {
-        fetch("http://localhost:8080/api/calendar/events", {
-        credentials: "include"
-        })
-        .then(r => {
-            if (r.status === 401) {
-            window.location.href = "http://localhost:8080/oauth2/authorization/google";
-            }
-            return r.json();
-        })
-        .then(data => {
-            setEvents(data.map(e => ({
-            id: e.id,
-            title: e.summary,
-            start: e.start.dateTime || e.start.date,
-            end: e.end.dateTime || e.end.date
-            })));
-        });
-    }, []);*/
 
     return (
         <FullCalendar
@@ -41,8 +20,9 @@ const Calendar = ({handleDateClick}) => {
                 const dayNames = ["ned", "pon", "uto", "sri", "čet", "pet", "sub"];
                 const day = dayNames[info.date.getDay()];
                 if (!daysOpen.includes(day)) return;
+                const terminiDay = dani.find(dan => dan.startsWith(day));
 
-                handleDateClick(info);
+                handleDateClick(info, terminiDay);
             }}
             locale={hrLocale}
             dayCellContent={(arg) => arg.dayNumberText.replace(".", "")}
@@ -56,7 +36,6 @@ const Calendar = ({handleDateClick}) => {
                     return "closed-day";
                 }
             }}
-        //events={events}
         />
     );
 };

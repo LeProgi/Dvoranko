@@ -1,14 +1,15 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { url } from "../main.jsx";
 import Calendar from "../components/Calendar";
 
 const ReservationPage = () => {
    const { state } = useLocation();
    const venueId = state?.venueId;
-   const [workingHours, setWorkingHours] = useState([]);
    const [selectedDate, setSelectedDate] = useState(null);
-   const [availableTimes, setAvailableTimes] = useState(["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]);
+   const [allTimes, setallTimes] = useState(["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"]);
+   const [availableTimes, setAvailableTimes] = useState([]);
    const [taken, setTaken] = useState(false);
    const [timesBetween, setTimesBetween] = useState([]);
    const [edgeTimes, setEdgeTimes] = useState([]);
@@ -22,13 +23,14 @@ const ReservationPage = () => {
    const [brojLjudi, setBrojLjudi] = useState("");
    const [formError, setFormError] = useState("");
 
-   useEffect(() => {
-      //fetch termini pomocu venueId string i napunit i wokringHours
-   }, []);
-
-   const handleDateClick = (info) => {
+   const handleDateClick = (info, terminiDay) => {
       const dateString = String(info.date.getDate()).padStart(2, "0") + "." + String(info.date.getMonth() + 1).padStart(2, "0") + "." + info.date.getFullYear() + ".";
       setSelectedDate(dateString);
+      const start = terminiDay.substring(terminiDay.indexOf(":") + 1, terminiDay.indexOf("-"));
+      const end = terminiDay.substring(terminiDay.indexOf("-") + 1, terminiDay.length);
+      const startIndex = allTimes.findIndex(time => time.startsWith(start));
+      const endIndex = allTimes.findIndex(time => time.startsWith(end));
+      setAvailableTimes(allTimes.slice(startIndex, endIndex + 1));
       fetchTakenTimes(dateString);
    };
 
@@ -119,12 +121,13 @@ const ReservationPage = () => {
       }
 
       if (!brojLjudi.trim()) {
-         setFormError("Molimo da unesete broj ljudi za rezervaciju.");
+         setFormError("Molimo unesite broj ljudi za rezervaciju.");
          return;
       } else if (!/^([1-9]\d*)$/.test(brojLjudi.trim())) {
          setFormError("Molimo da broj ljudi bude pozitivan cijeli broj.");
          return;
       }
+      //dodat provjeru kapaciteta
 
       setFormError("");
    }
