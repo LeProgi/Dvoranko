@@ -68,8 +68,9 @@ public class DvoranaService {
             for (ZahtjevSlika zahtjevSlika : images) {
                 SlikaDvorana slikaDvorana = new SlikaDvorana();
 
-                String noviUrl = cloudinaryService.confirmImage(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
-                
+//                String noviUrl = cloudinaryService.confirmImage(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
+                String noviUrl = cloudinaryService.potvrdiSliku(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
+
                 slikaDvorana.setUrlSlika(noviUrl);
                 slikaDvorana.setPoredakSlike(zahtjevSlika.getPoredakSlike());
                 slikaDvorana.setDvorana(saved);
@@ -79,10 +80,10 @@ public class DvoranaService {
                 slikaDvoranaRepository.save(slikaDvorana);
             }
 
-            String parts[] = images.get(0).getUrlSlika().split("/");
-            String folderName = parts[parts.length - 3] + "/" + parts[parts.length - 2];
-
-            cloudinaryService.deleteEmptyFolder(folderName);
+//            String parts[] = images.get(0).getUrlSlika().split("/");
+//            String folderName = parts[parts.length - 3] + "/" + parts[parts.length - 2];
+//
+//            cloudinaryService.deleteEmptyFolder(folderName);
 
         }catch (Exception e){}
 
@@ -163,9 +164,18 @@ public class DvoranaService {
 //            throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");
 //        }
 //        dvoranaRepository.deleteById(idDvorana);
-
         Dvorana dvorana = dvoranaRepository.findById(idDvorana)
                 .orElseThrow(() -> new ResourceNotFoundException("dvorana that you want to delete not found"));
+
+
+        for (SlikaDvorana slika : dvorana.getSlike()) {
+            try {
+                cloudinaryService.deleteImage(slika.getUrlSlika());
+            }catch (Exception e){
+                System.out.println("Error deleting image on server");
+            }
+        }
+
         dvoranaRepository.delete(dvorana);
     }
 
