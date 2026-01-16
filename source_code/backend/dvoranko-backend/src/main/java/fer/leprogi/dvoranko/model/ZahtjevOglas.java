@@ -57,7 +57,8 @@ public class ZahtjevOglas {
     @OneToMany(
             mappedBy = "zahtjevOglas",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
     private List<ZahtjevSlika> slike = new ArrayList<>();
 
