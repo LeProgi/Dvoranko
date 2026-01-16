@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Calendar from "../components/Calendar";
 
 const ReservationPage = () => {
@@ -18,6 +19,8 @@ const ReservationPage = () => {
    const [notStartTimes, setNotStartTimes] = useState([]);
    const [javno, setJavno] = useState(null);
    const [privatno, setPrivatno] = useState(null);
+   const [brojLjudi, setBrojLjudi] = useState("");
+   const [formError, setFormError] = useState("");
 
    useEffect(() => {
       //fetch termini pomocu venueId string i napunit i wokringHours
@@ -97,16 +100,58 @@ const ReservationPage = () => {
       setPrivatno(true);
    }
 
+   const handleSubmit = (e) => {
+      e.preventDefault();
+
+      if (!startTime) {
+         setFormError("Molimo izaberite vrijeme početka termina.");
+         return;
+      }
+
+      if (!endTime) {
+         setFormError("Molimo izaberite vrijeme kraja termina.");
+         return;
+      }
+
+      if (!javno && !privatno) {
+         setFormError("Molimo izaberite je li događanje javno ili privatno.");
+         return;
+      }
+
+      if (!brojLjudi.trim()) {
+         setFormError("Molimo da unesete broj ljudi za rezervaciju.");
+         return;
+      } else if (!/^([1-9]\d*)$/.test(brojLjudi.trim())) {
+         setFormError("Molimo da broj ljudi bude pozitivan cijeli broj.");
+         return;
+      }
+
+      setFormError("");
+   }
+
    return (
-      <div className="bg-[#5B7692] min-h-screen flex justify-center items-center">
-         <div className="flex justify-between bg-white rounded-[20px] w-[80vw] h-[80vh] p-5">
-            <div className="w-[50%] h-[100%]" >
+      <div className="bg-[#5B7692] min-h-screen flex justify-center md:items-center h-auto">
+         <div className="flex flex-col md:flex-row justify-between bg-white rounded-[20px] w-[90vw] md:h-[80vh] p-5 h-auto mt-5 md:mt-0 mb-5 md:mb-0">
+            <div className="w-[100%] md:w-[50%] h-[550px] md:h-[100%]" >
                <Calendar handleDateClick={handleDateClick}/>
             </div>
 
-            <div className="w-[49%] h-[100%] flex items-center justify-center">
+            <div className="w-[100%] md:w-[49%] h-auto md:h-[100%] flex items-center justify-center">
                {!selectedDate ? (
-                  <p className="text-xl">Izaberite datum</p>
+                  <div className="w-[100%]">
+                     <p className="text-xl m-4">
+                        Izaberite datum
+                     </p>
+
+                     <div>
+                        <Link key={venueId} to={`/venue/${venueId}`}>
+                        <button
+                           type="button"
+                           className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
+                           >Odustani</button>
+                        </Link>
+                     </div>
+                  </div>
                   ) : (
                   <div>
                      {taken ? (
@@ -114,76 +159,122 @@ const ReservationPage = () => {
                            <p className="text-xl">
                            Nema slobodnih termina za {selectedDate}
                            </p>
+
+                           <div>
+                              <Link key={venueId} to={`/venue/${venueId}`}>
+                              <button
+                                 type="button"
+                                 className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
+                                 >Odustani</button>
+                              </Link>
+                           </div>
                         </div>
                      ) : (
                         <div>
-                           <div className="mb-1">
-                              <p className="text-xl font-semibold mb-2">
-                                 Termini za {selectedDate}
-                              </p>
-                              <hr></hr>
-                              <p className="opacity-40">
-                                 Molimo izaberite vrijeme početka pa vrijeme kraja termina
-                              </p>
-                              {availableTimes.map((time, idx) => {
-                                 const isEdge = edgeTimes.includes(time);
-                                 const isBetween = timesBetween.includes(time);
-                                 const isDisabled = disabledTimes.includes(time);
-                                 const isGray = grayTimes.includes(time);
-                                 return (
-                                 <button
-                                    key={idx}
-                                    onClick={() => !isDisabled && handleClick(time)}
-                                    className={`px-4 py-2 transition
-                                       ${isEdge && isDisabled
-                                       ? "bg-blue-500 text-white"
-                                       : isBetween
-                                       ? "bg-blue-300 text-white cursor-pointer hover:bg-blue-400"
-                                       : isEdge
-                                       ? "bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
-                                       : isDisabled
-                                       ? "bg-[#e9e9e9]"
-                                       : isGray
-                                       ? "bg-[#e9e9e9] cursor-pointer hover:bg-gray-300"
-                                       : "bg-white cursor-pointer hover:bg-gray-100"}`}
-                                    >
-                                    {time}
-                                 </button>
-                                 );
-                              })}
-                           </div>
-
-                           <hr></hr>
-                           
-                           <div className="mt-1">
-                              <div className="flex direction-row items-center justify-center">
-                                 <p className="mr-2 ml-2">
-                                    Događanje je:
+                           <form
+                              onSubmit={handleSubmit}
+                              noValidate
+                              onKeyDown={(e) => {
+                                 if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
+                              }}
+                           >
+                              <div className="mb-2">
+                                 <p className="text-xl font-semibold mb-2">
+                                    Termini za {selectedDate}
                                  </p>
-                                 <div className="relative">
-                                    <div className={`absolute top-0 left-0 z-0 javno-btn ${javno ? "bg-[#3B5B80] scale-[1.05]" : "bg-black scale-[0.95]"} w-[80px] h-[40px] rounded-l-xl -mr-1.5`}></div>
-                                    <button 
-                                       className={`javno-btn ${javno ? "bg-[#3B5B80] text-white" : "bg-[#FFFFFF] scale-[0.9]"} pr-1 w-[80px] h-[40px] text-center font-semibold cursor-pointer rounded-l-xl -mr-1.5`}
-                                       onClick={() => handleClickJavno()}
-                                    >Javno</button>
-                                 </div>
-                                 <div className="relative">
-                                    <div className={`absolute top-0 left-0 z-0 privatno-btn ${privatno ? "bg-[#3B5B80] scale-[1.05]" : "bg-black scale-[0.95]"} w-[80px] h-[40px] rounded-r-xl -ml-1.5`}></div>
-                                    <button 
-                                       className={`privatno-btn ${privatno ? "bg-[#3B5B80] text-white" : "bg-[#FFFFFF] scale-[0.9]"} pl-2 w-[80px] h-[40px] text-center font-semibold cursor-pointer rounded-r-xl -ml-1.5`}
-                                       onClick={() => handleClickPrivatno()}
-                                    >Privatno</button>
-                                 </div>
+                                 <hr></hr>
+                                 <p className="opacity-40">
+                                    Molimo izaberite vrijeme početka pa vrijeme kraja termina
+                                 </p>
+                                 {availableTimes.map((time, idx) => {
+                                    const isEdge = edgeTimes.includes(time);
+                                    const isBetween = timesBetween.includes(time);
+                                    const isDisabled = disabledTimes.includes(time);
+                                    const isGray = grayTimes.includes(time);
+                                    return (
+                                    <button
+                                       type="button"
+                                       key={idx}
+                                       onClick={() => !isDisabled && handleClick(time)}
+                                       className={`px-4 py-2 transition
+                                          ${isEdge && isDisabled
+                                          ? "bg-blue-500 text-white"
+                                          : isBetween
+                                          ? "bg-blue-300 text-white cursor-pointer hover:bg-blue-400"
+                                          : isEdge
+                                          ? "bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
+                                          : isDisabled
+                                          ? "bg-[#e9e9e9]"
+                                          : isGray
+                                          ? "bg-[#e9e9e9] cursor-pointer hover:bg-gray-300"
+                                          : "bg-white cursor-pointer hover:bg-gray-100"}`}
+                                       >
+                                       {time}
+                                    </button>
+                                    );
+                                 })}
                               </div>
 
-                              <div className="flex direction-row items-center justify-center">
-                                 Broj ljudi:
-                              </div>
+                              <hr></hr>
+                              
+                              <div className="mt-2 flex flex-col justify-between h-[250px]">
+                                 <div className="flex flex-col items-center mb-2 gap-[8px]">
+                                    <div className="flex flex-row items-center justify-center">
+                                       <p className="mr-2 ml-2">
+                                          Događanje je:
+                                       </p>
+                                       <div className="relative">
+                                          <div className={`absolute top-0 left-0 z-0 javno-btn ${javno ? "bg-[#3B5B80] scale-[1.05]" : "bg-black scale-[0.95]"} w-[80px] h-[40px] rounded-l-xl -mr-1.5`}></div>
+                                          <button
+                                             type="button"
+                                             className={`javno-btn ${javno ? "bg-[#3B5B80] text-white" : "bg-[#FFFFFF] scale-[0.9] hover:bg-[#f0f0f0]"} pr-1 w-[80px] h-[40px] text-center font-semibold cursor-pointer rounded-l-xl -mr-1.5`}
+                                             onClick={() => handleClickJavno()}
+                                          >Javno</button>
+                                       </div>
+                                       <div className="relative">
+                                          <div className={`absolute top-0 left-0 z-0 privatno-btn ${privatno ? "bg-[#3B5B80] scale-[1.05]" : "bg-black scale-[0.95]"} w-[80px] h-[40px] rounded-r-xl -ml-1.5`}></div>
+                                          <button
+                                             type="button"
+                                             className={`privatno-btn ${privatno ? "bg-[#3B5B80] text-white" : "bg-[#FFFFFF] scale-[0.9] hover:bg-[#f0f0f0]"} pl-2 w-[80px] h-[40px] text-center font-semibold cursor-pointer rounded-r-xl -ml-1.5`}
+                                             onClick={() => handleClickPrivatno()}
+                                          >Privatno</button>
+                                       </div>
+                                    </div>
 
-                              <div className="flex direction-row items-center justify-end">
-                                 Submit
+                                    <div className="flex flex-row items-center justify-center">
+                                       <label className="mr-2">Broj ljudi:</label>
+                                       <input
+                                          type="text"
+                                          value={brojLjudi}
+                                          onChange={(e) => setBrojLjudi(e.target.value)}
+                                          required
+                                          placeholder="Broj ljudi"
+                                          className="w-[40%] h-[30px] border-2 border-black rounded-[4px] bg-white"
+                                       />
+                                    </div>
+                                 </div>
+
+                                 <div className="flex flex-row items-center justify-end h-[70px] gap-[5%]">
+                                    {formError && (
+                                       <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-[70%] text-center font-medium top-[20px] right-[20px]">
+                                          {formError}
+                                       </div>
+                                    )}
+                                    <button type="submit" className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]">
+                                       Submit
+                                    </button>
+                                 </div>
+
+                                 <div>
+                                    <Link key={venueId} to={`/venue/${venueId}`}>
+                                    <button
+                                       type="button"
+                                       className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
+                                       >Odustani</button>
+                                    </Link>
+                                 </div>
                               </div>
-                           </div>
+                           </form>
                         </div>
                      )}
                   </div>

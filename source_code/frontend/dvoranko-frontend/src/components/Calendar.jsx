@@ -34,28 +34,28 @@ const Calendar = ({handleDateClick}) => {
 
     return (
         <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        height="100%"
-        dateClick={(info) => {
-            const dayNames = ["ned", "pon", "uto", "sri", "čet", "pet", "sub"];
-            const day = dayNames[info.date.getDay()];
-            if (!daysOpen.includes(day)) return;
+            plugins={[dayGridPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            height="100%"
+            dateClick={(info) => {
+                const dayNames = ["ned", "pon", "uto", "sri", "čet", "pet", "sub"];
+                const day = dayNames[info.date.getDay()];
+                if (!daysOpen.includes(day)) return;
 
-            handleDateClick(info);
-        }}
-        locale={hrLocale}
-        dayCellContent={(arg) => arg.dayNumberText.replace(".", "")}
-        dayCellClassNames={(arg) => {
-            const dayNames = ["ned", "pon", "uto", "sri", "čet", "pet", "sub"];
-            const day = dayNames[arg.date.getDay()];
+                handleDateClick(info);
+            }}
+            locale={hrLocale}
+            dayCellContent={(arg) => arg.dayNumberText.replace(".", "")}
+            dayCellClassNames={(arg) => {
+                const dayNames = ["ned", "pon", "uto", "sri", "čet", "pet", "sub"];
+                const day = dayNames[arg.date.getDay()];
 
-            if (daysOpen.includes(day)) {
-            return "open-day";
-            } else {
-            return "closed-day";
-            }
-        }}
+                if (daysOpen.includes(day)) {
+                    return "open-day";
+                } else {
+                    return "closed-day";
+                }
+            }}
         //events={events}
         />
     );
