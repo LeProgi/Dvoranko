@@ -12,3 +12,14 @@ h1 {
   padding-top: 5%;
   padding-bottom: 5%;
 }
+
+@layer utilities {
+
+  .javno-btn {
+    clip-path: polygon(0 0, 100% 0, 90% 50%, 80% 100%, 0 100%);
+  }
+
+  .privatno-btn {
+    clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%, 10% 50%);
+  }
+}
