@@ -77,7 +77,8 @@ function Form() {
                     setAddress(dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`: ''); //a valjda nemre dvorana promjenit adresu 
                     setAddressId(dvorana.adresa.idAdresa)
                     setselectedCategories(dvorana.kategorije.map(kategorija => kategorija.idKategorija));
-                    console.log(dvorana.kategorije)
+                    setDays(parseDaysOpen(dvorana.daysOpen))
+
                     console.log("uspjesno dohvacanje dvorane kumeeee laooo")
                 })
             } catch (err){
@@ -114,6 +115,39 @@ function Form() {
 
         return () =>  URL.revokeObjectURL(objectUrl);
     }, [image]);
+
+    function parseDaysOpen(daysOpenString) {
+        // start with all days disabled
+        const result = {
+            pon: { enabled: false, start: "", end: "" },
+            uto: { enabled: false, start: "", end: "" },
+            sri: { enabled: false, start: "", end: "" },
+            cet: { enabled: false, start: "", end: "" },
+            pet: { enabled: false, start: "", end: "" },
+            sub: { enabled: false, start: "", end: "" },
+            ned: { enabled: false, start: "", end: "" },
+        };
+
+        if (!daysOpenString) return result;
+
+        daysOpenString
+            .split(";")
+            .filter(Boolean) // remove empty entries
+            .forEach(entry => {
+            const [day, hours] = entry.split(":");
+            if (!result[day] || !hours) return;
+
+            const [start, end] = hours.split("-");
+
+            result[day] = {
+                enabled: true,
+                start,
+                end,
+            };
+            });
+
+        return result;
+        }
 
     const handleRemove = (e) => {
         e.stopPropagation();
