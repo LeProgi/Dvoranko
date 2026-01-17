@@ -13,6 +13,11 @@ const AdminPage = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [allDvorane, setAllDvorane] = useState([])
 
+  const [loadingDvorane, setLoadingDvorane] = useState(new Set());
+  const [loadingUsers, setLoadingUsers] = useState(new Set());
+  const [dvoranaToDelete, setDvoranaToDelete] = useState(new Set());
+  const [userToDelete, setUserToDelete] = useState(new Set());
+
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -108,33 +113,42 @@ const AdminPage = () => {
 
 
 
+
   const handleAcceptDvorana = async (id) => {
+    setLoadingDvorane(prev => new Set(prev).add(id));
     try {
       const res = await fetch(`${url}/api/public/admin/requests/${id}/approve`, {
         method: "POST",
         credentials: "include",
       });
 
-      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+      if (!res.ok) throw new Error("Kume nesto ti se strgalo, server kaze da nije ok");
 
-      // Ukloni prihvaćeni zahtjev iz stanja
+      // Ukloni prihvaceni zahtjev iz stanja
       setZahtjevDvorana((prevRequests) =>
         prevRequests.filter((request) => request.id !== id)
       );
     } catch (err) {
-      console.error("Kume error tijekom prihvaćanja zahtjeva za dvoranu:", err);
+      console.error("Kume error tijekom prihvacanja zahtjeva za dvoranu:", err);
+    } finally {
+      setLoadingDvorane(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   };
 
 
   const handleRejectDvorana = async (id) => {
+    setLoadingDvorane(prev => new Set(prev).add(id));
     try {
       const res = await fetch(`${url}/api/public/admin/requests/${id}/reject`, {
         method: "POST",
         credentials: "include",
       });
 
-      // if (!res.ok) throw new Error("Ne smijes biti tu kume, nisi admin");
+      if (!res.ok) throw new Error("Kume nesto ti se strgalo, server kaze da nije ok");
 
       // Ukloni odbijeni zahtjev iz stanja
       setZahtjevDvorana((prevRequests) =>
@@ -142,37 +156,63 @@ const AdminPage = () => {
       );
     } catch (err) {
       console.error("Kume error tijekom odbijanja zahtjeva za dvoranu:", err);
+    } finally {
+      setLoadingDvorane(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   };
 
 
   const handleDeleteDvorana = async(id) => {
+    setDvoranaToDelete(prev => new Set(prev).add(id));
     try {
       const res = await fetch(`${url}/api/public/admin/delete/dvorana/${id}`, {
         method: "DELETE", 
         credentials: "include",
       })
+
+      if (!res.ok) throw new Error("Kume nesto ti se strgalo, server kaze da nije ok");
+
       setAllDvorane((prevDvorane) =>
         prevDvorane.filter((d) => d.idDvorana !== id)
       );
     }
     catch(err){
       console.error("Kume error tijekom brisanja dvorane")
+    } finally {
+      setDvoranaToDelete(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   }
 
   const handleDeleteUser = async(id) => {
+    setUserToDelete(prev => new Set(prev).add(id));
     try {
       const res = await fetch(`${url}/api/public/admin/delete/user/${id}`, {
         method: "DELETE",
         credentials: "include",
       })
+
+      if (!res.ok) throw new Error("Kume nesto ti se strgalo, server kaze da nije ok");
+
       setAllUsers((prevUsers) =>
         prevUsers.filter((user) => user.id !== id)
       );
     }
     catch(err){
       console.error("kume error tijekom brisanja usera")
+    }finally {
+      setUserToDelete(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   }
 
@@ -214,82 +254,98 @@ const AdminPage = () => {
               ? zahtjevDvorana.length === 0 
                 ? <p className="text-center text-gray-500">Nema novih zahtjeva</p>
                 : zahtjevDvorana.map((request) => (
-                  <div key={request.id} className="bg-white rounded-xl p-4 shadow-md mb-4">
-                    <div className="grid grid-cols-[140px_1fr] gap-y-2">
-                      <span className="font-semibold">Ime dvorane:</span>
-                      <span>{request.naziv}</span>
+                  <div key={request.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
 
-                      <span className="font-semibold">Vlasnik:</span>
-                      <span>{request.owner?.name}</span>
-                      
-                      <span className="font-semibold">Email:</span>
-                      <span>{request.owner?.email}</span>
+                    <div className={`transition-all duration-200 ${loadingDvorane.has(request.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                      <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                        <span className="font-semibold">Ime dvorane:</span>
+                        <span>{request.naziv}</span>
 
-                      <span className="font-semibold">Kapacitet:</span>
-                      <span>{request.kapacitet}</span>
+                        <span className="font-semibold">Vlasnik:</span>
+                        <span>{request.owner?.name}</span>
+                        
+                        <span className="font-semibold">Email:</span>
+                        <span>{request.owner?.email}</span>
 
-                      <span className="font-semibold">Adresa:</span>
-                      <span>{request.street} {request.streetNumber}, {request.city}, {request.postalCode}</span>
+                        <span className="font-semibold">Kapacitet:</span>
+                        <span>{request.kapacitet}</span>
 
-                  <span className="font-semibold">Kategorije:</span>
-                  <span>{request.kategorije?.map((kategorija) => kategorija.nazivKategorije).join(", ")}</span>
+                        <span className="font-semibold">Adresa:</span>
+                        <span>{request.street} {request.streetNumber}, {request.city}, {request.postalCode}</span>
 
-                  <span className="font-semibold">Opis:</span>
-                  <span>{request.opis}</span>
-                  
+                        <span className="font-semibold">Kategorije:</span>
+                        <span>{request.kategorije?.map((kategorija) => kategorija.nazivKategorije).join(", ")}</span>
 
-                      <span className="font-semibold">Slike:</span>
-                      {request.slike && request.slike.length > 0 ? (
-                        <a href={request.slike[0]?.urlSlike} target="_blank" rel="noopener noreferrer"> Slika</a>
-                      ) : (
-                        <span>Nema slika</span>
-                      )}
-                      {/* <span>{request.slike ? request.slike[0]?.urlSlike : "Nema slika"}</span> */}
+                        <span className="font-semibold">Opis:</span>
+                        <span>{request.opis}</span>
+                    
+
+                        <span className="font-semibold">Slike:</span>
+                        {request.slike && request.slike.length > 0 ? (
+                          <a href={request.slike[0]?.urlSlike} target="_blank" rel="noopener noreferrer"> Slika</a>
+                        ) : (
+                          <span>Nema slika</span>
+                        )}
+                      </div>
+
+                      <div className="flex justify-between mt-4">
+                        <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptDvorana(request.id)}>
+                          PRIHVATI
+                        </button>
+                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectDvorana(request.id)}>
+                          ODBIJ
+                        </button>
+                      </div>
                     </div>
 
-                <div className="flex justify-between mt-4">
-                  <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptDvorana(request.id)}>
-                    PRIHVATI
-                  </button>
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectDvorana(request.id)}>
-                    ODBIJ
-                  </button>
-                </div>
-              </div>
+                    {loadingDvorane.has(request.id) && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-xl z-10">
+                          <div className="w-10 h-10 border-4 border-[#3B5B80] border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      )}
+
+                  </div>
             ))
             : allDvorane.length === 0
             ? <p className="text-center text-gray-500">Nema dvorana</p>
             : allDvorane.map((d) => (
-                <div key={d.id} className="bg-white rounded-xl p-4 shadow-md mb-4">
-                  <div className="grid grid-cols-[140px_1fr] gap-y-2">
-                    <span className="font-semibold">Ime dvorane:</span>
-                    <span>{d.nazivDvorana}</span>
-                    <span className="font-semibold">Vlasnik:</span>
-                    <span>{d.vlasnik?.name}</span>
-                    <span className="font-semibold">Email:</span>
-                    <span>{d.vlasnik?.email}</span>
-                    <span className="font-semibold">Kapacitet:</span>
-                    <span>{d.kapacitet}</span>
-                    <span className="font-semibold">Adresa:</span>
-                    <span>{d.adresa?.ulica} {d.adresa?.kucniBroj}, {d.adresa?.mjesto?.nazivMjesto}, {d.adresa?.mjesto?.postanskiBroj} </span>
-                    <span className="font-semibold">Opis:</span>
-                    <span>{d.opis}</span>
-                    <span className="font-semibold">Slike:</span>
-                    {d.slike && d.slike.length > 0 ? (
-                      <span>
-                        <a href={d.slike[0]?.urlSlika} target="_blank" rel="noopener noreferrer"> Slika </a>
-                      </span>
-                      ) : (
-                        <span>Nema slika</span>
-                      )}
+                <div key={d.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
+                  <div className={`transition-all duration-200 ${dvoranaToDelete.has(d.idDvorana) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                    <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                      <span className="font-semibold">Ime dvorane:</span>
+                      <span>{d.nazivDvorana}</span>
+                      <span className="font-semibold">Vlasnik:</span>
+                      <span>{d.vlasnik?.name}</span>
+                      <span className="font-semibold">Email:</span>
+                      <span>{d.vlasnik?.email}</span>
+                      <span className="font-semibold">Kapacitet:</span>
+                      <span>{d.kapacitet}</span>
+                      <span className="font-semibold">Adresa:</span>
+                      <span>{d.adresa?.ulica} {d.adresa?.kucniBroj}, {d.adresa?.mjesto?.nazivMjesto}, {d.adresa?.mjesto?.postanskiBroj} </span>
+                      <span className="font-semibold">Opis:</span>
+                      <span>{d.opis}</span>
+                      <span className="font-semibold">Slike:</span>
+                      {d.slike && d.slike.length > 0 ? (
+                        <span>
+                          <a href={d.slike[0]?.urlSlika} target="_blank" rel="noopener noreferrer"> Slika </a>
+                        </span>
+                        ) : (
+                          <span>Nema slika</span>
+                        )}
+                    </div>
+                    <div className="flex justify-center mt-4">
+                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleDeleteDvorana(d.idDvorana)}>
+                        IZBRIŠI DVORANU
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex justify-center mt-4">
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleDeleteDvorana(d.idDvorana)}>
-                    IZBRIŠI DVORANU
-                  </button>
+                  {dvoranaToDelete.has(d.idDvorana) && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-xl z-10">
+                      <div className="w-10 h-10 border-4 border-[#3B5B80] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
                 </div>
-                </div>
-          ))}
+            ))}
           </div>
 
           <div className="bg-[#f5f5f5] rounded-2xl p-6 overflow-y-auto">
@@ -301,49 +357,69 @@ const AdminPage = () => {
               ? zahtjevIznajmljivac.length === 0
               ? <p className="text-center text-gray-500">Nema novih zahtjeva</p>
               :zahtjevIznajmljivac.map((request) => (
-                <div key={request.id} className="bg-white rounded-xl p-4 shadow-md mb-4">
-                  <div className="grid grid-cols-[140px_1fr] gap-y-2">
-                    <span className="font-semibold">ID:</span>
-                    <span>{request.id}</span>
+                <div key={request.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
+                  <div className={`transition-all duration-200 ${loadingUsers.has(request.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                    <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                      <span className="font-semibold">ID:</span>
+                      <span>{request.id}</span>
 
-                    <span className="font-semibold">Ime i prezime:</span>
-                    <span>{request.user?.name}</span>
+                      <span className="font-semibold">Ime i prezime:</span>
+                      <span>{request.user?.name}</span>
 
 
-                    <span className="font-semibold">Email:</span>
-                    <span>{request.user?.email}</span>
+                      <span className="font-semibold">Email:</span>
+                      <span>{request.user?.email}</span>
 
-                    <span className="font-semibold">Slika:</span>
-                    
-                    <span>{request.image ? request.image : "Nema slike"}</span>
-                    
+                      <span className="font-semibold">Slika:</span>
+                      
+                      <span>{request.image ? request.image : "Nema slike"}</span>
+                      
+                    </div>
+
+                    <div className="flex justify-between mt-4">
+                      <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptIznajmljivac(request.id)}>
+                        PRIHVATI 
+                      </button>
+                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectIznajmljivac(request.id)}>
+                        ODBIJ 
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="flex justify-between mt-4">
-                    <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptIznajmljivac(request.id)}>
-                      PRIHVATI 
-                    </button>
-                    <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectIznajmljivac(request.id)}>
-                      ODBIJ 
-                    </button>
-                  </div>
+                  {loadingUsers.has(request.id) && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-xl z-10">
+                      <div className="w-10 h-10 border-4 border-[#3B5B80] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+
                 </div>
             ))
             : allUsers.length === 0
             ? <p className="text-center text-gray-500">Nema korisnika</p>
             : allUsers.map((user) => (
-              <div key={user.id} className="bg-white rounded-xl p-4 shadow-md mb-4">
-                <div className="grid grid-cols-[140px_1fr] gap-y-2">
-                  <span className="font-semibold">Ime:</span>
-                  <span>{user.name}</span>
-                  <span className="font-semibold">Email:</span>
-                  <span>{user.email}</span>
+              <div key={user.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
+                <div className={`transition-all duration-200 ${userToDelete.has(user.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                  <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                    <span className="font-semibold">Ime:</span>
+                    <span>{user.name}</span>
+                    <span className="font-semibold">Uloga:</span>
+                    <span>{user.role}</span>
+                    <span className="font-semibold">Email:</span>
+                    <span>{user.email}</span>
+                  </div>
+                  <div className="flex justify-center mt-4">
+                    <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleDeleteUser(user.id)}>
+                      IZBRIŠI KORISNIKA
+                    </button>
+                  </div>
                 </div>
-                <div className="flex justify-center mt-4">
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleDeleteUser(user.id)}>
-                    IZBRIŠI KORISNIKA
-                  </button>
-                </div>
+
+                {userToDelete.has(user.id) && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-xl z-10">
+                    <div className="w-10 h-10 border-4 border-[#3B5B80] border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+
               </div>
             ))}
           </div>
