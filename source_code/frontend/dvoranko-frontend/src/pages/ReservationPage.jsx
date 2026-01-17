@@ -7,16 +7,7 @@ const ReservationPage = () => {
    const navigate = useNavigate();
    const { state } = useLocation();
    const venueId = state?.venueId;
-   const [termini, setTermini] = useState([
-      {
-         start: "2026-01-08T18:00:00",
-         end:   "2026-01-08T20:00:00"
-      },
-      {
-         start: "2026-01-08T16:00:00",
-         end:   "2026-01-08T18:00:00"
-      }
-   ]);
+   const [termini, setTermini] = useState([]);
    const [selectedDate, setSelectedDate] = useState(null);
    const [dateStr, setDateStr] = useState(null);
    const allTimes = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"];
@@ -50,9 +41,11 @@ const ReservationPage = () => {
          const text = await response.text();
          const respData = JSON.parse(text);
          setKapacitet(respData.data.kapacitet);
-         //setTermini(...respData.data.termini.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
+         if (respData.data.termini) {
+            setTermini(...respData.data.termini.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd})));
+         }
 
-         console.log("Response from server:", respData.data);
+         console.log("Response from server jhbg:", respData.data);
          return respData;
       } catch (error) {
          console.error("Error fetching data:", error);
@@ -62,15 +55,17 @@ const ReservationPage = () => {
 
    const fetchZahtjeveZaTermine = async () => {
       try {
-         const response = await fetch(`${url}/api/moderator/getMyZahtjevTermin`, {
+         const response = await fetch(`${url}/api/public/termini/zahtjevi/${venueId}`, {
             method: "GET",
             credentials: "include"
          });
          const text = await response.text();
          const respData = JSON.parse(text);
          
-         setTermini(prev => [...prev, ...respData.data.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
-         console.log("Response from server:", respData.data);
+         if (respData) {
+            setTermini(prev => [...prev, ...respData.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
+         }
+         console.log("Response from server:", respData);
       } catch (error) {
          console.error("Error fetching data:", error);
          throw error;
@@ -90,6 +85,7 @@ const ReservationPage = () => {
    };
 
    const namjestiAvailableTimes = (dateString, terminiDay) => {
+      console.log(termini);
       const filtriraniTermini = termini.filter(termin => termin.start.startsWith(dateString));
       const start = terminiDay.substring(terminiDay.indexOf(":") + 1, terminiDay.indexOf("-"));
       const end = terminiDay.substring(terminiDay.indexOf("-") + 1, terminiDay.length);
@@ -108,15 +104,21 @@ const ReservationPage = () => {
             availableTimesPomocna.splice(startIndex + 1, endIndex - startIndex - 1);
          }
       });
+      console.log(availableTimesPomocna);
       let elementi = availableTimesPomocna.length;
       for (let i = 0; i < elementi; ++i) {
+         console.log(availableTimesPomocna[i] + elementi + i);
          if (elementi > 1) {
-            if (i === 0 && parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1) {
-               availableTimesPomocna.splice(0, 1);
-               --elementi;
-               --i;
-            } else if (i === elementi - 1 && parseInt(availableTimesPomocna[i].substring(0, 2)) !== parseInt(availableTimesPomocna[i - 1].substring(0, 2)) + 1) {
-               availableTimesPomocna.splice(i, 1);
+            if (i === 0) {
+               if (parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1) {
+                  availableTimesPomocna.splice(0, 1);
+                  --elementi;
+                  --i;
+               }
+            } else if (i == elementi - 1) {
+               if (parseInt(availableTimesPomocna[i].substring(0, 2)) !== parseInt(availableTimesPomocna[i - 1].substring(0, 2)) + 1) {
+                  availableTimesPomocna.splice(i, 1);
+               }
             } else if (parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1 && parseInt(availableTimesPomocna[i].substring(0, 2)) !== parseInt(availableTimesPomocna[i - 1].substring(0, 2)) + 1) {
                availableTimesPomocna.splice(i, 1);
                --elementi;

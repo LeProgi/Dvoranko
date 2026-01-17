@@ -13,15 +13,13 @@ const Calendar = ({handleDateClick, venueId}) => {
     const fetchDvoranu = async (venueId) => {
         try {
             const response = await fetch(`${url}/api/public/dvorane/${venueId}`, {
-            method: "GET",
-            credentials: "include"
+                method: "GET",
+                credentials: "include"
             });
 
             const text = await response.text();
             const respData = JSON.parse(text);
-            //promijenit privremeno
-            const privremeno = "pon:07-12;sri:05-23;cet:13-20;sub:14-18;";
-            const daysTemp = privremeno.split(";").filter(x => x !== "");
+            const daysTemp = respData.data.daysOpen.split(";").filter(x => x !== "");
             const workingDaysTemp = daysTemp.map(dan => dan.substring(0, 3));
             setDays(daysTemp);
             setWorkingDays(workingDaysTemp);
