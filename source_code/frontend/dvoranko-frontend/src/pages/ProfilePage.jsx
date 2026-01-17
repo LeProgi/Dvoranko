@@ -98,6 +98,24 @@ const ProfilePage = () => {
         }
     };
 
+    const deleteReservation = async (id) => {
+        try {
+              const res = await fetch(`${url}/api/public/termini/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+              })
+        
+              if (!res.ok) throw new Error("Kume nesto ti se strgalo, server kaze da nije ok");
+              setMyReservations((prevReservations) => ({
+                ...prevReservations,
+                data: prevReservations.data.filter((reservation) => reservation.id !== id)
+            }));
+            }
+        catch(err){
+            console.error(err)
+        }
+    }
+
     useEffect(() => {
         if (!user) return;
         if (user.role !== "MODERATOR") return;
@@ -351,7 +369,9 @@ const ProfilePage = () => {
 
                     </div>
 
-                    <button className="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer">
+                    <button
+                    className ="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
+                    onClick={() => deleteReservation(reservation.id)}>
                         Otkaži termin
                     </button>
                     </div>

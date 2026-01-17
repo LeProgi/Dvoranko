@@ -178,6 +178,7 @@ public class ModeratorService {
         dvorana.setKapacitet(request.getKapacitet());
         dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
         dvorana.setOpis(request.getOpis());
+        dvorana.setDaysOpen(request.getDaysOpen());
         //dvorana.setAdresa(adresa);
 
         if (!request.getIdKategorija().isEmpty()) {

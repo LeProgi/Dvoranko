@@ -98,9 +98,8 @@ public class UserService {
     }
 
 
-    public Iterable<TerminDTO> getAllReservationsForUser(Principal principal) {
-        Long userId = getIdForPrincipal((CustomOAuth2User) principal);
-
+    public Iterable<TerminDTO> getAllReservationsForUser(CustomOAuth2User principal) {
+        Long userId = getIdForPrincipal(principal);
         Iterable<Termin> termini = terminRepository.findByKorisnikId(userId);
 
         List<TerminDTO> terminiDTO = new ArrayList<>();

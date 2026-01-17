@@ -65,11 +65,10 @@ function Form() {
 
         const fetchDvorana = async () => {
             try {
-                const res = await fetch(`${url}/api/public/dvorane/${id}`) //treba update taj api poziv da vraca i kategorije
+                const res = await fetch(`${url}/api/public/dvorane/${id}`) 
                 .then(res => res.json())
                 .then(data => {
                     const dvorana = data.data;
-                    //setselectedCategories(dvorana.categories) pogledaj komentar 4 linije iznad
                     setName(dvorana.nazivDvorana)
                     setCapacity((dvorana.kapacitet).toString())
                     setDescription(dvorana.opis)
@@ -78,6 +77,10 @@ function Form() {
                     setAddressId(dvorana.adresa.idAdresa)
                     setselectedCategories(dvorana.kategorije.map(kategorija => kategorija.idKategorija));
                     setDays(parseDaysOpen(dvorana.daysOpen))
+                    setImagePreview(dvorana.slike[0].urlSlika)
+                    //znaci na pocetku cemo ucitat tu bekend sliku i image ce biti Null
+                    //ak posaljemo null onda ostavljamo staru, ak ne posaljemo null na back brisemo staru i dodajemo novu
+                    //setImage(dvorana.slike[0].urlSlika)
 
                     console.log("uspjesno dohvacanje dvorane kumeeee laooo")
                 })
@@ -117,7 +120,6 @@ function Form() {
     }, [image]);
 
     function parseDaysOpen(daysOpenString) {
-        // start with all days disabled
         const result = {
             pon: { enabled: false, start: "", end: "" },
             uto: { enabled: false, start: "", end: "" },
@@ -132,7 +134,7 @@ function Form() {
 
         daysOpenString
             .split(";")
-            .filter(Boolean) // remove empty entries
+            .filter(Boolean) 
             .forEach(entry => {
             const [day, hours] = entry.split(":");
             if (!result[day] || !hours) return;
@@ -152,6 +154,7 @@ function Form() {
     const handleRemove = (e) => {
         e.stopPropagation();
         setImage(null);
+        setImagePreview(null); 
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
@@ -242,7 +245,7 @@ function Form() {
             }
         }
 
-        if (!image) {
+        if (!image && !imagePreview) {
             setFormError("Molimo dodajte sliku dvorane.");
             return;
         }
@@ -276,7 +279,8 @@ function Form() {
             cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
             idAdresa: addressId, 
             idKategorija: selectedCategories, 
-            idVlasnik: userData.id
+            idVlasnik: userData.id,
+            daysOpen
         };
             console.log("Payload to be sent:", payload);
             await updateDvorana(payload);
@@ -301,7 +305,7 @@ function Form() {
                     if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
                 }}
             >
-                <div className="flex flex-col xl:flex-row items-center gap-10 w-full">
+                <div className="flex flex-col xl:flex-row items-center justify-center gap-10 w-full">
                     <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
                         <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
                             <label>Uređivanje podataka o dvorani</label>
