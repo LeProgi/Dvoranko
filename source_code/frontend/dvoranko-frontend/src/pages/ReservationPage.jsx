@@ -45,7 +45,7 @@ const ReservationPage = () => {
             setTermini(...respData.data.termini.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd})));
          }
 
-         console.log("Response from server jhbg:", respData.data);
+         console.log("Response from server:", respData.data);
          return respData;
       } catch (error) {
          console.error("Error fetching data:", error);
