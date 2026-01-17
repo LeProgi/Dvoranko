@@ -13,6 +13,8 @@ const Home = () => {
     const [venues, setVenues] = useState([]);
     const [filteredVenues, setFilteredVenues] = useState([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [categories, setCategories] = useState([]);
+
 
     
     useEffect(() =>{
@@ -33,11 +35,17 @@ const Home = () => {
                     
                     adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : "",
                     imgUrl: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "",
-                    cijenaPoSatu: dvorana.cijenaPoSatu
+                    cijenaPoSatu: dvorana.cijenaPoSatu,
+                    categories: dvorana.kategorije.map(k => k.nazivKategorije) 
 
                 }));
                 setVenues(formatted);
                 setFilteredVenues(formatted);
+
+                const allCategories = Array.from(
+                    new Set(data.data.flatMap(dvorana => dvorana.kategorije.map(k => k.nazivKategorije)))
+                );
+                setCategories(allCategories);
             })
             .catch(err => console.error("neuspjelo dohvacanje dvorane", err));
     }, []);
@@ -104,11 +112,21 @@ const Home = () => {
             });
         }
 
-        // Poštanski broj
-        if (filters.zip) {
-            result = result.filter(v =>
-                String(v.postanskiBroj).startsWith(filters.zip)
-            );
+
+        if (filters.price) {
+            result = result.filter(v => {
+                const pr = v.cijenaPoSatu;
+                if (filters.price === "0-20") return pr <= 20;
+                if (filters.price === "20-40") return pr > 20 && pr <= 40;
+                if (filters.price === "40-60") return pr > 40 && pr <= 60;
+                if (filters.price === "60+") return pr > 60;
+                return true;
+            });
+        }
+
+        // Kategorije
+        if (filters.category) {
+            result = result.filter(v => v.categories.includes(filters.category));
         }
 
         setFilteredVenues(result);
@@ -145,7 +163,7 @@ const Home = () => {
 
         <h1 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Dvoranko</h1>
       </div>
-        <Filter onApply={applyFilters} />
+        <Filter onApply={applyFilters} categories={categories}/>
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
 
