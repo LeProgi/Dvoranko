@@ -190,7 +190,7 @@ const ProfilePage = () => {
             setLoadingReservations(false);
         });
         
-    },[user])
+    },[])
 
 
 
