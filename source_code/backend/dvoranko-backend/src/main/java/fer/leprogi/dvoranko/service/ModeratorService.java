@@ -207,7 +207,7 @@ public class ModeratorService {
             }
         }
 
-
+        dvorana.setDaysOpen(request.getDaysOpen());
 
         Dvorana updated = dvoranaRepository.save(dvorana);
 
