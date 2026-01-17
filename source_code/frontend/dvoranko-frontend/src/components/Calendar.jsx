@@ -19,6 +19,7 @@ const Calendar = ({handleDateClick, venueId}) => {
 
             const text = await response.text();
             const respData = JSON.parse(text);
+            //promijenit privremeno
             const privremeno = "pon:07-12;sri:05-23;cet:13-20;sub:14-18;";
             const daysTemp = privremeno.split(";").filter(x => x !== "");
             const workingDaysTemp = daysTemp.map(dan => dan.substring(0, 3));
