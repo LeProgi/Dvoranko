@@ -269,15 +269,21 @@ function Form() {
             console.log(selectedCategories)
             console.log(userData.id)
 
-        const payload = {
-            nazivDvorana: naziv, 
-            kapacitet: parseInt(kapacitet), 
-            opis, 
-            cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
-            idAdresa: addressId, 
-            idKategorija: selectedCategories, 
-            idVlasnik: userData.id
-        };
+            const payload = {
+                nazivDvorana: naziv, 
+                kapacitet: parseInt(kapacitet), 
+                opis, 
+                cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
+                idAdresa: addressId, 
+                idKategorija: selectedCategories, 
+                idVlasnik: userData.id
+            };
+
+            const formData = new FormData();
+
+            formData.append("data", JSON.stringify(payload));
+            if (image != null) formData.append("files", image);
+
             console.log("Payload to be sent:", payload);
             await updateDvorana(payload);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");

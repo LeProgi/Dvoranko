@@ -21,7 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -58,10 +60,15 @@ public class ModeratorController {
       
     @PutMapping("/dvorana/{id}")
     @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable("id") Long id, @Valid @RequestBody CreateDvoranaRequest request){
-        DvoranaDTO updated = moderatorService.updateDvorana(id, request);
+    public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable("id") Long id, @Valid @RequestPart("request") CreateDvoranaRequest request, @RequestPart(value = "files", required = false) List<MultipartFile> files){
+        try {
+            DvoranaDTO updated = moderatorService.updateDvorana(id, request, files);
 
-        return ResponseEntity.ok(ApiResponse.success(updated, "Dvorana updated successfully"));
+            return ResponseEntity.ok(ApiResponse.success(updated, "Dvorana updated successfully"));
+
+        }catch (Exception e){
+            return ResponseEntity.ok(ApiResponse.error("Kume nes ne dela", e.getMessage()));
+        }
     }
 
 
