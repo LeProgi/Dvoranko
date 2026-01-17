@@ -128,12 +128,7 @@ const ProfilePage = () => {
                     <Button variant="default" title="Početna stranica" />
                 </Link>
                 {user.role === "USER" && (
-                    <button
-                    onClick={() => setSeeCheck(true)}
-                    className="w-[20vw]"
-                    >
-                        <Button variant="default" title="Postani iznajmljivač" />
-                    </button>
+                    <Button variant="default" title="Postani iznajmljivač" onClick={() => setSeeCheck(true)} />
                 )}
             </div>
         </div>
@@ -149,7 +144,7 @@ const ProfilePage = () => {
         
                 <div className="relative bg-white rounded-lg shadow-2xl px-16 py-14 w-[450px] z-20">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
-                        Poslati zahtjev za postati iznajmljivač?
+                        Želiš li postati iznajmljivač?
                     </h2>
 
                     <div className="flex gap-3">

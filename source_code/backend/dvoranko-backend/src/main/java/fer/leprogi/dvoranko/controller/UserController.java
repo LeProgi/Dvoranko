@@ -2,7 +2,10 @@ package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.TerminDTO;
+import fer.leprogi.dvoranko.dto.createRequest.CreateTerminRequest;
 import fer.leprogi.dvoranko.model.Termin;
+import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
+import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.service.UserService;
 import fer.leprogi.dvoranko.utils.ApiResponse;
 import lombok.AllArgsConstructor;
@@ -10,9 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Map;
@@ -44,6 +46,21 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(termini, "My reservations fetched successfully"));
     }
 
+    @PostMapping("/request/getModerator")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createModeratorRequest(@AuthenticationPrincipal CustomOAuth2User principal) {
+
+        ZahtjevIznajmljivac zahtjev = userService.createModeratorRequest(principal);
+
+        return ResponseEntity.ok("request created");
+    }
+
+    @PostMapping("/request/createZahtjevTermin")
+    //@PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createTerminRequest(@RequestBody CreateTerminRequest request) {
+        userService.createTerminRequest(request);
+        return ResponseEntity.ok("termin request created");
+    }
 
 
 
