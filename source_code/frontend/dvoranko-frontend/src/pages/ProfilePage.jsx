@@ -10,7 +10,7 @@ import VenueCard from "../components/VenueCard.jsx";
 
 const zahtjevIznajmljivac = () => { 
     try {
-      const res = fetch(`${url}/api/user/request/getModerator`, {
+      const res = fetch(`${url}/api/public/user/request/getModerator`, {
         method: "POST",
         credentials: "include",
       });
