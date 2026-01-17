@@ -2,7 +2,9 @@ package fer.leprogi.dvoranko.controller;
 
 
 import fer.leprogi.dvoranko.dto.TerminDTO;
+import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.model.Termin;
+import fer.leprogi.dvoranko.model.ZahtjevTermin;
 import fer.leprogi.dvoranko.service.TerminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,11 @@ public class TerminController {
     @GetMapping
     public ResponseEntity<List<Termin>> getAllTermini() {
         return ResponseEntity.ok(terminService.getAll());
+    }
+
+    @GetMapping("/zahtjevi/{dvoranaId}")
+    public ResponseEntity<List<ZahtjevTerminDTO>> getZahtjeviTerminiByDvoranaId(@PathVariable   Long dvoranaId) {
+        return ResponseEntity.ok(terminService.getZahtjeviTerminiByDvoranaId(dvoranaId));
     }
 
 
