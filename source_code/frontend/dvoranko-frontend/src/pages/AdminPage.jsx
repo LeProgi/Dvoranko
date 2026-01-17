@@ -402,6 +402,8 @@ const AdminPage = () => {
                   <div className="grid grid-cols-[140px_1fr] gap-y-2">
                     <span className="font-semibold">Ime:</span>
                     <span>{user.name}</span>
+                    <span className="font-semibold">Uloga:</span>
+                    <span>{user.role}</span>
                     <span className="font-semibold">Email:</span>
                     <span>{user.email}</span>
                   </div>
