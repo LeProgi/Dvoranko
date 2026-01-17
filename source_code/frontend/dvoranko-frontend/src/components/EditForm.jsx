@@ -77,7 +77,8 @@ function Form() {
                     setAddress(dvorana.adresa ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`: ''); //a valjda nemre dvorana promjenit adresu 
                     setAddressId(dvorana.adresa.idAdresa)
                     setselectedCategories(dvorana.kategorije.map(kategorija => kategorija.idKategorija));
-                    console.log(dvorana.kategorije)
+                    setDays(parseDaysOpen(dvorana.daysOpen))
+
                     console.log("uspjesno dohvacanje dvorane kumeeee laooo")
                 })
             } catch (err){
@@ -114,6 +115,39 @@ function Form() {
 
         return () =>  URL.revokeObjectURL(objectUrl);
     }, [image]);
+
+    function parseDaysOpen(daysOpenString) {
+        // start with all days disabled
+        const result = {
+            pon: { enabled: false, start: "", end: "" },
+            uto: { enabled: false, start: "", end: "" },
+            sri: { enabled: false, start: "", end: "" },
+            cet: { enabled: false, start: "", end: "" },
+            pet: { enabled: false, start: "", end: "" },
+            sub: { enabled: false, start: "", end: "" },
+            ned: { enabled: false, start: "", end: "" },
+        };
+
+        if (!daysOpenString) return result;
+
+        daysOpenString
+            .split(";")
+            .filter(Boolean) // remove empty entries
+            .forEach(entry => {
+            const [day, hours] = entry.split(":");
+            if (!result[day] || !hours) return;
+
+            const [start, end] = hours.split("-");
+
+            result[day] = {
+                enabled: true,
+                start,
+                end,
+            };
+            });
+
+        return result;
+        }
 
     const handleRemove = (e) => {
         e.stopPropagation();
@@ -235,15 +269,21 @@ function Form() {
             console.log(selectedCategories)
             console.log(userData.id)
 
-        const payload = {
-            nazivDvorana: naziv, 
-            kapacitet: parseInt(kapacitet), 
-            opis, 
-            cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
-            idAdresa: addressId, 
-            idKategorija: selectedCategories, 
-            idVlasnik: userData.id
-        };
+            const payload = {
+                nazivDvorana: naziv, 
+                kapacitet: parseInt(kapacitet), 
+                opis, 
+                cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
+                idAdresa: addressId, 
+                idKategorija: selectedCategories, 
+                idVlasnik: userData.id
+            };
+
+            const formData = new FormData();
+
+            formData.append("data", JSON.stringify(payload));
+            if (image != null) formData.append("files", image);
+
             console.log("Payload to be sent:", payload);
             await updateDvorana(payload);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");

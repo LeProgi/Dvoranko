@@ -48,6 +48,16 @@ public class SlikaDvoranaService {
         return slikaDvoranaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Invalid id: " + id));
     }
 
+    public SlikaDvorana updateSlika(Long idSlika, String newUrlSlika, String newPoredakSlike) {
+        SlikaDvorana slika = slikaDvoranaRepository.findById(idSlika)
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid id: " + idSlika));
+
+        slika.setUrlSlika(newUrlSlika);
+        slika.setPoredakSlike(newPoredakSlike);
+
+        return slikaDvoranaRepository.save(slika);
+    }
+
 //    public Iterable<SlikaDvorana> getSlikeByDvorana(Long idDvorana) {
 //        Dvorana dvorana = dvoranaRepository.findById(idDvorana)
 //                .orElseThrow(() -> new ResourceNotFoundException("Invalid id: " + idDvorana));
