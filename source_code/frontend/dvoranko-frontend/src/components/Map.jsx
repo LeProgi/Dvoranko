@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { url } from "../main.jsx";
 const containerStyle = {
@@ -16,8 +16,10 @@ const customMapStyle = [
   { featureType: "landscape", elementType: "geometry.fill", stylers: [{ color: "#e6ebef" }] },
 ];
 
-const Map = () => {
+const Map = ({ hoveredVenue }) => {
   const[locations, setLocations] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 45.817, lng: 15.979 });
+  const mapRef = useRef(null);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -39,21 +41,47 @@ const Map = () => {
       .catch((err) => console.error("Nešto ne valja kume, nisam uspio dohvatit lokacije ", err));
   }, []);
 
+  useEffect(() => {
+    if (mapRef.current) {
+      if (hoveredVenue?.latitude && hoveredVenue?.longitude) {
+        mapRef.current.panTo({ lat: hoveredVenue.latitude, lng: hoveredVenue.longitude });
+      } else {
+        mapRef.current.panTo({ lat: 45.817, lng: 15.979 });
+      }
+    }
+  }, [hoveredVenue]);
+
+  const onMapLoad = (map) => {
+    mapRef.current = map;
+  };
+
   if (!isLoaded) return <div>Učitavanje karte...</div>;
 
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={{ lat: 45.817, lng: 15.979 }} // centar karte
+      center={mapCenter}
       zoom={14}
+      onLoad={onMapLoad}
       options={{
         styles: customMapStyle,    
         streetViewControl: false,
       }}
     >
-      {locations.map((loc) => (
-        <Marker key={loc.id} position={loc.position} title={loc.name} />
-      ))}
+      {locations.map((loc) => {
+        const isHovered = hoveredVenue?.id === loc.id;
+        return (
+          <Marker 
+            key={loc.id} 
+            position={loc.position} 
+            title={loc.name}
+            icon={{
+              url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+              scaledSize: new window.google.maps.Size(isHovered ? 55 : 33, isHovered ? 50 : 37)
+            }}
+          />
+        );
+      })}
     </GoogleMap>
   );
 };

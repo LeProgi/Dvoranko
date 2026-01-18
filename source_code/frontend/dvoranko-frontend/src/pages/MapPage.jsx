@@ -9,6 +9,8 @@ import Footer from "../components/Footer";
 
 const MapPage = () => {
     const [user, setUser] = useState(null);
+    const [venues, setVenues] = useState([]);
+    const [hoveredVenue, setHoveredVenue] = useState(null);
 
 useEffect(() => {
   fetch(`${url}/api/auth/user`, {
@@ -20,6 +22,30 @@ useEffect(() => {
     })
     .then((data) => setUser(data))
     .catch(() => setUser(null));
+}, []);
+
+useEffect(() => {
+  fetch(`${url}/api/public/dvorane`, {
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data?.data) {
+        const formatted = data.data.map((dvorana) => ({
+          id: dvorana.idDvorana,
+          name: dvorana.nazivDvorana,
+          adresa: dvorana.adresa
+            ? `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}`
+            : "nemrem nac adresu kume",
+          kapacitet: dvorana.kapacitet,
+          cijenaPoSatu: dvorana.cijenaPoSatu,
+          latitude: dvorana.adresa?.latitude,
+          longitude: dvorana.adresa?.longitude,
+        }));
+        setVenues(formatted);
+      }
+    })
+    .catch((err) => console.error("Error fetching venues:", err));
 }, []);
 
 const handleGoogleLogin = () => {
@@ -60,9 +86,31 @@ const handleGoogleLogin = () => {
             </div>
             <h2 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Karta</h2>
         </div>
-        <div className="flex-grow w-[90vw] items-center h-[80vh] px-6 py-4 bg-[#8091A6] mt-[2%] mb-[2%] rounded-2xl">
-            <div className="w-full h-full rounded-2xl shadow-lg overflow-hidden">
-                <Map />
+        <div className="flex-grow w-[90vw] h-[80vh] px-6 py-4 bg-[#8091A6] mt-[2%] mb-[2%] rounded-2xl flex gap-4">
+            <div className="flex-1 h-full rounded-2xl shadow-lg overflow-hidden">
+                <Map hoveredVenue={hoveredVenue} />
+            </div>
+            <div className="w-1/5 min-w-[200px]  h-full bg-white rounded-2xl p-3 overflow-y-auto">
+                <h3 className="text-gray-700 font-semibold text-lg mb-3">Dvorane</h3>
+                <div className="space-y-0">
+                    {venues.map((venue, index) => (
+                        <Link 
+                            key={venue.id} 
+                            to={`/venue/${venue.id}`}
+                            onMouseEnter={() => setHoveredVenue(venue)}
+                            onMouseLeave={() => setHoveredVenue(null)}
+                        >
+                            <div className={`p-3 hover:bg-gray-50 transition cursor-pointer ${index !== venues.length - 1 ? 'border-b border-gray-200' : ''}`}>
+                                <h4 className="font-semibold text-sm text-gray-800">{venue.name}</h4>
+                                <p className="text-xs text-gray-600 mt-1">{venue.adresa}</p>
+                                <div className="flex justify-between mt-2">
+                                    <span className="text-xs text-gray-700">Kapacitet: {venue.kapacitet}</span>
+                                    <span className="text-xs font-semibold text-[#3B5B80]">{venue.cijenaPoSatu} €/h</span>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </div>
         <Footer/>

@@ -2,12 +2,16 @@ package fer.leprogi.dvoranko.service;
 
 
 import fer.leprogi.dvoranko.dto.TerminDTO;
+import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.model.Termin;
 import fer.leprogi.dvoranko.model.User;
+import fer.leprogi.dvoranko.model.ZahtjevTermin;
 import fer.leprogi.dvoranko.repository.DvoranaRepository;
 import fer.leprogi.dvoranko.repository.TerminRepository;
 import fer.leprogi.dvoranko.repository.UserRepository;
+import fer.leprogi.dvoranko.repository.ZahtjevTerminRepository;
+import fer.leprogi.dvoranko.utils.DtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +24,8 @@ public class TerminService {
     private final TerminRepository terminRepository;
     private final UserRepository userRepository;
     private final DvoranaRepository dvoranaRepository;
+    private final ZahtjevTerminRepository zahtjevTerminRepository;
+    private final DtoMapper dtoMapper;
 
     public Termin create(TerminDTO terminDTO) {
 
@@ -90,5 +96,17 @@ public class TerminService {
             throw new RuntimeException("Termin s ID-om " + id + " ne postoji");
         }
         terminRepository.deleteById(id);
+    }
+
+    public List<ZahtjevTerminDTO> getZahtjeviTerminiByDvoranaId(Long dvoranaId) {
+
+        List<ZahtjevTermin> zahtjevi = zahtjevTerminRepository.findByIdDvorana(dvoranaId);
+        List<ZahtjevTerminDTO> zahtjeviDTO = zahtjevi.stream().map(zahtjev -> {
+            ZahtjevTerminDTO dto = dtoMapper.toZahtjevTerminDTO(zahtjev);
+            return dto;
+        }).toList();
+
+
+        return  zahtjeviDTO;
     }
 }

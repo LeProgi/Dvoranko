@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, Link, useNavigate, Navigate } from "react-router-dom";
 import { url } from "../main.jsx";
 import Calendar from "../components/Calendar";
 
 const ReservationPage = () => {
+   const navigate = useNavigate();
    const { state } = useLocation();
    const venueId = state?.venueId;
-   const [daysOpen, setDaysOpen] = useState([]);
+   const [termini, setTermini] = useState([]);
    const [selectedDate, setSelectedDate] = useState(null);
-   const [allTimes, setallTimes] = useState(["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"]);
+   const [dateStr, setDateStr] = useState(null);
+   const allTimes = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"];
    const [availableTimes, setAvailableTimes] = useState([]);
    const [taken, setTaken] = useState(false);
    const [timesBetween, setTimesBetween] = useState([]);
@@ -25,6 +26,11 @@ const ReservationPage = () => {
    const [brojLjudi, setBrojLjudi] = useState("");
    const [formError, setFormError] = useState("");
 
+   useEffect(() => {
+      fetchDvoranu(venueId);
+      fetchZahtjeveZaTermine();
+   }, [venueId]);
+
    const fetchDvoranu = async (venueId) => {
       try {
          const response = await fetch(`${url}/api/public/dvorane/${venueId}`, {
@@ -35,7 +41,9 @@ const ReservationPage = () => {
          const text = await response.text();
          const respData = JSON.parse(text);
          setKapacitet(respData.data.kapacitet);
-         setDaysOpen(respData.data.daysOpen);
+         if (respData.data.termini) {
+            setTermini(...respData.data.termini.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd})));
+         }
 
          console.log("Response from server:", respData.data);
          return respData;
@@ -43,40 +51,95 @@ const ReservationPage = () => {
          console.error("Error fetching data:", error);
          throw error;
       }
+   };
+
+   const fetchZahtjeveZaTermine = async () => {
+      try {
+         const response = await fetch(`${url}/api/public/termini/zahtjevi/${venueId}`, {
+            method: "GET",
+            credentials: "include"
+         });
+         const text = await response.text();
+         const respData = JSON.parse(text);
+         
+         if (respData) {
+            setTermini(prev => [...prev, ...respData.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
+         }
+         console.log("Response from server:", respData);
+      } catch (error) {
+         console.error("Error fetching data:", error);
+         throw error;
+      }
    }
 
    const handleDateClick = (info, terminiDay) => {
-      fetchDvoranu(venueId);
-      const dateString = String(info.date.getDate()).padStart(2, "0") + "." + String(info.date.getMonth() + 1).padStart(2, "0") + "." + info.date.getFullYear() + ".";
-      setSelectedDate(dateString);
-      const start = terminiDay.substring(terminiDay.indexOf(":") + 1, terminiDay.indexOf("-"));
-      const end = terminiDay.substring(terminiDay.indexOf("-") + 1, terminiDay.length);
-      const startIndex = allTimes.findIndex(time => time.startsWith(start));
-      const endIndex = allTimes.findIndex(time => time.startsWith(end));
-      setAvailableTimes(allTimes.slice(startIndex, endIndex + 1));
-      //fetch kapacitet
-      fetchTakenTimes(dateString);
-   };
-
-   const fetchTakenTimes = (date) => {
-      //fetch zauzete termine i zahtjeve za termine i uredi availableTimes i taken
       setStartTime(null);
       setEndTime(null);
       setTimesBetween([]);
       setEdgeTimes([]);
+      setFormError("");
+      const izabranDate = String(info.date.getDate()).padStart(2, "0") + "." + String(info.date.getMonth() + 1).padStart(2, "0") + "." + info.date.getFullYear() + ".";
+      setSelectedDate(izabranDate);
+      setDateStr(info.dateStr);
+      namjestiAvailableTimes(info.dateStr, terminiDay);
+   };
+
+   const namjestiAvailableTimes = (dateString, terminiDay) => {
+      const filtriraniTermini = termini.filter(termin => termin.start.startsWith(dateString));
+      const start = terminiDay.substring(terminiDay.indexOf(":") + 1, terminiDay.indexOf("-"));
+      const end = terminiDay.substring(terminiDay.indexOf("-") + 1, terminiDay.length);
+      const startIndex = allTimes.findIndex(time => time.startsWith(start));
+      const endIndex = allTimes.findIndex(time => time.startsWith(end));
+      const availableTimesPomocna = allTimes.slice(startIndex, endIndex + 1);
       const notStart = [];
-      const disabled = [];
-      for (let i = 0; i < availableTimes.length - 1; ++i) {
-         if (parseInt(availableTimes[i + 1].substring(0, 2)) !== parseInt(availableTimes[i].substring(0, 2)) + 1) {
-            notStart.push(availableTimes[i]);
-            disabled.push(availableTimes[i]);
+      filtriraniTermini.forEach(termin => {
+         const start = termin.start.substring(11, 16);
+         const end = termin.end.substring(11, 16);
+
+         const startIndex = availableTimesPomocna.findIndex(time => time.startsWith(start));
+         const endIndex = availableTimesPomocna.findIndex(time => time.startsWith(end));
+
+         if (startIndex !== -1 && endIndex !== -1) {
+            availableTimesPomocna.splice(startIndex + 1, endIndex - startIndex - 1);
+         }
+      });
+      let elementi = availableTimesPomocna.length;
+      for (let i = 0; i < elementi; ++i) {
+         if (elementi > 1) {
+            if (i === 0) {
+               if (parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1) {
+                  availableTimesPomocna.splice(0, 1);
+                  --elementi;
+                  --i;
+               }
+            } else if (i == elementi - 1) {
+               if (parseInt(availableTimesPomocna[i].substring(0, 2)) !== parseInt(availableTimesPomocna[i - 1].substring(0, 2)) + 1) {
+                  availableTimesPomocna.splice(i, 1);
+               }
+            } else if (parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1 && parseInt(availableTimesPomocna[i].substring(0, 2)) !== parseInt(availableTimesPomocna[i - 1].substring(0, 2)) + 1) {
+               availableTimesPomocna.splice(i, 1);
+               --elementi;
+               --i;
+            }
          }
       }
-      notStart.push(availableTimes[availableTimes.length - 1]);
-      disabled.push(availableTimes[availableTimes.length - 1]);
-      setNotStartTimes(notStart);
-      setDisabledTimes(disabled);
-      setGrayTimes(disabled);
+      if (elementi < 2) {
+         setTaken(true);
+      } else {
+         setAvailableTimes(availableTimesPomocna);
+         const disabled = [];
+         for (let i = 0; i < availableTimesPomocna.length - 1; ++i) {
+            if (parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1) {
+               notStart.push(availableTimesPomocna[i]);
+               disabled.push(availableTimesPomocna[i]);
+            }
+         }
+         notStart.push(availableTimesPomocna[availableTimesPomocna.length - 1]);
+         disabled.push(availableTimesPomocna[availableTimesPomocna.length - 1]);
+         setNotStartTimes(notStart);
+         setDisabledTimes(disabled);
+         setGrayTimes(disabled);
+      }
    };
 
    const startTimes = (clickedTime) => {
@@ -126,7 +189,7 @@ const ReservationPage = () => {
       setPrivatno(true);
    }
 
-   const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
       e.preventDefault();
 
       if (!startTime) {
@@ -155,15 +218,67 @@ const ReservationPage = () => {
          return;
       }
 
-      //poslati podatke
       setFormError("");
+
+      try {
+         const userRes = await fetch(`${url}/api/auth/user`, { credentials: "include" });
+         if (userRes.status !== 200) throw new Error("Nije ulogiran");
+         const userData = await userRes.json();
+         const ownerIdLocal = userData.id;
+
+         const payload = {
+            datumVrijemeStart: dateStr + "T" + startTime + ":00",
+            datumVrijemeEnd: dateStr + "T" + endTime + ":00",
+            idDvorana: parseInt(venueId),
+            jeJavniEvent: javno ? 1 : 0,
+            idKorisnik: ownerIdLocal
+         }
+         console.log("Payload to be sent:", payload);
+
+         await postZahtjevTermin(payload);
+         setFormError("Zahtjev uspješno poslan");
+         navigate("/my-profile");
+      } catch (err) {
+         console.error(err);
+         setFormError("Greška pri slanju zahtjeva. Pokušajte ponovno.");
+      }
+   }
+
+   const postZahtjevTermin = async (data) => {
+      try {
+            const response = await fetch(`${url}/api/user/request/createZahtjevTermin`, {
+               method: "POST",
+               credentials: "include",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify(data),
+            });
+
+            const text = await response.text();
+            let respData;
+            try {
+               respData = text ? JSON.parse(text) : null;
+            } catch {
+               respData = text;
+            }
+
+            if (!response.ok) {
+               console.error("Server returned error:", response.status, respData);
+               throw new Error(respData?.message || `Server error ${response.status}`);
+            }
+
+            console.log("Response from server:", respData);
+            return respData;
+        } catch (error) {
+            console.error("Error submitting data:", error);
+            throw error;
+        }
    }
 
    return (
       <div className="bg-[#5B7692] min-h-screen flex justify-center md:items-center h-auto">
          <div className="flex flex-col md:flex-row justify-between bg-white rounded-[20px] w-[90vw] md:h-[80vh] p-5 h-auto mt-5 md:mt-0 mb-5 md:mb-0">
             <div className="w-[100%] md:w-[50%] h-[550px] md:h-[100%]" >
-               <Calendar handleDateClick={handleDateClick} daysOpen={daysOpen}/>
+               <Calendar handleDateClick={handleDateClick} venueId={venueId}/>
             </div>
 
             <div className="w-[100%] md:w-[49%] h-auto md:h-[100%] flex items-center justify-center">

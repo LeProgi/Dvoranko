@@ -22,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.Map;
@@ -58,12 +60,19 @@ public class ModeratorController {
     }
       
       
-    @PutMapping("/dvorana/{id}")
+    @PutMapping(value = "/dvorana/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable("id") Long id, @Valid @RequestBody CreateDvoranaRequest request, @RequestPart("files") List<MultipartFile> files){
-        DvoranaDTO updated = moderatorService.updateDvorana(id, request);
+    public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable("id") Long id, @Valid @RequestPart("request") String requestJson, @RequestPart(value = "files", required = false) List<MultipartFile> files){
+        try {
+            CreateDvoranaRequest request = new ObjectMapper().readValue(requestJson, CreateDvoranaRequest.class);
 
-        return ResponseEntity.ok(ApiResponse.success(updated, "Dvorana updated successfully"));
+            DvoranaDTO updated = moderatorService.updateDvorana(id, request, files);
+
+            return ResponseEntity.ok(ApiResponse.success(updated, "Dvorana updated successfully"));
+
+        }catch (Exception e){
+            return ResponseEntity.ok(ApiResponse.error("Kume nes ne dela", e.getMessage()));
+        }
     }
 
 

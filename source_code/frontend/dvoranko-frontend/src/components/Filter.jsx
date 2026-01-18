@@ -1,15 +1,20 @@
 import { useState } from "react";
 import Button from "./Button";
 
-const Filter = ({ onApply }) => {
+const Filter = ({ onApply , categories}) => {
     const [open, setOpen] = useState(false);
     const [capacity, setCapacity] = useState("");
     const [zip, setZip] = useState("");
+    const [price, setPrice] = useState("");
+    const [category, setCategory] = useState("");
+
 
     const apply = () => {
         onApply({
             capacity,
-            zip
+            zip, 
+            price,
+            category
         });
         setOpen(false);
     };
@@ -53,19 +58,39 @@ const Filter = ({ onApply }) => {
                             </select>
                         </div>
 
-                        {/* Poštanski broj */}
+                        
                         <div className="mb-4">
-                            <label className="font-semibold">Poštanski broj (Zagreb)</label>
-                            <input
-                                type="text"
-                                placeholder="10110"
-                                className="w-full border p-2 rounded"
-                                value={zip}
-                                onChange={e => setZip(e.target.value)}
-                            />
+                            <label className="font-semibold">Kategorija</label>
+                                <select
+                                    className="w-full border p-2 rounded"
+                                    value={category}
+                                    onChange={e => setCategory(e.target.value)}
+                                >
+                                <option value="">Sve</option>
+                                {categories.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                                </select>
                         </div>
 
-                        {/* Buttons */}
+
+                        
+                        <div className="mb-4">
+                            <label className="font-semibold">Cijena po satu - €</label>
+                            <select
+                                className="w-full border p-2 rounded"
+                                value={price}
+                                onChange={e => setPrice(e.target.value)}
+                            >
+                                <option value="">Sve</option>
+                                <option value="0-20">0-20</option>
+                                <option value="20-40">20-40</option>
+                                <option value="40-60">40-60</option>
+                                <option value="60+">60+</option>
+                            </select>
+                        </div>
+
+                        
                         <div className="flex justify-end gap-4 mt-6">
                             <button
                                 className="px-4 py-2 bg-gray-300 rounded"

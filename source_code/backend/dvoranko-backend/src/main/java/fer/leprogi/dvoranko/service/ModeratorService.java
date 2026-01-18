@@ -56,6 +56,8 @@ public class ModeratorService {
     private CloudinaryService cloudinaryService;
     @Autowired
     private ZahtjevSlikaRepository zahtjevSlikaRepository;
+    @Autowired
+    private SlikaDvoranaService slikaDvoranaService;
 
     @Transactional
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request, List<MultipartFile> images) {
@@ -167,7 +169,7 @@ public class ModeratorService {
 
 
     @Transactional
-    public DvoranaDTO updateDvorana(Long idDvorana, CreateDvoranaRequest request) {
+    public DvoranaDTO updateDvorana(Long idDvorana, CreateDvoranaRequest request, List<MultipartFile> images) throws Exception{
         Dvorana dvorana = dvoranaRepository.findById(idDvorana)
                 .orElseThrow(() -> new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist"));
 
@@ -193,6 +195,20 @@ public class ModeratorService {
         } else {
             dvorana.getKategorije().clear();
         }
+
+        if (images != null) {
+            for (int i = 0; i < dvorana.getSlike().size(); i++) {
+                MultipartFile newImage = images.get(i);
+                SlikaDvorana oldImage = dvorana.getSlike().get(i);
+
+                cloudinaryService.deleteImage(oldImage.getUrlSlika());
+                String url = cloudinaryService.upload(newImage, dvorana.getIdDvorana(), i + 1, FolderName.dvorane);
+
+                slikaDvoranaService.updateSlika(oldImage.getIdSlika(), url, oldImage.getPoredakSlike());
+            }
+        }
+
+        dvorana.setDaysOpen(request.getDaysOpen());
 
         Dvorana updated = dvoranaRepository.save(dvorana);
 
