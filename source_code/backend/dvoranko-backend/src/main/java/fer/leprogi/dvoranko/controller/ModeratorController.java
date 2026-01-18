@@ -1,6 +1,7 @@
 package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
+import fer.leprogi.dvoranko.dto.TerminDTO;
 import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
@@ -16,6 +17,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -84,4 +86,20 @@ public class ModeratorController {
 
         return ResponseEntity.ok(ApiResponse.success(termini, "My termin requests fetched successfully"));
     }
+
+    @GetMapping("/getZahtjeviForDvorana/{id}")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<Iterable<ZahtjevTerminDTO>>> getAllTerminRequestsForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) {
+
+        Iterable<ZahtjevTerminDTO> termini = moderatorService.getAllTerminRequestsForThisDvorana(principal, id);
+        return ResponseEntity.ok(ApiResponse.success(termini, "Termin requests for this dvorana fetched successfully"));
+    }
+
+    @GetMapping("/getPotvrdeniTerminiForDvorana/{id}")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<Iterable<TerminDTO>>> getAllPotvrdeniTerminiForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) throws Exception {
+        Iterable<TerminDTO> termini = moderatorService.getAllPotvrdeniTerminiForThisDvorana(principal, id);
+        return ResponseEntity.ok(ApiResponse.success(termini, "Potvrdeni termini fetched successfully"));
+    }
+
 }

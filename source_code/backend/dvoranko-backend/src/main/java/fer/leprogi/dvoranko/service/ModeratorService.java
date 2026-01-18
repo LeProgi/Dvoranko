@@ -22,9 +22,7 @@ import fer.leprogi.dvoranko.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -36,6 +34,8 @@ public class ModeratorService {
     private ZahtjevOglasRepository zahtjevRepository;
     @Autowired
     private ZahtjevTerminRepository zahtjevTerminRepository;
+    @Autowired
+    private TerminRepository terminRepository;
     @Autowired
     private DvoranaRepository dvoranaRepository;
     @Autowired
@@ -141,6 +141,39 @@ public class ModeratorService {
         }
 
         return sviZahtjeviDTO;
+    }
+
+    public Iterable<ZahtjevTerminDTO> getAllTerminRequestsForThisDvorana(CustomOAuth2User principal, long id) {
+        Set<ZahtjevTermin> sviZahtjeviZaOvuDvoranu = new HashSet<>();
+
+        Iterable<ZahtjevTermin> zahtjeviDvorana = zahtjevTerminRepository.findByIdDvorana(id);
+        for(ZahtjevTermin zahtjev: zahtjeviDvorana){
+            sviZahtjeviZaOvuDvoranu.add(zahtjev);
+        }
+
+        Set<ZahtjevTerminDTO> sviZahtjeviDTO = new HashSet<>();
+        for(ZahtjevTermin zahtjev: sviZahtjeviZaOvuDvoranu){
+            sviZahtjeviDTO.add(dtoMapper.toZahtjevTerminDTO(zahtjev));
+        }
+
+        return sviZahtjeviDTO;
+    }
+
+    public Iterable<TerminDTO> getAllPotvrdeniTerminiForThisDvorana(CustomOAuth2User principal, long id) throws Exception {
+        Set<Termin> sviPotvrdeniTermini = new HashSet<>();
+        Optional<Dvorana> dvorana = dvoranaRepository.findById(id);
+        if(!dvorana.isPresent()){
+            throw new Exception("error kume ne postoji ta dobro");
+        }
+        List<Termin> sviTermini = new LinkedList<>();
+        sviTermini = terminRepository.findAllByDvorana(dvorana.get());
+
+        Set<TerminDTO> sviTerminiDTO = new HashSet<>();
+        for(Termin termin : sviTermini){
+            sviTerminiDTO.add(dtoMapper.toTerminDTO(termin));
+        }
+
+        return sviTerminiDTO;
     }
 
     public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
