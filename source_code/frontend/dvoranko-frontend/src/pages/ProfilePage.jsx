@@ -25,7 +25,6 @@ const zahtjevIznajmljivac = () => {
 const ProfilePage = () => {
     const location = useLocation();
     
-    
     const [seeCheck, setSeeCheck] = useState(false);
      
     const [user, setUser] = useState(location.state?.user ?? null);
