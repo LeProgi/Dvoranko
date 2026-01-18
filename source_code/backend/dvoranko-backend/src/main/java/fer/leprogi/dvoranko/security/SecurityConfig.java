@@ -52,6 +52,14 @@ public class SecurityConfig {
                         )
 //                        .defaultSuccessUrl("https://dvoranko.onrender.com", true)
                         .defaultSuccessUrl(frontendUrl, true)
+                ).logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(200);
+                        })
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
                 ).sessionManagement(session -> session
                         .maximumSessions(-1)
                         .sessionRegistry(sessionRegistry())

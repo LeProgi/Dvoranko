@@ -25,7 +25,6 @@ const zahtjevIznajmljivac = () => {
 const ProfilePage = () => {
     const location = useLocation();
     
-    
     const [seeCheck, setSeeCheck] = useState(false);
      
     const [user, setUser] = useState(location.state?.user ?? null);
@@ -44,9 +43,12 @@ const ProfilePage = () => {
         })
             .then((res) => {
             if (!res.ok) throw new Error("Not logged in");
-            return res.json();
+                return res.json();
             })
-            .then((data) => setUser(data))
+            .then((data) => {
+                setUser(data)
+                console.log("User data fetched:", data);
+            })
             .catch(() => {
                 setUser(null);
                 navigate("/", { replace: true });
@@ -210,6 +212,22 @@ const ProfilePage = () => {
         
     },[])
 
+    const logout = async () => {
+        try {
+            const res = await fetch(`${url}/api/auth/logout`, {
+                method: "POST",
+                credentials: "include",
+            });
+            
+            console.log("Logout response:", res);
+            if (!res.ok) throw new Error("Logout failed");
+
+            setUser(null);
+            navigate("/", { replace: true });
+        } catch (err) {
+            console.error("Logout error:", err);
+        }
+    };
 
 
     if (!user) {
@@ -238,11 +256,15 @@ const ProfilePage = () => {
                     <p className="text-lg opacity-90">{user.email}</p>
                 </div>
             </div>
-            <div className="flex flex-col justify-center gap-[1vw]">
-            
+            <div className="flex flex-col justify-center gap-[0.5vw]">
+
+
                 <Link to="/" className="w-[20vw] block">
                     <Button variant="default" title="Početna stranica" />
                 </Link>
+
+                <Button title={"Odjavi se"} variant={"default"} onClick={logout}/>
+
                 {user.role === "USER" && (
                     <Button variant="default" title="Postani iznajmljivač" onClick={() => setSeeCheck(true)} />
                 )}

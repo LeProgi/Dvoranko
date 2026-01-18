@@ -109,4 +109,10 @@ public class TerminService {
 
         return  zahtjeviDTO;
     }
+
+    public List<TerminDTO> getAllPublicTermin (){
+        List<Termin> termini = terminRepository.findAllByJeJavniEvent(1);
+
+        return termini.stream().map(dtoMapper::toTerminDTO).toList();
+    }
 }

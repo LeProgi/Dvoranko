@@ -290,9 +290,11 @@ function Form() {
             const formData = new FormData();
 
             formData.append("request", JSON.stringify(payload));
-            //if (image != null) formData.append("files", image);
+            if (image != null) formData.append("files", image);
 
             console.log("Payload to be sent:", payload);
+            console.log("Image:", image);
+
             await updateDvorana(formData);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
             navigate("/my-profile");
@@ -466,8 +468,6 @@ function Form() {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* <Button value="Obriši dvoranu" variant="default"></Button> */}
                                 
                                 <button type="submit" className="min-w-[220px] h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
                                     Promjeni podatke o dvorani
@@ -480,6 +480,7 @@ function Form() {
                                         </button>
                                     </Link>
                                 </div>
+                          
 
                                 <div className="absolute bottom-[10px] left-[10px]">
                                     {/* <Link to="/my-profile"> */}
@@ -540,18 +541,18 @@ function Form() {
                     )}
                 </div>
             </div>
-                {isSubmitting && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-50">
-                        <div className="flex flex-col items-center gap-4">
-                        <div className="w-16 h-16 border-4 border-[#536F8F] border-t-transparent rounded-full animate-spin"></div>
-                        <p className="text-white text-lg font-semibold animate-pulse">
-                            Promjena podataka...
-                        </p>
-                        </div>
+            {isSubmitting && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="w-16 h-16 border-4 border-[#536F8F] border-t-transparent rounded-full animate-spin"></div>
+                      <p className="text-white text-lg font-semibold animate-pulse">
+                          Promjena podataka...
+                      </p>
                     </div>
-                    )
-                }
-        </div> 
+                </div>
+                )
+            }
+        </div>
     );
 }
 

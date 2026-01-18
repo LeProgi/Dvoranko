@@ -40,6 +40,11 @@ public class TerminController {
         return ResponseEntity.ok(terminService.findById(id));
     }
 
+    @GetMapping("/public")
+    public ResponseEntity<List<TerminDTO>> getAllPublicTermini() {
+        return ResponseEntity.ok(terminService.getAllPublicTermin());
+    }
+
 
     @PostMapping
     public ResponseEntity<Termin> createTermin(@RequestBody TerminDTO termin) {

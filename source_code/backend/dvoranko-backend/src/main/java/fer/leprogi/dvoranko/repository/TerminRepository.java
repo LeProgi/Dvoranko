@@ -4,10 +4,12 @@ import fer.leprogi.dvoranko.model.Termin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TerminRepository extends JpaRepository<Termin, Long> {
 
 
     Iterable<Termin> findByKorisnikId(Long userId);
-    Iterable<Termin> findAllByJeJavniEvent(Integer jeJavniEvent);
+    List<Termin> findAllByJeJavniEvent(Integer jeJavniEvent);
 }
