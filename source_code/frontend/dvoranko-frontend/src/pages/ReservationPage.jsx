@@ -85,7 +85,6 @@ const ReservationPage = () => {
    };
 
    const namjestiAvailableTimes = (dateString, terminiDay) => {
-      console.log(termini);
       const filtriraniTermini = termini.filter(termin => termin.start.startsWith(dateString));
       const start = terminiDay.substring(terminiDay.indexOf(":") + 1, terminiDay.indexOf("-"));
       const end = terminiDay.substring(terminiDay.indexOf("-") + 1, terminiDay.length);
@@ -104,10 +103,8 @@ const ReservationPage = () => {
             availableTimesPomocna.splice(startIndex + 1, endIndex - startIndex - 1);
          }
       });
-      console.log(availableTimesPomocna);
       let elementi = availableTimesPomocna.length;
       for (let i = 0; i < elementi; ++i) {
-         console.log(availableTimesPomocna[i] + elementi + i);
          if (elementi > 1) {
             if (i === 0) {
                if (parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1) {
@@ -249,7 +246,7 @@ const ReservationPage = () => {
 
    const postZahtjevTermin = async (data) => {
       try {
-            const response = await fetch(`${url}/api/public/user/request/createZahtjevTermin`, {
+            const response = await fetch(`${url}/api/user/request/createZahtjevTermin`, {
                method: "POST",
                credentials: "include",
                headers: { "Content-Type": "application/json" },

@@ -160,8 +160,7 @@ function Form() {
             const response = await fetch(`${url}/api/moderator/dvorana/${id}`, { //promjenit api poziv?
                 method: "PUT",
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                body: data
             });
 
             const text = await response.text();
@@ -276,16 +275,17 @@ function Form() {
                 cijenaPoSatu: cijenaPoSatu ? parseFloat(cijenaPoSatu) : null, 
                 idAdresa: addressId, 
                 idKategorija: selectedCategories, 
-                idVlasnik: userData.id
+                idVlasnik: ownerIdLocal,
+                daysOpen: daysOpen
             };
 
             const formData = new FormData();
 
-            formData.append("data", JSON.stringify(payload));
-            if (image != null) formData.append("files", image);
+            formData.append("request", JSON.stringify(payload));
+            //if (image != null) formData.append("files", image);
 
             console.log("Payload to be sent:", payload);
-            await updateDvorana(payload);
+            await updateDvorana(formData);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
             navigate("/my-profile");
             // setTimeout(() => {
