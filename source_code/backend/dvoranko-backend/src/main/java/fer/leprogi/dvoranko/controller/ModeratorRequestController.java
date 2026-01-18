@@ -30,14 +30,21 @@ public class ModeratorRequestController {
     private  ModeratorService moderatorService;
 
     @PostMapping(value = "/requestAdd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<ZahtjevOglasDTO>> requestAdd(@RequestPart("request") String requestJson, @RequestPart("files") List<MultipartFile> files) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse<ZahtjevOglasDTO>> requestAdd(@RequestPart("request") String requestJson, @RequestPart("files") List<MultipartFile> files){
 
-        CreateZahtjevOglas request = new ObjectMapper().readValue(requestJson, CreateZahtjevOglas.class);
+        try {
+            CreateZahtjevOglas request = new ObjectMapper().readValue(requestJson, CreateZahtjevOglas.class);
 
-        ZahtjevOglasDTO created = moderatorService.createAddRequest(request, files);
+            ZahtjevOglasDTO created = moderatorService.createAddRequest(request, files);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ApiResponse.success(created, "Zahtjev successfully created"));
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(ApiResponse.success(created, "Zahtjev successfully created"));
+
+        } catch (Exception e) {
+            return ResponseEntity.ok(ApiResponse.error("Kume nes ne dela", e.getMessage()));
+        }
     }
+
+
 }
