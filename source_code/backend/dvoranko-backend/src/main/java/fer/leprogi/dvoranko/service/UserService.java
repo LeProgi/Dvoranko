@@ -86,6 +86,8 @@ public class UserService {
         zahtjev.setJeJavniEvent(request.getJeJavniEvent());
         zahtjev.setIdKorisnik(request.getIdKorisnik());
         zahtjev.setIdDvorana(request.getIdDvorana());
+        zahtjev.setOpisDogadanja(request.getOpisDogadanja());
+        zahtjev.setImeDogadanja(request.getImeDogadanja());
         zahtjevTerminRepository.save(zahtjev);
     }
 

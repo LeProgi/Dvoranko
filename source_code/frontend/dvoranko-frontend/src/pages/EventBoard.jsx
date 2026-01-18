@@ -1,39 +1,47 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { url } from "../main.jsx";
 import Button from "../components/Button";
-import VenueCard from "../components/VenueCard";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import ReservationCard from "../components/ReservationCard.jsx";
+
+
+
 const EventBoard = () => {
     const [user, setUser] = useState(null);
+    const [publicEvents, setPublicEvents] = useState([]);
 
-useEffect(() => {
-  fetch(`${url}/api/auth/user`, {
-    credentials: "include",
-  })
-    .then((res) => {
-      if (res.status === 200) return res.json();
-      throw new Error("Not logged in");
+    useEffect(() => {
+    fetch(`${url}/api/auth/user`, {
+        credentials: "include",
     })
-    .then((data) => setUser(data))
-    .catch(() => setUser(null));
-}, []);
+        .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error("Not logged in");
+        })
+        .then((data) => setUser(data))
+        .catch(() => setUser(null));
+    }, []);
 
-const handleGoogleLogin = () => {
-  window.location.href = `${url}/oauth2/authorization/google`;
-};
+    useEffect(() => {
+        fetch(`${url}/api/public/termini/public`)
+        .then((res) => {
+            if (res.status === 200) return res.json();
+            throw new Error("Failed to fetch public events");
+        })
+        .then((data) => {
+            setPublicEvents(data);
+            // console.log(data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 
-const getDateFromTimestamp = (timestamp) => {
-        try{
-            const date = timestamp.slice(0, 10);
-            const[year, month, day] = date.split("-")
-            return `${day}.${month}.${year}`
-        }
-        catch(err){
-            console.log(err)
-        }
-    }
+    }, []);
+
+    const handleGoogleLogin = () => {
+    window.location.href = `${url}/oauth2/authorization/google`;
+    };
 
     return (
         <div className="flex flex-col min-h-screen w-full bg-gray-100 items-center">
@@ -74,16 +82,22 @@ const getDateFromTimestamp = (timestamp) => {
             <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis javnih događanja</h2>
                 <div className="flex flex-col items-center gap-4 w-full">
-                    <ReservationCard 
-                        nameDogadanje={"Interliber"}
-                        opisDogadanje={"Najveca izlozba knjiga u regionu"}
-                        nameDvorana={"Velesajam Zagreb"}
-                        adresa={"Avenija Dubrovnik 15, Zagreb"}
-                        imgUrl={"https://res.cloudinary.com/dnrpd10np/image/upload/v1768420464/dvorane/10/img_1.png"}
-                        vrijemeOd={"2026-01-07 10:00:00"}
-                        vrijemeDo={"2026-01-07 20:00:00"}
-                        ></ReservationCard>
-                    
+                    {publicEvents.length === 0 ? (
+                        <p className="text-gray-600">Trenutno nema javnih događanja.</p>
+                    ) : (
+                        publicEvents.map((event) => (
+                            <ReservationCard
+                                key={event.id}
+                                nameDogadanje={event.imeDogadanja}
+                                opisDogadanje={event.opisDogadanja}
+                                nameDvorana={event.dvorana.nazivDvorana}
+                                adresa={event.dvorana.adresa.ulica + " " + event.dvorana.adresa.kucniBroj + ", " + event.dvorana.adresa.mjesto.nazivMjesto}
+                                imgUrl={event.dvorana.slike[0].urlSlika}
+                                vrijemeOd={event.datumVrijemeStart}
+                                vrijemeDo={event.datumVrijemeEnd}
+                            />
+                        ))
+                    )}
                 </div>
             </div>
             <Footer/>

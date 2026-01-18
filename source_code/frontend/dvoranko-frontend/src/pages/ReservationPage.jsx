@@ -21,10 +21,12 @@ const ReservationPage = () => {
    const [endTime, setEndTime] = useState(null);
    const [notStartTimes, setNotStartTimes] = useState([]);
    const [javno, setJavno] = useState(null);
-   const [privatno, setPrivatno] = useState(null);
+   const [privatno, setPrivatno] = useState(true);
    const [kapacitet, setKapacitet] = useState(null);
    const [brojLjudi, setBrojLjudi] = useState("");
    const [formError, setFormError] = useState("");
+   const [imeDogadanja, setImeDogadanja] = useState("Privatno događanje");
+   const [opisDogadanja, setOpisDogadanja] = useState("");
 
    useEffect(() => {
       fetchDvoranu(venueId);
@@ -182,11 +184,13 @@ const ReservationPage = () => {
    const handleClickJavno = () => {
       setJavno(true);
       setPrivatno(false);
+      setImeDogadanja("");
    }
 
    const handleClickPrivatno = () => {
       setJavno(false);
       setPrivatno(true);
+      setImeDogadanja("Privatno događanje");
    }
 
    const handleSubmit = async (e) => {
@@ -231,7 +235,9 @@ const ReservationPage = () => {
             datumVrijemeEnd: dateStr + "T" + endTime + ":00",
             idDvorana: parseInt(venueId),
             jeJavniEvent: javno ? 1 : 0,
-            idKorisnik: ownerIdLocal
+            idKorisnik: ownerIdLocal,
+            imeDogadanja: privatno ? "Privatno događanje" : imeDogadanja,
+            opisDogadanja: opisDogadanja
          }
          console.log("Payload to be sent:", payload);
 
@@ -386,6 +392,29 @@ const ReservationPage = () => {
                                        </div>
                                     </div>
 
+                                    <div className="w-full flex flex-col items-center gap-1">
+                                       <label>Ime događanja:</label>
+                                       <input
+                                          type="text"
+                                          value={imeDogadanja}
+                                          onChange={(e) => setImeDogadanja(e.target.value)}
+                                          disabled={privatno}
+                                          placeholder={privatno ? "Privatno događanje" : "Ime događanja"}
+                                          className={`w-[60%] h-[30px] border-2 rounded-[4px] 
+                                             ${privatno ? "bg-gray-200 text-gray-500 border-gray-400" : "bg-white border-black"}`}
+                                       />
+                                    </div>
+
+                                    <div className="w-full flex flex-col items-center gap-1">
+                                       <label>Opis događanja:</label>
+                                       <textarea
+                                          value={opisDogadanja}
+                                          onChange={(e) => setOpisDogadanja(e.target.value)}
+                                          placeholder="Opis događanja"
+                                          className="w-[100%] h-[100px] border-2 border-black rounded-[4px] bg-white resize-none"
+                                       />
+                                    </div>
+
                                     <div className="flex flex-row items-center justify-center">
                                        <label className="mr-2">Broj ljudi:</label>
                                        <input
@@ -396,28 +425,41 @@ const ReservationPage = () => {
                                           placeholder="Broj ljudi"
                                           className="w-[40%] h-[30px] border-2 border-black rounded-[4px] bg-white"
                                        />
+                                       <label className="ml-2">/ {kapacitet}</label>
                                     </div>
                                  </div>
 
-                                 <div className="flex flex-row items-center justify-end h-[70px] gap-[5%]">
+                                 <div className="flex flex-row items-center justify-center h-[70px] gap-[5%]">
+
+                                    <Link key={venueId} to={`/venue/${venueId}`}>
+                                       <button
+                                          type="button"
+                                          className="h-[40px] w-[120px] text-white font-bold rounded-[10px] cursor-pointer bg-gray-500 hover:bg-gray-600"
+                                       >
+                                          Odustani
+                                       </button>
+                                    </Link>
+
+                                    <button type="submit" className="h-[40px] w-[120px] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]">
+                                       Submit
+                                    </button>
+                                 </div>
+                                 <div className="flex justify-center mt-3">
                                     {formError && (
                                        <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-[70%] text-center font-medium top-[20px] right-[20px]">
                                           {formError}
                                        </div>
                                     )}
-                                    <button type="submit" className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]">
-                                       Submit
-                                    </button>
                                  </div>
 
-                                 <div>
+                                 {/* <div>
                                     <Link key={venueId} to={`/venue/${venueId}`}>
                                     <button
                                        type="button"
                                        className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
                                        >Odustani</button>
                                     </Link>
-                                 </div>
+                                 </div> */}
                               </div>
                            </form>
                         </div>
