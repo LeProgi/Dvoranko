@@ -38,9 +38,8 @@ public class UserController {
 
 
     @GetMapping("/getMyReservations")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<Iterable<TerminDTO>>> getAllReservationsForUser(Principal principal) {
-
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<Iterable<TerminDTO>>> getAllReservationsForUser(@AuthenticationPrincipal CustomOAuth2User principal) {
         Iterable<TerminDTO> termini = userService.getAllReservationsForUser(principal);
 
         return ResponseEntity.ok(ApiResponse.success(termini, "My reservations fetched successfully"));

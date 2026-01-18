@@ -284,7 +284,7 @@ function Form() {
                         if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
                     }}
                 >
-                    <div className="flex flex-col xl:flex-row items-center gap-10 w-full">
+                    <div className="flex flex-col xl:flex-row justify-center items-center gap-10 w-full">
                         <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
                             <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
                                 <label>Nova lokacija</label>

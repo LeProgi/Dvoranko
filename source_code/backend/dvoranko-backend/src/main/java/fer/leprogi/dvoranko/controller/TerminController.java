@@ -40,6 +40,7 @@ public class TerminController {
         return ResponseEntity.ok(terminService.findById(id));
     }
 
+
     @PostMapping
     public ResponseEntity<Termin> createTermin(@RequestBody TerminDTO termin) {
         Termin saved = terminService.create(termin);

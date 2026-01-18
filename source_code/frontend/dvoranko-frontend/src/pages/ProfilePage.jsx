@@ -33,6 +33,9 @@ const ProfilePage = () => {
 
     const [myDvorane, setMyDvorane] = useState([]);
     const [loadingDvorane, setLoadingDvorane] = useState(false);
+    const [myReservations, setMyReservations] = useState(false);
+    const [loadingReservations, setLoadingReservations] = useState(false);
+    const [dvoranaCache, setDvoranaCache] = useState({})
 
     useEffect(() => {
 
@@ -50,6 +53,68 @@ const ProfilePage = () => {
             });
     }, [navigate]);
 
+    const getDvorana = async (id) => {
+        if (dvoranaCache[id]) return; 
+
+        try {
+            const res = await fetch(`${url}/api/public/dvorane/${id}`);
+            const json = await res.json();
+
+            setDvoranaCache(prev => ({
+            ...prev,
+            [id]: json.data
+            }));
+        } catch (err) {
+            console.error("Failed to fetch dvorana", err);
+        }
+        };
+
+    const getDateFromTimestamp = (timestamp) => {
+        try{
+            const date = timestamp.slice(0, 10);
+            const[year, month, day] = date.split("-")
+            return `${day}.${month}.${year}`
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+
+    const getTimeFromTimestamp = (timestamp) => {
+        try{
+            if (!timestamp) return "";
+
+            const timePart = timestamp.includes("T")
+                ? timestamp.split("T")[1]
+                : timestamp.split(" ")[1]
+                
+            if (!timePart) return "";
+
+            const [hours, minutes] = timePart.split(":");
+            return `${hours}:${minutes}`;
+        }
+        catch(err){
+            console.log(err)
+        }
+    };
+
+    const deleteReservation = async (id) => {
+        try {
+              const res = await fetch(`${url}/api/public/termini/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+              })
+        
+              if (!res.ok) throw new Error("Kume nesto ti se strgalo, server kaze da nije ok");
+              setMyReservations((prevReservations) => ({
+                ...prevReservations,
+                data: prevReservations.data.filter((reservation) => reservation.id !== id)
+            }));
+            }
+        catch(err){
+            console.error(err)
+        }
+    }
 
     useEffect(() => {
         if (!user) return;
@@ -93,6 +158,57 @@ const ProfilePage = () => {
                 setLoadingDvorane(false);
             });
     }, [location.key, user]);
+
+    useEffect(() => {
+        if (!user) return;
+
+        setLoadingReservations(true);
+
+        fetch(`${url}/api/user/getMyReservations`, {
+            method: "GET",
+            credentials: "include",
+        })
+        .then(res => {
+            if(!res.ok) {
+                return res.json().then(errorData => {
+                    throw {
+                        status: res.status,
+                        statusText: res.statusText,
+                        message: errorData?.message || "Greška pri dohvaćanju termina",
+                        details: errorData
+                    };
+                }).catch(() => {
+                    throw {
+                        status: res.status, 
+                        statusText: res.statusText,
+                        message: `HTTP ${res.status}: ${res.statusText}`,
+                        details: null
+                    };
+                });
+            }
+            return res.json();
+        })
+        .then(data => {
+            setMyReservations(data)
+            console.log("My reservations fetched:", data)
+            data?.data?.forEach(reservation => {
+                console.log(reservation)
+                console.log(reservation.idDvorana)
+
+                if(reservation.idDvorana) {
+                    getDvorana(reservation.idDvorana)
+                }
+            })
+        })
+        .catch(err => {
+            console.error(err);
+            setMyReservations([]);
+        })
+        .finally(() =>{
+            setLoadingReservations(false);
+        });
+        
+    },[])
 
 
 
@@ -167,7 +283,7 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
-)}
+        )}
 
         {user.role === "MODERATOR"  && (
             <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
@@ -220,15 +336,49 @@ const ProfilePage = () => {
                 </div>
          )}
 
+        
         <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
             <h2 className="text-xl font-semibold mb-6 text-[#3B5B80]">
             Moje rezervacije
             </h2>
+            <div className="flex flex-col items-center gap-3 mt-10 mb-12 w-full">
+                {myReservations?.data?.map((reservation, index) => (
+                    <div key={index} className="flex w-3/4 gap-4 items-center">
 
-            <p className="text-gray-600">Trenutno nemate rezervacija.</p>
+                    <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
+                        <div className="flex justify-between items-center">
+                        <h2 className="text-xl font-bold">
+                            {dvoranaCache[reservation.idDvorana]?.nazivDvorana}
+                        </h2>
+                        <p className="text-gray-700">
+                        <span className="font-semibold">Adresa:</span> {dvoranaCache[reservation.idDvorana]?.adresa?.ulica}, {dvoranaCache[reservation.idDvorana]?.adresa.kucniBroj}, {dvoranaCache[reservation.idDvorana]?.adresa.mjesto.nazivMjesto}
+                        </p>
+                        <span className="text-sm text-gray-500">
+                            {reservation.je_javni_event ? "Javni" : "Privatni"}
+                        </span>
+                        </div>
+
+                        <p className="text-gray-700 text-sm text-left">
+                        <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
+                        </p>
+
+                        <div className="flex flex-row gap-2 text-sm text-gray-700">
+                            <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
+                            <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
+                        </div>
+
+                    </div>
+
+                    <button
+                    className ="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
+                    onClick={() => deleteReservation(reservation.id)}>
+                        Otkaži termin
+                    </button>
+                    </div>
+                ))}
+                </div>
+
         </div>
-
-
 
         <Footer />
     </div>

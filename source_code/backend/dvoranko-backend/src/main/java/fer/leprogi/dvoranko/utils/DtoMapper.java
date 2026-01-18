@@ -191,6 +191,7 @@ public class DtoMapper {
         dto.setIdDvorana(termin.getDvorana().getIdDvorana());
         dto.setJeJavniEvent(termin.getJeJavniEvent());
         dto.setIdKorisnik(termin.getKorisnik().getId());
+        dto.setId(termin.getId());
 
         return dto;
     }
