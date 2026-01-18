@@ -37,6 +37,7 @@ public class ModeratorController {
 
 
     private final ModeratorService moderatorService;
+    private final DvoranaService dvoranaService;
 
     @GetMapping("/getMyDvorane")
     @PreAuthorize("hasRole('MODERATOR')")
@@ -102,4 +103,11 @@ public class ModeratorController {
         return ResponseEntity.ok(ApiResponse.success(termini, "Potvrdeni termini fetched successfully"));
     }
 
+
+    @DeleteMapping("/delete/dvorana/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Null>> deleteDvorana(@PathVariable Long id) {
+        dvoranaService.deleteDvorana(id);
+        return ResponseEntity.ok(ApiResponse.success(null, "Dvorana deleted successfully"));
+    }
 }

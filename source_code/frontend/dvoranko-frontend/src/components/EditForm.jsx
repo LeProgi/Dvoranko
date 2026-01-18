@@ -307,6 +307,26 @@ function Form() {
         }
     };
 
+    const deleteDvorana = async (id) => {
+        setIsSubmitting(true);
+        try {
+            const res = await fetch(`${url}/api/moderator/delete/dvorana/${id}`, {
+                method: "DELETE",
+                credentials: "include"
+            });
+
+            if (!res.ok) throw new Error("Greška pri brisanju dvorane");
+
+            setFormError("Dvorana uspješno obrisana! Preusmjeravanje na profil...");
+            navigate("/my-profile");
+        } catch (err) {
+            console.error(err);
+            setFormError("Greška pri brisanju dvorane. Pokušajte ponovno.");
+        } finally { 
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div className="relative">
             <div className={`w-full max-w-full relative transition-all duration-200 ${isSubmitting ? 'blur-sm pointer-events-none select-none opacity-50' : ''}`}>
@@ -460,6 +480,15 @@ function Form() {
                                         </button>
                                     </Link>
                                 </div>
+                          
+
+                                <div className="absolute bottom-[10px] left-[10px]">
+                                    {/* <Link to="/my-profile"> */}
+                                        <button className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#F0320A] hover:bg-[#A62408] transition-colors" onClick={deleteDvorana.bind(this, idNumber)}>
+                                            Obriši dvoranu
+                                        </button>
+                                    {/* </Link> */}
+                                </div>
                             </div>
 
                             <div className="p-[10px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[10px] w-full max-w-[400px] h-fit min-h-[20vh]">
@@ -515,10 +544,10 @@ function Form() {
             {isSubmitting && (
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="flex flex-col items-center gap-4">
-                    <div className="w-16 h-16 border-4 border-[#536F8F] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-white text-lg font-semibold animate-pulse">
-                        Promjena podataka...
-                    </p>
+                      <div className="w-16 h-16 border-4 border-[#536F8F] border-t-transparent rounded-full animate-spin"></div>
+                      <p className="text-white text-lg font-semibold animate-pulse">
+                          Promjena podataka...
+                      </p>
                     </div>
                 </div>
                 )

@@ -60,7 +60,7 @@ public class ModeratorService {
     private SlikaDvoranaService slikaDvoranaService;
 
     @Transactional
-    public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request, List<MultipartFile> images) {
+    public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request, List<MultipartFile> images) throws Exception {
         ZahtjevOglas zahtjev = new ZahtjevOglas();
 
         User owner = userRepository.findById(request.getIdOwner())
@@ -91,7 +91,7 @@ public class ModeratorService {
 
         ZahtjevOglas saved = zahtjevRepository.saveAndFlush(zahtjev);
 
-        try {
+
             int i = 1;
             for (MultipartFile image : images) {
                 String url = cloudinaryService.upload(image, saved.getIdZahtjevOglas(), i, FolderName.zahtjevi);
@@ -106,7 +106,7 @@ public class ModeratorService {
                 zahtjevSlikaRepository.save(slika);
                 i++;
             }
-        }catch (Exception e){}
+
 
         ZahtjevOglas finalSaved = zahtjevRepository.save(saved);
 
