@@ -33,6 +33,8 @@ public class TerminService {
         termin.setDatumVrijemeStart(terminDTO.getDatumVrijemeStart());
         termin.setDatumVrijemeEnd(terminDTO.getDatumVrijemeEnd());
         termin.setJeJavniEvent(terminDTO.getJeJavniEvent());
+        termin.setImeDogadanja(terminDTO.getImeDogadanja());
+        termin.setOpisDogadanja(terminDTO.getOpisDogadanja());
 
         // postavljanje korisnika
         User korisnik = userRepository.findById(terminDTO.getIdKorisnik())
@@ -67,6 +69,8 @@ public class TerminService {
         existing.setDatumVrijemeStart(updatedTermin.getDatumVrijemeStart());
         existing.setDatumVrijemeEnd(updatedTermin.getDatumVrijemeEnd());
         existing.setJeJavniEvent(updatedTermin.getJeJavniEvent());
+        existing.setImeDogadanja(updatedTermin.getImeDogadanja());
+        existing.setOpisDogadanja(updatedTermin.getOpisDogadanja());
 
         // promjena korisnika (ako treba)
         if (updatedTermin.getKorisnik() != null) {

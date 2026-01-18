@@ -37,4 +37,9 @@ public class Termin {
     @JoinColumn(name = "id_dvorana", nullable = false)
     private Dvorana dvorana;
 
+    @Column(name = "ime_dogadanja")
+    private String imeDogadanja;
+    @Column(name = "opis_dogadanja", columnDefinition = "TEXT")
+    private String opisDogadanja;
+
 }
