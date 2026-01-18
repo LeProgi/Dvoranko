@@ -27,6 +27,7 @@ public class Termin {
     @Column(name = "je_javni_event")
     private Integer jeJavniEvent;
 
+    
 
     @ManyToOne
     @JoinColumn(name = "id_korisnik", nullable = false)
