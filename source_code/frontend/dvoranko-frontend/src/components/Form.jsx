@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import CategorySelector from "./CategorySelector.jsx";
 import TimeDropdown from "./TimeDropdown.jsx";
@@ -256,7 +256,7 @@ function Form() {
             formData.append("files", image);
             formData.append("request", JSON.stringify(payload));
 
-            console.log("Payload to be sent:", payload);
+            console.log("Payload to be sent:", formData);
             await postDvorana(formData);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
             navigate("/my-profile");

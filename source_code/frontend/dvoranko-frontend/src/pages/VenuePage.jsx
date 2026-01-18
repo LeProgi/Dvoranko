@@ -37,7 +37,7 @@ const VenuePage = () => {
    
     return (
         <div className="flex justify-center items-center min-h-screen bg-[#5B7692]">
-            <div className="flex flex-col bg-[#F5F5F5] w-11/12 md:w-3/4 max-w-5xl min-h-[80vh] rounded-[20px] shadow-lg overflow-hidden">
+            <div className="flex flex-col bg-[#F5F5F5] w-11/12 md:w-3/4 max-w-6xl min-h-[80vh] rounded-[20px] shadow-lg overflow-hidden">
                 
 
                 
@@ -64,7 +64,7 @@ const VenuePage = () => {
                             </p>
                         )}
                         <p className="text-[#1C2D3A] mb-2">
-                            <span className="font-semibold">Opis prostora:</span> 
+                            <span className="font-semibold">Opis prostora: </span> 
                             {venue.opis}
                         </p>
                     </div>
@@ -81,7 +81,7 @@ const VenuePage = () => {
                     </div>
                 </div>
 
-                 <div className="bg-[#3B5B80] w-full h-[250px] md:h-[300px] flex items-center justify-center rounded-l-[20px]">
+                 <div className="bg-[#3B5B80] w-full h-[60vh]  flex items-center justify-center rounded-l-[20px]">
                     {/* <p className="text-white text-lg">Slika prostora</p> */}
                     <img src={venue.slika} alt="Slika dvorane" className="h-full w-full object-cover" />
                 </div>
