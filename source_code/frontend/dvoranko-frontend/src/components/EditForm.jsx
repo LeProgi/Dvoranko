@@ -48,6 +48,8 @@ function Form() {
     const {id} = useParams();
     const idNumber= +id;
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -159,6 +161,7 @@ function Form() {
     };
 
     const updateDvorana = async (data) => {
+        setIsSubmitting(true);
         try {
             const response = await fetch(`${url}/api/moderator/dvorana/${id}`, { //promjenit api poziv?
                 method: "PUT",
@@ -184,6 +187,8 @@ function Form() {
         } catch (error) {
             console.error("Error submitting data:", error);
             throw error;
+        }finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -285,9 +290,11 @@ function Form() {
             const formData = new FormData();
 
             formData.append("request", JSON.stringify(payload));
-            //if (image != null) formData.append("files", image);
+            if (image != null) formData.append("files", image);
 
             console.log("Payload to be sent:", payload);
+            console.log("Image:", image);
+
             await updateDvorana(formData);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
             navigate("/my-profile");
@@ -301,206 +308,221 @@ function Form() {
     };
 
     return (
-        <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative w-full px-4">
-            <form
-                className="w-full max-w-full overflow-x-auto px-4"
-                onSubmit={handleSubmit}
-                noValidate
-                onKeyDown={(e) => {
-                    if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
-                }}
-            >
-                <div className="flex flex-col xl:flex-row items-center justify-center gap-10 w-full">
-                    <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
-                        <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
-                            <label>Uređivanje podataka o dvorani</label>
-                        </div>
-
-                        <div className="flex flex-col xl:flex-row w-full">
-                            <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-r xl:border-black px-4">
-                                <div className="mb-[5px]">
-                                    <label>Naziv dvorane</label>
-                                    <input
-                                        type="text"
-                                        value={naziv}
-                                        onChange={(e) => setName(e.target.value)}
-                                        required
-                                        placeholder="Naziv dvorane"
-                                        className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
-                                    />
+        <div className="relative">
+            <div className={`w-full max-w-full relative transition-all duration-200 ${isSubmitting ? 'blur-sm pointer-events-none select-none opacity-50' : ''}`}>
+                <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative w-full px-4">
+                    <form
+                        className="w-full max-w-full overflow-x-auto px-4"
+                        onSubmit={handleSubmit}
+                        noValidate
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault();
+                        }}
+                    >
+                        <div className="flex flex-col xl:flex-row items-center justify-center gap-10 w-full">
+                            <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
+                                <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
+                                    <label>Uređivanje podataka o dvorani</label>
                                 </div>
 
-                                <div className="mb-[5px]">
-                                    <label>Kapacitet dvorane</label>
-                                    <input
-                                        type="text"
-                                        value={kapacitet}
-                                        onChange={(e) => setCapacity(e.target.value)}
-                                        required
-                                        placeholder="Kapacitet dvorane"
-                                        className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
-                                    />
-                                </div>
-
-                                <div className="mb-[5px]">
-                                    <label>Cijena po satu</label>
-                                    <input
-                                        type="text"
-                                        value={cijenaPoSatu}
-                                        onChange={(e) => setPricePerHour(e.target.value)}
-                                        placeholder="Cijena po satu"
-                                        className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
-                                    />
-                                </div>
-
-                                <div className="mb-[5px] flex flex-col items-center">
-                                    <label>Kategorija dvorane</label>
-                                    <CategorySelector
-                                        categories={categories}
-                                        selectedCategories={selectedCategories}
-                                        setSelectedCategories={setselectedCategories}
-                                    />
-                                </div>
-
-                                <div className="mb-[5px] flex flex-col items-center">
-                                    <label>Opis</label>
-                                    <textarea
-                                        value={opis}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                        rows={4}
-                                        required
-                                        placeholder="Kratki opis dvorane"
-                                        className="w-[90%] border-2 border-black rounded-[4px] bg-white"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-l xl:border-black px-4">
-                                <div className="mb-[5px]">
-                                    <label>Adresa</label>
-                                    <p className="text-x1 font-bold">{address}</p>
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label>Radni dani</label>
-
-                                    {DAY_LABELS.map(({ key, label }) => {
-                                        const day = days[key];
-
-                                        return (
-                                        <div key={key} className="flex justify-center items-start gap-4 mx-auto w-full max-w-[400px]">
-                                            <div className="flex items-center gap-2 flex-shrink-0 w-[120px]">
-                                                <label>{label}</label>
-
-                                                <input
-                                                    type="checkbox"
-                                                    checked={day.enabled}
-                                                    className="hover:cursor-pointer"
-                                                    onChange={(e) =>
-                                                        setDays({
-                                                        ...days,
-                                                        [key]: {
-                                                            ...day,
-                                                            enabled: e.target.checked,
-                                                            start: e.target.checked ? day.start : "",
-                                                            end: e.target.checked ? day.end : "",
-                                                        },
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-
-                                            <div className="flex items-center gap-2 w-full">
-                                                <label className="mr-[5px]">Od:</label>
-
-                                                <TimeDropdown
-                                                    value={day.start}
-                                                    disabled={!day.enabled}
-                                                    onChange={(val) =>
-                                                        setDays({ ...days, [key]: { ...day, start: val } })
-                                                    }
-                                                    options={timesOd.filter(t => !day.end || t < day.end)}
-                                                />
-
-                                                <label className="m-[5px]">Do:</label>
-
-                                                <TimeDropdown
-                                                    value={day.end}
-                                                    disabled={!day.enabled}
-                                                    onChange={(val) =>
-                                                        setDays({ ...days, [key]: { ...day, end: val } })
-                                                    }
-                                                    options={timesDo.filter(t => t > day.start)}
-                                                />
-                                            </div>
+                                <div className="flex flex-col xl:flex-row w-full">
+                                    <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-r xl:border-black px-4">
+                                        <div className="mb-[5px]">
+                                            <label>Naziv dvorane</label>
+                                            <input
+                                                type="text"
+                                                value={naziv}
+                                                onChange={(e) => setName(e.target.value)}
+                                                required
+                                                placeholder="Naziv dvorane"
+                                                className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
+                                            />
                                         </div>
-                                        );
-                                    })}
+
+                                        <div className="mb-[5px]">
+                                            <label>Kapacitet dvorane</label>
+                                            <input
+                                                type="text"
+                                                value={kapacitet}
+                                                onChange={(e) => setCapacity(e.target.value)}
+                                                required
+                                                placeholder="Kapacitet dvorane"
+                                                className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
+                                            />
+                                        </div>
+
+                                        <div className="mb-[5px]">
+                                            <label>Cijena po satu</label>
+                                            <input
+                                                type="text"
+                                                value={cijenaPoSatu}
+                                                onChange={(e) => setPricePerHour(e.target.value)}
+                                                placeholder="Cijena po satu"
+                                                className="w-full px-3 h-[40px] border-2 border-black rounded-[4px] bg-white"
+                                            />
+                                        </div>
+
+                                        <div className="mb-[5px] flex flex-col items-center">
+                                            <label>Kategorija dvorane</label>
+                                            <CategorySelector
+                                                categories={categories}
+                                                selectedCategories={selectedCategories}
+                                                setSelectedCategories={setselectedCategories}
+                                            />
+                                        </div>
+
+                                        <div className="mb-[5px] flex flex-col items-center">
+                                            <label>Opis</label>
+                                            <textarea
+                                                value={opis}
+                                                onChange={(e) => setDescription(e.target.value)}
+                                                rows={4}
+                                                required
+                                                placeholder="Kratki opis dvorane"
+                                                className="w-[90%] border-2 border-black rounded-[4px] bg-white"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-l xl:border-black px-4">
+                                        <div className="mb-[5px]">
+                                            <label>Adresa</label>
+                                            <p className="text-x1 font-bold">{address}</p>
+                                        </div>
+
+                                        <div className="flex flex-col">
+                                            <label>Radni dani</label>
+
+                                            {DAY_LABELS.map(({ key, label }) => {
+                                                const day = days[key];
+
+                                                return (
+                                                <div key={key} className="flex justify-center items-start gap-4 mx-auto w-full max-w-[400px]">
+                                                    <div className="flex items-center gap-2 flex-shrink-0 w-[120px]">
+                                                        <label>{label}</label>
+
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={day.enabled}
+                                                            className="hover:cursor-pointer"
+                                                            onChange={(e) =>
+                                                                setDays({
+                                                                ...days,
+                                                                [key]: {
+                                                                    ...day,
+                                                                    enabled: e.target.checked,
+                                                                    start: e.target.checked ? day.start : "",
+                                                                    end: e.target.checked ? day.end : "",
+                                                                },
+                                                                })
+                                                            }
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2 w-full">
+                                                        <label className="mr-[5px]">Od:</label>
+
+                                                        <TimeDropdown
+                                                            value={day.start}
+                                                            disabled={!day.enabled}
+                                                            onChange={(val) =>
+                                                                setDays({ ...days, [key]: { ...day, start: val } })
+                                                            }
+                                                            options={timesOd.filter(t => !day.end || t < day.end)}
+                                                        />
+
+                                                        <label className="m-[5px]">Do:</label>
+
+                                                        <TimeDropdown
+                                                            value={day.end}
+                                                            disabled={!day.enabled}
+                                                            onChange={(val) =>
+                                                                setDays({ ...days, [key]: { ...day, end: val } })
+                                                            }
+                                                            options={timesDo.filter(t => t > day.start)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" className="min-w-[220px] h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
+                                    Promjeni podatke o dvorani
+                                </button>
+
+                                <div className="absolute bottom-[10px] right-[10px]">
+                                    <Link to="/my-profile">
+                                        <button className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
+                                            Odustani
+                                        </button>
+                                    </Link>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <button type="submit" className="min-w-[220px] h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
-                            Promjeni podatke o dvorani
-                        </button>
 
-                        <div className="absolute bottom-[10px] right-[10px]">
-                            <Link to="/my-profile">
-                                <button className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
-                                    Odustani
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
+                            <div className="p-[10px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[10px] w-full max-w-[400px] h-fit min-h-[20vh]">
+                                <label>Slika dvorane</label>
 
-                    <div className="p-[10px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[10px] w-full max-w-[400px] h-fit min-h-[20vh]">
-                        <label>Slika dvorane</label>
+                                <input
+                                    type="file"
+                                    id="photo"
+                                    accept="image/*"
+                                    className="hidden"
+                                    ref={fileInputRef}
+                                    required
+                                    onChange={(e) => setImage(e.target.files[0])}
+                                />
 
-                        <input
-                            type="file"
-                            id="photo"
-                            accept="image/*"
-                            className="hidden"
-                            ref={fileInputRef}
-                            required
-                            onChange={(e) => setImage(e.target.files[0])}
-                        />
-
-                        <label
-                            htmlFor="photo"
-                            className="w-full h-full min-h-[20vh] border-2 border-dashed border-[#3B5B80] rounded-[12px] cursor-pointer bg-white flex items-center justify-center overflow-hidden relative"
-                            >
-                            {imagePreview ? (
-                                <>
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="w-full h-full object-cover"
-                                    />
-
-                                    <button
-                                        type="button"
-                                        onClick={handleRemove}
-                                        className="absolute top-[5px] right-[5px] bg-[rgba(0,0,0,0.5)] text-white border-none rounded-full w-[25px] h-[25px] cursor-pointer"
+                                <label
+                                    htmlFor="photo"
+                                    className="w-full h-full min-h-[20vh] border-2 border-dashed border-[#3B5B80] rounded-[12px] cursor-pointer bg-white flex items-center justify-center overflow-hidden relative"
                                     >
-                                        X
-                                    </button>
-                                </>
-                            ) : (
-                                <div className="text-center text-[#3B5B80]">
-                                    <strong>Klikni za dodati sliku</strong>
-                                </div>
-                            )}
-                        </label>
+                                    {imagePreview ? (
+                                        <>
+                                            <img
+                                                src={imagePreview}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+
+                                            <button
+                                                type="button"
+                                                onClick={handleRemove}
+                                                className="absolute top-[5px] right-[5px] bg-[rgba(0,0,0,0.5)] text-white border-none rounded-full w-[25px] h-[25px] cursor-pointer"
+                                            >
+                                                X
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <div className="text-center text-[#3B5B80]">
+                                            <strong>Klikni za dodati sliku</strong>
+                                        </div>
+                                    )}
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+
+                    {formError && (
+                        <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-fit text-center font-medium absolute top-[20px] right-[20px]">
+                            {formError}
+                        </div>
+                    )}
+                </div>
+            </div>
+            {isSubmitting && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 border-4 border-[#536F8F] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-white text-lg font-semibold animate-pulse">
+                        Promjena podataka...
+                    </p>
                     </div>
                 </div>
-            </form>
-
-            {formError && (
-                <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-fit text-center font-medium absolute top-[20px] right-[20px]">
-                    {formError}
-                </div>
-            )}
+                )
+            }
         </div>
     );
 }
