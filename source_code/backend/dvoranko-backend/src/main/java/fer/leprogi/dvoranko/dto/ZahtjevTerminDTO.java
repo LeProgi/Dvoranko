@@ -16,5 +16,4 @@ public class ZahtjevTerminDTO {
     private Long idDvorana;
     private Integer jeJavniEvent;
     private Long idKorisnik;
-
 }

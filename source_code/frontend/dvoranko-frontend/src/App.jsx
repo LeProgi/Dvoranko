@@ -11,6 +11,7 @@ import AdminPage from './pages/AdminPage';
 import FormPage from './pages/FormPage';
 import EditFormPage from './pages/EditFormPage'
 import Reservation from './pages/ReservationPage';
+import VenueReservations from './pages/VenueReservations';
 
 const App = () => {
   
@@ -26,6 +27,7 @@ const App = () => {
         <Route path='/form' element={<FormPage/>}/>
         <Route path='/editform/:id' element= {<EditFormPage/>}/>
         <Route path='/reservation' element={<Reservation/>}/>
+        <Route path='reservations/:idDvorana' element={<VenueReservations/>}/>
       </Routes>
     </Router>
   )

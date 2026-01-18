@@ -11,4 +11,5 @@ public interface DvoranaRepository extends JpaRepository<Dvorana, Long> {
 
     List<Dvorana> findAllByVlasnik_Id(Long vlasnikId);
 
+
 }

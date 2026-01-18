@@ -351,6 +351,10 @@ const ProfilePage = () => {
                                   className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
                                   Uredi dvoranu
                                 </Link>
+                                <Link to = {`/reservations/${dvorana.idDvorana}`}
+                                     className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
+                                  Pogledaj termine     
+                                </Link>
                             </div>
                         ))}
                     </div>
