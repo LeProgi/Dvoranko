@@ -33,7 +33,7 @@ const Calendar = ({handleDateClick, venueId}) => {
     }
 
     useEffect(() => {
-        fetchDvoranu(venueId);
+        if (venueId) fetchDvoranu(venueId);
     }, [venueId]);
 
     return (
