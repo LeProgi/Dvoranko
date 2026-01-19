@@ -7,6 +7,7 @@ import fer.leprogi.dvoranko.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class KategorijaController {
     private final KategorijaService kategorijaService;
 
     @PostMapping
+    //@PreAuthorize("hasRole('ADMIN')") ovo bi trebalo
     public ResponseEntity<ApiResponse<KategorijaDTO>> createKategorija(@RequestBody CreateKategorijaRequest request) {
         KategorijaDTO kategorija = kategorijaService.createKategorija(request);
 

@@ -2,6 +2,7 @@ package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.TerminDTO;
+import fer.leprogi.dvoranko.dto.UserDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateTerminRequest;
 import fer.leprogi.dvoranko.model.Termin;
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
@@ -61,6 +62,9 @@ public class UserController {
         return ResponseEntity.ok("termin request created");
     }
 
-
-
+    @GetMapping("/getUserById/{id}")
+    public ResponseEntity<ApiResponse<UserDTO>> getUserById(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User principal) {
+        UserDTO userdto = userService.getUserById(id);
+        return ResponseEntity.ok(ApiResponse.success(userdto, "successfully returned user"));
+    }
 }

@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { url } from "../main.jsx";
 
@@ -10,7 +10,10 @@ import { url } from "../main.jsx";
 
 const VenuePage = () => {
     const {id} = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [venue, setVenue] = useState(null);
+    const fromPath = location.state?.from || '/';
     useEffect(() =>{
         fetch(`${url}/api/public/dvorane/${id}`,{
             credentials: "include",
@@ -43,11 +46,12 @@ const VenuePage = () => {
                 
                 <div className="flex flex-col justify-between w-full p-8 md:p-10 relative">
                     <div>
-                        <Link to="/">
-                            <button className="absolute top-6 right-6 bg-[#3B5B80] text-[#f5f5f5] rounded-[15%] w-[25px] h-[25px] flex items-center justify-center cursor-pointer hover:bg-[#2F4B6A] transition-colors">
-                                X
-                            </button>
-                        </Link>
+                        <button 
+                            onClick={() => navigate(fromPath)}
+                            className="absolute top-6 right-6 bg-[#3B5B80] text-[#f5f5f5] rounded-[15%] w-[25px] h-[25px] flex items-center justify-center cursor-pointer hover:bg-[#2F4B6A] transition-colors"
+                        >
+                            X
+                        </button>
                         <h2 className="text-2xl font-semibold text-[#1C2D3A] mb-6">
                             {venue.name}
                         </h2>

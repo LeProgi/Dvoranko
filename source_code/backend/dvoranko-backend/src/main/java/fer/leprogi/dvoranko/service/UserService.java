@@ -112,4 +112,13 @@ public class UserService {
         }
         return terminiDTO;
     }
+
+    public UserDTO getUserById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        UserDTO userDTO = dtoMapper.toUserDTO(user.get());
+        return userDTO;
+    }
 }

@@ -97,6 +97,7 @@ const handleGoogleLogin = () => {
                         <Link 
                             key={venue.id} 
                             to={`/venue/${venue.id}`}
+                            state={{ from: '/maps' }}
                             onMouseEnter={() => setHoveredVenue(venue)}
                             onMouseLeave={() => setHoveredVenue(null)}
                         >

@@ -27,10 +27,32 @@ const ReservationPage = () => {
    const [formError, setFormError] = useState("");
    const [imeDogadanja, setImeDogadanja] = useState("Privatno događanje");
    const [opisDogadanja, setOpisDogadanja] = useState("");
+   const [ownerIdLocal, setOwnerIdLocal] = useState("");
 
    useEffect(() => {
-      fetchDvoranu(venueId);
-      fetchZahtjeveZaTermine();
+      fetch(`${url}/api/auth/user`, {
+         credentials: "include",
+      })
+         .then((res) => {
+            if (!res.ok) throw new Error("Not logged in");
+            return res.json();
+         })
+         .then((data) => {
+            setOwnerIdLocal(data.id)
+            console.log("User data fetched:", data);
+            if (!venueId) throw new Error("Nema podatka o izabranoj dvorani");
+            fetchDvoranu(venueId);
+            fetchZahtjeveZaTermine();
+         })
+         .catch((error) => {
+            setOwnerIdLocal(null);
+            console.error(error);
+            navigate("/", { replace: true });
+         });
+   }, [navigate]);
+
+   useEffect(() => {
+      
    }, [venueId]);
 
    const fetchDvoranu = async (venueId) => {
@@ -225,11 +247,6 @@ const ReservationPage = () => {
       setFormError("");
 
       try {
-         const userRes = await fetch(`${url}/api/auth/user`, { credentials: "include" });
-         if (userRes.status !== 200) throw new Error("Nije ulogiran");
-         const userData = await userRes.json();
-         const ownerIdLocal = userData.id;
-
          const payload = {
             datumVrijemeStart: dateStr + "T" + startTime + ":00",
             datumVrijemeEnd: dateStr + "T" + endTime + ":00",
