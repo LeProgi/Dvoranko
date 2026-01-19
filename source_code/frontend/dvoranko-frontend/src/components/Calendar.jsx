@@ -55,6 +55,16 @@ const Calendar = ({handleDateClick, venueId}) => {
                 const dayNames = ["ned", "pon", "uto", "sri", "cet", "pet", "sub"];
                 const day = dayNames[arg.date.getDay()];
 
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const cellDate = new Date(arg.date);
+                cellDate.setHours(0, 0, 0, 0);
+
+                if (cellDate < today) {
+                    return "closed-day";
+                }
+
                 if (workingDays.includes(day)) {
                     return "open-day";
                 } else {

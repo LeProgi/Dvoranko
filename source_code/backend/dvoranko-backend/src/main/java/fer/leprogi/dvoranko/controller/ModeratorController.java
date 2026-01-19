@@ -98,7 +98,7 @@ public class ModeratorController {
     }
 
     @GetMapping("/getPotvrdeniTerminiForDvorana/{id}")
-    @PreAuthorize("hasRole('MODERATOR')")
+    //@PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<Iterable<TerminZaFrontDTO>>> getAllPotvrdeniTerminiForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) throws Exception {
         Iterable<TerminZaFrontDTO> termini = moderatorService.getAllPotvrdeniTerminiForThisDvorana(principal, id);
         return ResponseEntity.ok(ApiResponse.success(termini, "Potvrdeni termini fetched successfully"));

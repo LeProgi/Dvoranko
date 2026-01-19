@@ -42,6 +42,7 @@ const ReservationPage = () => {
             console.log("User data fetched:", data);
             if (!venueId) throw new Error("Nema podatka o izabranoj dvorani");
             fetchDvoranu(venueId);
+            fetchTermineDvorane(venueId);
             fetchZahtjeveZaTermine();
          })
          .catch((error) => {
@@ -50,10 +51,6 @@ const ReservationPage = () => {
             navigate("/", { replace: true });
          });
    }, [navigate]);
-
-   useEffect(() => {
-      
-   }, [venueId]);
 
    const fetchDvoranu = async (venueId) => {
       try {
@@ -65,17 +62,36 @@ const ReservationPage = () => {
          const text = await response.text();
          const respData = JSON.parse(text);
          setKapacitet(respData.data.kapacitet);
-         if (respData.data.termini) {
-            setTermini(...respData.data.termini.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd})));
-         }
 
-         console.log("Response from server:", respData.data);
+         console.log("Dohvaćena dvorana:", respData.data);
          return respData;
       } catch (error) {
          console.error("Error fetching data:", error);
          throw error;
       }
    };
+
+   const fetchTermineDvorane = async (venueId) => {
+      try {
+         const response = await fetch(`${url}/api/moderator/getPotvrdeniTerminiForDvorana/${venueId}`, {
+            method: "GET",
+            credentials: "include"
+         });
+
+         const text = await response.text();
+         const respData = JSON.parse(text);
+
+         if (respData.data) {
+            setTermini(prev => [...prev, ...respData.data.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
+         }
+
+         console.log("Dohvaćeni termini:", respData.data);
+         return respData;
+      } catch (error) {
+         console.error("Error fetching data:", error);
+         throw error;
+      }
+   }
 
    const fetchZahtjeveZaTermine = async () => {
       try {
@@ -89,7 +105,8 @@ const ReservationPage = () => {
          if (respData) {
             setTermini(prev => [...prev, ...respData.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
          }
-         console.log("Response from server:", respData);
+
+         console.log("Dohvaćeni zahtjevi:", respData);
       } catch (error) {
          console.error("Error fetching data:", error);
          throw error;
@@ -102,6 +119,7 @@ const ReservationPage = () => {
       setTimesBetween([]);
       setEdgeTimes([]);
       setFormError("");
+      setTaken(false);
       const izabranDate = String(info.date.getDate()).padStart(2, "0") + "." + String(info.date.getMonth() + 1).padStart(2, "0") + "." + info.date.getFullYear() + ".";
       setSelectedDate(izabranDate);
       setDateStr(info.dateStr);
@@ -116,6 +134,7 @@ const ReservationPage = () => {
       const endIndex = allTimes.findIndex(time => time.startsWith(end));
       const availableTimesPomocna = allTimes.slice(startIndex, endIndex + 1);
       const notStart = [];
+      const disabled = [];
       filtriraniTermini.forEach(termin => {
          const start = termin.start.substring(11, 16);
          const end = termin.end.substring(11, 16);
@@ -124,7 +143,16 @@ const ReservationPage = () => {
          const endIndex = availableTimesPomocna.findIndex(time => time.startsWith(end));
 
          if (startIndex !== -1 && endIndex !== -1) {
-            availableTimesPomocna.splice(startIndex + 1, endIndex - startIndex - 1);
+            if (startIndex + 1 === endIndex) {
+               if (startIndex === 0) {
+                  availableTimesPomocna.splice(0, 1);
+               } else {
+                  notStart.push(availableTimesPomocna[startIndex]);
+                  disabled.push(availableTimesPomocna[startIndex]);
+               }
+            } else {
+               availableTimesPomocna.splice(startIndex + 1, endIndex - startIndex - 1);
+            }
          }
       });
       let elementi = availableTimesPomocna.length;
@@ -151,7 +179,6 @@ const ReservationPage = () => {
          setTaken(true);
       } else {
          setAvailableTimes(availableTimesPomocna);
-         const disabled = [];
          for (let i = 0; i < availableTimesPomocna.length - 1; ++i) {
             if (parseInt(availableTimesPomocna[i + 1].substring(0, 2)) !== parseInt(availableTimesPomocna[i].substring(0, 2)) + 1) {
                notStart.push(availableTimesPomocna[i]);
@@ -310,13 +337,13 @@ const ReservationPage = () => {
    }
 
    return (
-      <div className="bg-[#5B7692] min-h-screen flex justify-center md:items-center h-auto">
-         <div className="flex flex-col md:flex-row justify-between bg-white rounded-[20px] w-[90vw] md:h-[80vh] p-5 h-auto mt-5 md:mt-0 mb-5 md:mb-0">
-            <div className="w-[100%] md:w-[50%] h-[550px] md:h-[100%]" >
+      <div className="bg-[#5B7692] min-h-screen flex justify-center lg:items-center h-auto">
+         <div className="flex flex-col lg:flex-row justify-between bg-white rounded-[20px] w-[90vw] lg:h-[90vh] p-5 h-auto mt-5 lg:mt-0 mb-5 lg:mb-0">
+            <div className="w-[100%] lg:w-[50%] h-[550px] lg:h-[100%]" >
                <Calendar handleDateClick={handleDateClick} venueId={venueId}/>
             </div>
 
-            <div className="w-[100%] md:w-[49%] h-auto md:h-[100%] flex items-center justify-center">
+            <div className="w-[100%] lg:w-[49%] h-auto lg:h-[100%] flex items-center justify-start">
                {!selectedDate ? (
                   <div className="w-[100%]">
                      <p className="text-xl m-4">
@@ -397,7 +424,7 @@ const ReservationPage = () => {
 
                               <hr></hr>
                               
-                              <div className="mt-2 flex flex-col justify-between h-[250px]">
+                              <div className="mt-2 flex flex-col justify-between h-[350px] lg:h-[300px]">
                                  <div className="flex flex-col items-center mb-2 gap-[8px]">
                                     <div className="flex flex-row items-center justify-center">
                                        <p className="mr-2 ml-2">
