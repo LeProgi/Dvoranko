@@ -2,6 +2,7 @@ package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.TerminDTO;
+import fer.leprogi.dvoranko.dto.TerminZaFrontDTO;
 import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
@@ -90,16 +91,16 @@ public class ModeratorController {
 
     @GetMapping("/getZahtjeviForDvorana/{id}")
     @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<ApiResponse<Iterable<ZahtjevTerminDTO>>> getAllTerminRequestsForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse<Iterable<TerminZaFrontDTO>>> getAllTerminRequestsForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) {
 
-        Iterable<ZahtjevTerminDTO> termini = moderatorService.getAllTerminRequestsForThisDvorana(principal, id);
+        List<TerminZaFrontDTO> termini = moderatorService.getAllTerminRequestsForThisDvorana(principal, id);
         return ResponseEntity.ok(ApiResponse.success(termini, "Termin requests for this dvorana fetched successfully"));
     }
 
     @GetMapping("/getPotvrdeniTerminiForDvorana/{id}")
     @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<ApiResponse<Iterable<TerminDTO>>> getAllPotvrdeniTerminiForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) throws Exception {
-        Iterable<TerminDTO> termini = moderatorService.getAllPotvrdeniTerminiForThisDvorana(principal, id);
+    public ResponseEntity<ApiResponse<Iterable<TerminZaFrontDTO>>> getAllPotvrdeniTerminiForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) throws Exception {
+        Iterable<TerminZaFrontDTO> termini = moderatorService.getAllPotvrdeniTerminiForThisDvorana(principal, id);
         return ResponseEntity.ok(ApiResponse.success(termini, "Potvrdeni termini fetched successfully"));
     }
 

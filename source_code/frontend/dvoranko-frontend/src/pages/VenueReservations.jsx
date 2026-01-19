@@ -4,6 +4,7 @@ import { url } from "../main.jsx";
 import Footer from "../components/Footer";
 import { data, Link } from "react-router-dom";
 import Button from "../components/Button.jsx";
+import ModeratorReservationsCard from "../components/ModeratorReservationsCard.jsx";
 
 const VenueReservations = () => {
     const { idDvorana } = useParams();
@@ -49,6 +50,7 @@ const VenueReservations = () => {
 
         const data = await res.json();
         setReservationRequests(data.data || []);
+        console.log("Reservation requests:", data.data);
 
         const resDvorana = await fetch(`${url}/api/public/dvorane/${idDvorana}`);
         if (!resDvorana.ok) throw new Error("Dvorana fetch failed");
@@ -62,9 +64,8 @@ const VenueReservations = () => {
             });
         if(!resPotvrdeniTermini.ok) throw new Error("fetch failed");
         const potvrdeniTerminiJson = await(resPotvrdeniTermini.json());
-        let rezervacije = potvrdeniTerminiJson.data
         setReservations(potvrdeniTerminiJson.data)
-
+        console.log("Potvrdeni termini:", potvrdeniTerminiJson.data);
         } catch (err) {
             console.error(err);
             navigate("/my-profile");
@@ -193,6 +194,12 @@ const VenueReservations = () => {
         setReservationRequests((prevRequests) =>
             prevRequests.filter((request) => request.id !== id)
         );
+
+        setReservations((prevReservations) => [
+            ...prevReservations,
+            reservationRequests.find((request) => request.id === id)
+        ]);
+        
         } catch(err) {
             console.error("error: ", err)
         }
@@ -264,58 +271,59 @@ const VenueReservations = () => {
         <h3 className="text-4x1 text-white mt-10 mb-10 font-semibold tracking-wide">{dvorana?.adresa?.ulica} {dvorana?.adresa?.kucniBroj}, {dvorana?.adresa?.mjesto?.nazivMjesto}</h3>
 
     </div>
-      {/* ZAHTJEVI */}
-      <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12">
+    {/* ZAHTJEVI */}
+    <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12">
         <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
           Zahtjevi za rezervacije
         </h2>
 
-        {reservationRequests.length === 0 && <p>Nema zahtjeva</p>}
 
-        <div className="flex flex-col justify-center items-center gap-4 w-3/4">
-          {reservationRequests.map((reservation, index) => (
-            <div key={index} className="flex w-3/4 gap-4 items-center">
+        <div className="flex flex-col items-center gap-6 w-3/4">
 
-                    <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-                        <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-bold">
-                            {getUserFromId(reservation.idKorisnik).name}
-                        </h2>
-                        <p className="text-gray-700">
-                        <span className="font-semibold"> 
-                            Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
-                        </p>
-                        <span className="text-sm text-gray-500">
-                            {reservation.jeJavniEvent ? "Javni" : "Privatni"}
-                        </span>
-                        </div>
+            {reservationRequests.length === 0 ? (
+                <div className="text-gray-600 text-lg py-10">
+                Trenutno nema zahtjeva za termine.
+                </div>
+            ) : (
+                reservationRequests.map((reservation, index) => (
+                <div className="flex w-full gap-6 items-stretch">
 
-                        <p className="text-gray-700 text-sm text-left">
-                        <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
-                        </p>
+                    <ModeratorReservationsCard 
+                        key={reservation.id}
+                        imeVlasnika={reservation.imeVlasnika}
+                        imeDogadanja={reservation.imeDogadanja}
+                        opisDogadanja={reservation.opisDogadanja}
+                        datumVrijemeStart={reservation.datumVrijemeStart}
+                        datumVrijemeEnd={reservation.datumVrijemeEnd}
+                        jeJavniEvent={reservation.jeJavniEvent}
+                        cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                        />
 
-                        <div className="flex flex-row gap-2 text-sm text-gray-700">
-                            <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
-                            <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
-                        </div>
 
-                    </div>
-
+                    {/* GUMBI */}
+                    <div className="flex flex-col gap-3 justify-center">
                     <button
-                    className = "px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
-                    onClick = {() => acceptReservationRequest(reservation.id)}>
+                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                        onClick={() => acceptReservationRequest(reservation.id)}
+                    >
                         PRIHVATI
                     </button>
 
                     <button
-                    className ="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
-                    onClick = {() => rejectReservationRequest(reservation.id)}>
+                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+                        onClick={() => rejectReservationRequest(reservation.id)}
+                    >
                         ODBIJ
                     </button>
                     </div>
-          ))}
+                </div>
+                ))
+            )}
         </div>
-      </div>
+
+    </div>
+
+      
 
       {/* POTVRĐENE */}
       <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
@@ -327,33 +335,44 @@ const VenueReservations = () => {
 
         <div className="flex flex-col justify-center items-center gap-4 w-3/4">
           {reservations.map((reservation, index) => (
-            <div key={index} className="flex w-3/4 gap-4 items-center">
+            <div className="flex w-3/4 gap-4 items-center">
 
-                    <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-                        <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-bold">
-                            {getUserFromId(reservation.idKorisnik).name}
-                        </h2>
-                        <p className="text-gray-700">
-                        <span className="font-semibold"> 
-                            Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
-                        </p>
-                        <span className="text-sm text-gray-500">
-                            {reservation.je_javni_event ? "Javni" : "Privatni"}
-                        </span>
-                        </div>
+                <ModeratorReservationsCard 
+                    key={reservation.id}
+                    imeVlasnika={reservation.imeVlasnika}
+                    imeDogadanja={reservation.imeDogadanja}
+                    opisDogadanja={reservation.opisDogadanja}
+                    datumVrijemeStart={reservation.datumVrijemeStart}
+                    datumVrijemeEnd={reservation.datumVrijemeEnd}
+                    jeJavniEvent={reservation.jeJavniEvent}
+                    cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                />
 
-                        <p className="text-gray-700 text-sm text-left">
-                        <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
-                        </p>
-
-                        <div className="flex flex-row gap-2 text-sm text-gray-700">
-                            <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
-                            <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
-                        </div>
-
+                {/* <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
+                    <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-bold">
+                        {getUserFromId(reservation.idKorisnik).name}
+                    </h2>
+                    <p className="text-gray-700">
+                    <span className="font-semibold"> 
+                        Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
+                    </p>
+                    <span className="text-sm text-gray-500">
+                        {reservation.je_javni_event ? "Javni" : "Privatni"}
+                    </span>
                     </div>
+
+                    <p className="text-gray-700 text-sm text-left">
+                    <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
+                    </p>
+
+                    <div className="flex flex-row gap-2 text-sm text-gray-700">
+                        <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
+                        <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
                     </div>
+
+                </div> */}
+            </div>
           ))}
         </div>
       </div>

@@ -40,7 +40,7 @@ const EventBoard = () => {
     }, []);
 
     const handleGoogleLogin = () => {
-    window.location.href = `${url}/oauth2/authorization/google`;
+        window.location.href = `${url}/oauth2/authorization/google`;
     };
 
     return (
