@@ -1,12 +1,15 @@
-package fer.leprogi.dvoranko.dto.createRequest;
+package fer.leprogi.dvoranko.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
 @Data
-public class CreateTerminRequest {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class TerminZaFrontDTO {
+    private Long id;
     private LocalDateTime datumVrijemeStart;
     private LocalDateTime datumVrijemeEnd;
     private Long idDvorana;
@@ -14,4 +17,6 @@ public class CreateTerminRequest {
     private Long idKorisnik;
     private String imeDogadanja;
     private String opisDogadanja;
+    private String imeVlasnika;
+    private DvoranaDTO dvorana;
 }

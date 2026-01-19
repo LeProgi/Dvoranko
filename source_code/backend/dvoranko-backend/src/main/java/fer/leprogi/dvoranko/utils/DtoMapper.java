@@ -176,6 +176,8 @@ public class DtoMapper {
         dto.setJeJavniEvent(zahtjev.getJeJavniEvent());
         dto.setIdKorisnik(zahtjev.getIdKorisnik());
         dto.setIdDvorana(zahtjev.getIdDvorana());
+        dto.setOpisDogadanja(zahtjev.getOpisDogadanja());
+        dto.setImeDogadanja(zahtjev.getImeDogadanja());
 
         return dto;
     }
@@ -192,6 +194,8 @@ public class DtoMapper {
         dto.setJeJavniEvent(termin.getJeJavniEvent());
         dto.setIdKorisnik(termin.getKorisnik().getId());
         dto.setId(termin.getId());
+        dto.setOpisDogadanja(termin.getOpisDogadanja());
+        dto.setImeDogadanja(termin.getImeDogadanja());
 
         return dto;
     }

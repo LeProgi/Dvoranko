@@ -32,4 +32,10 @@ public class ZahtjevTermin {
 
     @Column(name = "id_dvorana", nullable = false)
     private Long idDvorana;
+
+    @Column(name = "ime_dogadanja")
+    private String imeDogadanja;
+
+    @Column(name = "opis_dogadanja", columnDefinition = "TEXT")
+    private String opisDogadanja;
 }

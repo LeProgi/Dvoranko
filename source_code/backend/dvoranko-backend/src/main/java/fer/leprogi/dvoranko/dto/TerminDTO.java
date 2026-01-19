@@ -17,4 +17,8 @@ public class TerminDTO {
     private Long idDvorana;
     private Integer jeJavniEvent;
     private Long idKorisnik;
+    private String imeDogadanja;
+    private String opisDogadanja;
+
+
 }

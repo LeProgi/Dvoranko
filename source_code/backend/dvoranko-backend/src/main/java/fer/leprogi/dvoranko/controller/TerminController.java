@@ -2,6 +2,7 @@ package fer.leprogi.dvoranko.controller;
 
 
 import fer.leprogi.dvoranko.dto.TerminDTO;
+import fer.leprogi.dvoranko.dto.TerminZaFrontDTO;
 import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.model.Termin;
 import fer.leprogi.dvoranko.model.ZahtjevTermin;
@@ -41,7 +42,7 @@ public class TerminController {
     }
 
     @GetMapping("/public")
-    public ResponseEntity<List<TerminDTO>> getAllPublicTermini() {
+    public ResponseEntity<List<TerminZaFrontDTO>> getAllPublicTermini() {
         return ResponseEntity.ok(terminService.getAllPublicTermin());
     }
 
