@@ -233,6 +233,16 @@ const ReservationPage = () => {
          return;
       }
 
+      if (!imeDogadanja.trim() && !privatno) {
+         setFormError("Molimo unesite ime događanja.");
+         return;
+      }
+
+      if (!opisDogadanja.trim()) {
+         setFormError("Molimo unesite opis događanja.");
+         return;
+      }
+
       if (!brojLjudi.trim()) {
          setFormError("Molimo unesite broj ljudi za rezervaciju.");
          return;
@@ -243,6 +253,8 @@ const ReservationPage = () => {
          setFormError(`Broj ljudi ne smije prelaziti kapacitet dvorane (${kapacitet}).`);
          return;
       }
+
+
 
       setFormError("");
 
