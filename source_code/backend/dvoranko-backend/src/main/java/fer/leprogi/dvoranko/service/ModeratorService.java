@@ -187,6 +187,8 @@ public class ModeratorService {
         terminDTO.setJeJavniEvent(zahtjev.getJeJavniEvent());
         terminDTO.setIdKorisnik(zahtjev.getIdKorisnik());
         terminDTO.setIdDvorana(zahtjev.getIdDvorana());
+        terminDTO.setOpisDogadanja(zahtjev.getOpisDogadanja());
+        terminDTO.setImeDogadanja(zahtjev.getImeDogadanja());
 
         terminService.create(terminDTO);
         zahtjevTerminRepository.delete(zahtjev);

@@ -6,18 +6,34 @@ import { data, Link } from "react-router-dom";
 import Button from "../components/Button.jsx";
 
 const VenueReservations = () => {
-  const { idDvorana } = useParams();
-  const navigate = useNavigate();
+    const { idDvorana } = useParams();
+    const navigate = useNavigate();
 
-  const [reservations, setReservations] = useState([]);
-  const [reservationRequests, setReservationRequests] = useState([])
-  const [loading, setLoading] = useState(true);
-  const [dvorana, setDvorana] = useState(null)
-  const [userMap, setUsersMap] = useState({})
+    const [reservations, setReservations] = useState([]);
+    const [reservationRequests, setReservationRequests] = useState([])
+    const [loading, setLoading] = useState(true);
+    const [dvorana, setDvorana] = useState(null)
+    const [userMap, setUsersMap] = useState({})
 
-  useEffect(() => {
-    if (!idDvorana){
-        return;
+
+    const [user, setUser] = useState(null);
+
+
+    useEffect(() => {
+    fetch(`${url}/api/auth/user`, {
+        credentials: "include",
+    })
+        .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error("Not logged in");
+        })
+        .then((data) => setUser(data))
+        .catch(() => setUser(null));
+    }, []);
+
+    useEffect(() => {
+        if (!idDvorana){
+            return;
     } 
 
     const fetchData = async () => {
@@ -61,58 +77,58 @@ const VenueReservations = () => {
     }, []);
 
 
-  const updateReservationStatus = async (id, status) => {
-    try {
-      const res = await fetch(`${url}/api/moderator/rezervacije/${id}`, {
-        method: "PATCH",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      });
-
-      if (!res.ok) throw new Error("Neuspješno ažuriranje statusa");
-
-      setReservations(prev =>
-        prev.map(r =>
-          r.id === id ? { ...r, status } : r
-        )
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getUserFromId = async (id) => {
-    console.log(reservations)
-    console.log(id)
-    try{
-        const res = await fetch(`${url}/api/user/getUserById/${id}`, {
-            method: "GET",
+    const updateReservationStatus = async (id, status) => {
+        try {
+        const res = await fetch(`${url}/api/moderator/rezervacije/${id}`, {
+            method: "PATCH",
             credentials: "include",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status }),
         });
 
-        if(!res.ok) throw new Error("Neuspjesno hvacanje usera");
-        const json = await res.json();
-        console.log(json.data)
-        console.log(json.data.name)
-        return json.data || json;
-    }
-    catch(err){
-        console.error(err);
-    }
-  }
+        if (!res.ok) throw new Error("Neuspješno ažuriranje statusa");
 
-  const getAndSetDvorana = async (id) => {
-    if (dvorana) return; 
-    try {
-        const res = await fetch(`${url}/api/public/dvorane/${id}`);
-        const json = await res.json();
-        setDvorana(json.data)
-    } catch (err) {
-        console.error("Failed to fetch dvorana", err);
+        setReservations(prev =>
+            prev.map(r =>
+            r.id === id ? { ...r, status } : r
+            )
+        );
+        } catch (err) {
+        console.error(err);
         }
+    };
+
+    const getUserFromId = async (id) => {
+        console.log(reservations)
+        console.log(id)
+        try{
+            const res = await fetch(`${url}/api/user/getUserById/${id}`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if(!res.ok) throw new Error("Neuspjesno hvacanje usera");
+            const json = await res.json();
+            console.log(json.data)
+            console.log(json.data.name)
+            return json.data || json;
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
+
+    const getAndSetDvorana = async (id) => {
+        if (dvorana) return; 
+        try {
+            const res = await fetch(`${url}/api/public/dvorane/${id}`);
+            const json = await res.json();
+            setDvorana(json.data)
+        } catch (err) {
+            console.error("Failed to fetch dvorana", err);
+            }
     };
 
     function getDurationInHours(start, end) {
@@ -134,10 +150,10 @@ const VenueReservations = () => {
         return durationMinutes / 60;
         }
 
-  const getDate = (ts) => ts?.slice(0, 10).split("-").reverse().join(".");
-  const getTime = (ts) => ts?.split("T")[1]?.slice(0, 5);
+    const getDate = (ts) => ts?.slice(0, 10).split("-").reverse().join(".");
+    const getTime = (ts) => ts?.split("T")[1]?.slice(0, 5);
 
-  const getDateFromTimestamp = (timestamp) => {
+    const getDateFromTimestamp = (timestamp) => {
         try{
             const date = timestamp.slice(0, 10);
             const[year, month, day] = date.split("-")
@@ -198,12 +214,6 @@ const VenueReservations = () => {
         }
     }
 
-    // const getUserFromId = (id) => {
-    //     try{
-
-    //     }
-    // }
-
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -215,11 +225,40 @@ const VenueReservations = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#f5f5f5]">
       <div className="bg-[#3B5B80] w-full pb-10 rounded-b-[40%] flex flex-col items-center justify-center text-center mb-10%">
-        <div className="flex justify-evenly gap-12 mt-8 w-3/4">
+        {/* <div className="flex justify-evenly gap-12 mt-8 w-3/4">
           <Link to="/" className="w-[50vw] block">
             <Button variant="default" title="Početna stranica" />
           </Link>
-          </div>
+        </div> */}
+
+        <div className="flex justify-evenly gap-12 mt-4 w-3/4">
+            <Link to="/" className="w-[50vw] block">
+                <Button variant="default" title="Početna stranica" />
+            </Link>
+            <Link to="/maps" className="w-[50vw] block">
+                <Button variant="default" title="Karta" />
+            </Link>
+            {user ? (
+            <Link to="/my-profile" state={{ user }}>
+                <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md hover:scale-105 transition-transform duration-200">
+                    <img
+                        src={user.pictureUrl}
+                        alt={user.name}
+                        title={user.name}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+            </Link>
+            ) : (
+            <Button
+                variant="default"
+                title="Prijavi se"
+                onClick={handleGoogleLogin}
+            />
+            )}
+
+            
+        </div>
         
         <h2 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">{dvorana.nazivDvorana}</h2>
         <h3 className="text-4x1 text-white mt-10 mb-10 font-semibold tracking-wide">{dvorana?.adresa?.ulica} {dvorana?.adresa?.kucniBroj}, {dvorana?.adresa?.mjesto?.nazivMjesto}</h3>
@@ -247,7 +286,7 @@ const VenueReservations = () => {
                             Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
                         </p>
                         <span className="text-sm text-gray-500">
-                            {reservation.je_javni_event ? "Javni" : "Privatni"}
+                            {reservation.jeJavniEvent ? "Javni" : "Privatni"}
                         </span>
                         </div>
 
