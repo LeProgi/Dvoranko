@@ -336,7 +336,7 @@ const ProfilePage = () => {
                     <div className="flex flex-col items-center gap-3 w-full">
                         {myDvorane.data?.map((dvorana) => (
                             <div key={dvorana.idDvorana} className ="flex items-center gap-3 w-11/12">
-                                <Link to = {`/venue/${dvorana.idDvorana}`} className="w-11/12 block">
+                                <Link to = {`/venue/${dvorana.idDvorana}`} state={{ from: '/my-profile' }} className="w-11/12 block">
                                     <VenueCard 
                                       name = {dvorana.nazivDvorana}
                                       adresa = {dvorana.adresa
