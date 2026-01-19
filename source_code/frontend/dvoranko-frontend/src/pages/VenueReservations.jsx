@@ -4,20 +4,37 @@ import { url } from "../main.jsx";
 import Footer from "../components/Footer";
 import { data, Link } from "react-router-dom";
 import Button from "../components/Button.jsx";
+import ModeratorReservationsCard from "../components/ModeratorReservationsCard.jsx";
 
 const VenueReservations = () => {
-  const { idDvorana } = useParams();
-  const navigate = useNavigate();
+    const { idDvorana } = useParams();
+    const navigate = useNavigate();
 
-  const [reservations, setReservations] = useState([]);
-  const [reservationRequests, setReservationRequests] = useState([])
-  const [loading, setLoading] = useState(true);
-  const [dvorana, setDvorana] = useState(null)
-  const [userMap, setUsersMap] = useState({})
+    const [reservations, setReservations] = useState([]);
+    const [reservationRequests, setReservationRequests] = useState([])
+    const [loading, setLoading] = useState(true);
+    const [dvorana, setDvorana] = useState(null)
+    const [userMap, setUsersMap] = useState({})
 
-  useEffect(() => {
-    if (!idDvorana){
-        return;
+
+    const [user, setUser] = useState(null);
+
+
+    useEffect(() => {
+    fetch(`${url}/api/auth/user`, {
+        credentials: "include",
+    })
+        .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error("Not logged in");
+        })
+        .then((data) => setUser(data))
+        .catch(() => setUser(null));
+    }, []);
+
+    useEffect(() => {
+        if (!idDvorana){
+            return;
     } 
 
     const fetchData = async () => {
@@ -33,6 +50,7 @@ const VenueReservations = () => {
 
         const data = await res.json();
         setReservationRequests(data.data || []);
+        console.log("Reservation requests:", data.data);
 
         const resDvorana = await fetch(`${url}/api/public/dvorane/${idDvorana}`);
         if (!resDvorana.ok) throw new Error("Dvorana fetch failed");
@@ -46,9 +64,8 @@ const VenueReservations = () => {
             });
         if(!resPotvrdeniTermini.ok) throw new Error("fetch failed");
         const potvrdeniTerminiJson = await(resPotvrdeniTermini.json());
-        let rezervacije = potvrdeniTerminiJson.data
         setReservations(potvrdeniTerminiJson.data)
-
+        console.log("Potvrdeni termini:", potvrdeniTerminiJson.data);
         } catch (err) {
             console.error(err);
             navigate("/my-profile");
@@ -61,58 +78,58 @@ const VenueReservations = () => {
     }, []);
 
 
-  const updateReservationStatus = async (id, status) => {
-    try {
-      const res = await fetch(`${url}/api/moderator/rezervacije/${id}`, {
-        method: "PATCH",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      });
-
-      if (!res.ok) throw new Error("Neuspješno ažuriranje statusa");
-
-      setReservations(prev =>
-        prev.map(r =>
-          r.id === id ? { ...r, status } : r
-        )
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getUserFromId = async (id) => {
-    console.log(reservations)
-    console.log(id)
-    try{
-        const res = await fetch(`${url}/api/user/getUserById/${id}`, {
-            method: "GET",
+    const updateReservationStatus = async (id, status) => {
+        try {
+        const res = await fetch(`${url}/api/moderator/rezervacije/${id}`, {
+            method: "PATCH",
             credentials: "include",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status }),
         });
 
-        if(!res.ok) throw new Error("Neuspjesno hvacanje usera");
-        const json = await res.json();
-        console.log(json.data)
-        console.log(json.data.name)
-        return json.data || json;
-    }
-    catch(err){
-        console.error(err);
-    }
-  }
+        if (!res.ok) throw new Error("Neuspješno ažuriranje statusa");
 
-  const getAndSetDvorana = async (id) => {
-    if (dvorana) return; 
-    try {
-        const res = await fetch(`${url}/api/public/dvorane/${id}`);
-        const json = await res.json();
-        setDvorana(json.data)
-    } catch (err) {
-        console.error("Failed to fetch dvorana", err);
+        setReservations(prev =>
+            prev.map(r =>
+            r.id === id ? { ...r, status } : r
+            )
+        );
+        } catch (err) {
+        console.error(err);
         }
+    };
+
+    const getUserFromId = async (id) => {
+        console.log(reservations)
+        console.log(id)
+        try{
+            const res = await fetch(`${url}/api/user/getUserById/${id}`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if(!res.ok) throw new Error("Neuspjesno hvacanje usera");
+            const json = await res.json();
+            console.log(json.data)
+            console.log(json.data.name)
+            return json.data || json;
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
+
+    const getAndSetDvorana = async (id) => {
+        if (dvorana) return; 
+        try {
+            const res = await fetch(`${url}/api/public/dvorane/${id}`);
+            const json = await res.json();
+            setDvorana(json.data)
+        } catch (err) {
+            console.error("Failed to fetch dvorana", err);
+            }
     };
 
     function getDurationInHours(start, end) {
@@ -134,10 +151,10 @@ const VenueReservations = () => {
         return durationMinutes / 60;
         }
 
-  const getDate = (ts) => ts?.slice(0, 10).split("-").reverse().join(".");
-  const getTime = (ts) => ts?.split("T")[1]?.slice(0, 5);
+    const getDate = (ts) => ts?.slice(0, 10).split("-").reverse().join(".");
+    const getTime = (ts) => ts?.split("T")[1]?.slice(0, 5);
 
-  const getDateFromTimestamp = (timestamp) => {
+    const getDateFromTimestamp = (timestamp) => {
         try{
             const date = timestamp.slice(0, 10);
             const[year, month, day] = date.split("-")
@@ -177,6 +194,12 @@ const VenueReservations = () => {
         setReservationRequests((prevRequests) =>
             prevRequests.filter((request) => request.id !== id)
         );
+
+        setReservations((prevReservations) => [
+            ...prevReservations,
+            reservationRequests.find((request) => request.id === id)
+        ]);
+        
         } catch(err) {
             console.error("error: ", err)
         }
@@ -198,12 +221,6 @@ const VenueReservations = () => {
         }
     }
 
-    // const getUserFromId = (id) => {
-    //     try{
-
-    //     }
-    // }
-
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -215,68 +232,98 @@ const VenueReservations = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#f5f5f5]">
       <div className="bg-[#3B5B80] w-full pb-10 rounded-b-[40%] flex flex-col items-center justify-center text-center mb-10%">
-        <div className="flex justify-evenly gap-12 mt-8 w-3/4">
+        {/* <div className="flex justify-evenly gap-12 mt-8 w-3/4">
           <Link to="/" className="w-[50vw] block">
             <Button variant="default" title="Početna stranica" />
           </Link>
-          </div>
+        </div> */}
+
+        <div className="flex justify-evenly gap-12 mt-4 w-3/4">
+            <Link to="/" className="w-[50vw] block">
+                <Button variant="default" title="Početna stranica" />
+            </Link>
+            <Link to="/maps" className="w-[50vw] block">
+                <Button variant="default" title="Karta" />
+            </Link>
+            {user ? (
+            <Link to="/my-profile" state={{ user }}>
+                <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md hover:scale-105 transition-transform duration-200">
+                    <img
+                        src={user.pictureUrl}
+                        alt={user.name}
+                        title={user.name}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+            </Link>
+            ) : (
+            <Button
+                variant="default"
+                title="Prijavi se"
+                onClick={handleGoogleLogin}
+            />
+            )}
+
+            
+        </div>
         
         <h2 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">{dvorana.nazivDvorana}</h2>
         <h3 className="text-4x1 text-white mt-10 mb-10 font-semibold tracking-wide">{dvorana?.adresa?.ulica} {dvorana?.adresa?.kucniBroj}, {dvorana?.adresa?.mjesto?.nazivMjesto}</h3>
 
     </div>
-      {/* ZAHTJEVI */}
-      <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12">
+    {/* ZAHTJEVI */}
+    <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12">
         <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
           Zahtjevi za rezervacije
         </h2>
 
-        {reservationRequests.length === 0 && <p>Nema zahtjeva</p>}
 
-        <div className="flex flex-col justify-center items-center gap-4 w-3/4">
-          {reservationRequests.map((reservation, index) => (
-            <div key={index} className="flex w-3/4 gap-4 items-center">
+        <div className="flex flex-col items-center gap-6 w-3/4">
 
-                    <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-                        <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-bold">
-                            {getUserFromId(reservation.idKorisnik).name}
-                        </h2>
-                        <p className="text-gray-700">
-                        <span className="font-semibold"> 
-                            Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
-                        </p>
-                        <span className="text-sm text-gray-500">
-                            {reservation.je_javni_event ? "Javni" : "Privatni"}
-                        </span>
-                        </div>
+            {reservationRequests.length === 0 ? (
+                <div className="text-gray-600 text-lg py-10">
+                Trenutno nema zahtjeva za termine.
+                </div>
+            ) : (
+                reservationRequests.map((reservation, index) => (
+                <div className="flex w-full gap-6 items-stretch">
 
-                        <p className="text-gray-700 text-sm text-left">
-                        <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
-                        </p>
+                    <ModeratorReservationsCard 
+                        key={reservation.id}
+                        imeVlasnika={reservation.imeVlasnika}
+                        imeDogadanja={reservation.imeDogadanja}
+                        opisDogadanja={reservation.opisDogadanja}
+                        datumVrijemeStart={reservation.datumVrijemeStart}
+                        datumVrijemeEnd={reservation.datumVrijemeEnd}
+                        jeJavniEvent={reservation.jeJavniEvent}
+                        cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                        />
 
-                        <div className="flex flex-row gap-2 text-sm text-gray-700">
-                            <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
-                            <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
-                        </div>
 
-                    </div>
-
+                    {/* GUMBI */}
+                    <div className="flex flex-col gap-3 justify-center">
                     <button
-                    className = "px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
-                    onClick = {() => acceptReservationRequest(reservation.id)}>
+                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                        onClick={() => acceptReservationRequest(reservation.id)}
+                    >
                         PRIHVATI
                     </button>
 
                     <button
-                    className ="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
-                    onClick = {() => rejectReservationRequest(reservation.id)}>
+                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+                        onClick={() => rejectReservationRequest(reservation.id)}
+                    >
                         ODBIJ
                     </button>
                     </div>
-          ))}
+                </div>
+                ))
+            )}
         </div>
-      </div>
+
+    </div>
+
+      
 
       {/* POTVRĐENE */}
       <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
@@ -288,33 +335,44 @@ const VenueReservations = () => {
 
         <div className="flex flex-col justify-center items-center gap-4 w-3/4">
           {reservations.map((reservation, index) => (
-            <div key={index} className="flex w-3/4 gap-4 items-center">
+            <div className="flex w-3/4 gap-4 items-center">
 
-                    <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-                        <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-bold">
-                            {getUserFromId(reservation.idKorisnik).name}
-                        </h2>
-                        <p className="text-gray-700">
-                        <span className="font-semibold"> 
-                            Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
-                        </p>
-                        <span className="text-sm text-gray-500">
-                            {reservation.je_javni_event ? "Javni" : "Privatni"}
-                        </span>
-                        </div>
+                <ModeratorReservationsCard 
+                    key={reservation.id}
+                    imeVlasnika={reservation.imeVlasnika}
+                    imeDogadanja={reservation.imeDogadanja}
+                    opisDogadanja={reservation.opisDogadanja}
+                    datumVrijemeStart={reservation.datumVrijemeStart}
+                    datumVrijemeEnd={reservation.datumVrijemeEnd}
+                    jeJavniEvent={reservation.jeJavniEvent}
+                    cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                />
 
-                        <p className="text-gray-700 text-sm text-left">
-                        <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
-                        </p>
-
-                        <div className="flex flex-row gap-2 text-sm text-gray-700">
-                            <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
-                            <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
-                        </div>
-
+                {/* <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
+                    <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-bold">
+                        {getUserFromId(reservation.idKorisnik).name}
+                    </h2>
+                    <p className="text-gray-700">
+                    <span className="font-semibold"> 
+                        Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
+                    </p>
+                    <span className="text-sm text-gray-500">
+                        {reservation.je_javni_event ? "Javni" : "Privatni"}
+                    </span>
                     </div>
+
+                    <p className="text-gray-700 text-sm text-left">
+                    <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
+                    </p>
+
+                    <div className="flex flex-row gap-2 text-sm text-gray-700">
+                        <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
+                        <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
                     </div>
+
+                </div> */}
+            </div>
           ))}
         </div>
       </div>

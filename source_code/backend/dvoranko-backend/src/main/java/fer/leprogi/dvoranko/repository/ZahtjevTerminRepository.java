@@ -1,6 +1,7 @@
 package fer.leprogi.dvoranko.repository;
 
 import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
+import fer.leprogi.dvoranko.model.Termin;
 import fer.leprogi.dvoranko.model.ZahtjevTermin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,4 +14,5 @@ public interface ZahtjevTerminRepository extends JpaRepository<ZahtjevTermin, Lo
     List<ZahtjevTermin> findByIdDvorana(Long idDvorana);
 
 
+    List<ZahtjevTermin> findAllByIdDvorana(Long idDvorana);
 }

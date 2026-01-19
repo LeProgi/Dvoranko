@@ -1,10 +1,6 @@
 package fer.leprogi.dvoranko.service;
 
-import fer.leprogi.dvoranko.dto.AdresaDTO;
-import fer.leprogi.dvoranko.dto.DvoranaDTO;
-import fer.leprogi.dvoranko.dto.TerminDTO;
-import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
-import fer.leprogi.dvoranko.dto.MjestoDTO;
+import fer.leprogi.dvoranko.dto.*;
 import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.dto.createRequest.CreateMjestoRequest;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
@@ -17,7 +13,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
-import fer.leprogi.dvoranko.dto.ZahtjevOglasDTO;
 import fer.leprogi.dvoranko.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -143,37 +138,88 @@ public class ModeratorService {
         return sviZahtjeviDTO;
     }
 
-    public Iterable<ZahtjevTerminDTO> getAllTerminRequestsForThisDvorana(CustomOAuth2User principal, long id) {
-        Set<ZahtjevTermin> sviZahtjeviZaOvuDvoranu = new HashSet<>();
+    @Transactional
+    public List<TerminZaFrontDTO> getAllTerminRequestsForThisDvorana(CustomOAuth2User principal, long id) {
+//        Set<ZahtjevTermin> sviZahtjeviZaOvuDvoranu = new HashSet<>();
+//
+//        Iterable<ZahtjevTermin> zahtjeviDvorana = zahtjevTerminRepository.findByIdDvorana(id);
+//        for(ZahtjevTermin zahtjev: zahtjeviDvorana){
+//            sviZahtjeviZaOvuDvoranu.add(zahtjev);
+//        }
+//
+//        Set<ZahtjevTerminDTO> sviZahtjeviDTO = new HashSet<>();
+//        for(ZahtjevTermin zahtjev: sviZahtjeviZaOvuDvoranu){
+//            sviZahtjeviDTO.add(dtoMapper.toZahtjevTerminDTO(zahtjev));
+//        }
 
-        Iterable<ZahtjevTermin> zahtjeviDvorana = zahtjevTerminRepository.findByIdDvorana(id);
-        for(ZahtjevTermin zahtjev: zahtjeviDvorana){
-            sviZahtjeviZaOvuDvoranu.add(zahtjev);
+        List<ZahtjevTermin> sviTermini = zahtjevTerminRepository.findAllByIdDvorana(id);
+        List<TerminZaFrontDTO> result = new ArrayList<>();
+
+        System.out.println(sviTermini.size());
+
+        for(ZahtjevTermin termin : sviTermini){
+            UserDTO user = userService.getUserById(termin.getIdKorisnik());
+
+            TerminZaFrontDTO dto = new TerminZaFrontDTO();
+            dto.setId(termin.getId());
+            dto.setIdDvorana(id);
+            dto.setIdKorisnik(termin.getIdKorisnik());
+            dto.setDatumVrijemeEnd(termin.getDatumVrijemeEnd());
+            dto.setDatumVrijemeStart(termin.getDatumVrijemeStart());
+            dto.setOpisDogadanja(termin.getOpisDogadanja());
+            dto.setImeDogadanja(termin.getImeDogadanja());
+            dto.setJeJavniEvent(termin.getJeJavniEvent());
+
+            dto.setImeVlasnika(user.getName());
+
+            result.add(dto);
         }
 
-        Set<ZahtjevTerminDTO> sviZahtjeviDTO = new HashSet<>();
-        for(ZahtjevTermin zahtjev: sviZahtjeviZaOvuDvoranu){
-            sviZahtjeviDTO.add(dtoMapper.toZahtjevTerminDTO(zahtjev));
-        }
-
-        return sviZahtjeviDTO;
+//        return sviZahtjeviDTO;
+        return result;
     }
 
-    public Iterable<TerminDTO> getAllPotvrdeniTerminiForThisDvorana(CustomOAuth2User principal, long id) throws Exception {
-        Set<Termin> sviPotvrdeniTermini = new HashSet<>();
-        Optional<Dvorana> dvorana = dvoranaRepository.findById(id);
-        if(!dvorana.isPresent()){
-            throw new Exception("error kume ne postoji ta dobro");
-        }
-        List<Termin> sviTermini = new LinkedList<>();
-        sviTermini = terminRepository.findAllByDvorana(dvorana.get());
+    public Iterable<TerminZaFrontDTO> getAllPotvrdeniTerminiForThisDvorana(CustomOAuth2User principal, long id) throws Exception {
+//        Set<Termin> sviPotvrdeniTermini = new HashSet<>();
+//        Optional<Dvorana> dvorana = dvoranaRepository.findById(id);
+//        if(!dvorana.isPresent()){
+//            throw new Exception("error kume ne postoji ta dobro");
+//        }
+//        List<Termin> sviTermini = new LinkedList<>();
+//        sviTermini = terminRepository.findAllByDvorana(dvorana.get());
+//
+//        Set<TerminDTO> sviTerminiDTO = new HashSet<>();
+//        for(Termin termin : sviTermini){
+//            sviTerminiDTO.add(dtoMapper.toTerminDTO(termin));
+//        }
 
-        Set<TerminDTO> sviTerminiDTO = new HashSet<>();
+        Dvorana dvorana = dvoranaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with id " + id + " not found"));
+
+        List<Termin> sviTermini = terminRepository.findAllByDvorana(dvorana);
+        List<TerminZaFrontDTO> result = new ArrayList<>();
+
+        System.out.println(sviTermini.size());
+
         for(Termin termin : sviTermini){
-            sviTerminiDTO.add(dtoMapper.toTerminDTO(termin));
+            UserDTO user = dtoMapper.toUserDTO(termin.getKorisnik());
+
+            TerminZaFrontDTO dto = new TerminZaFrontDTO();
+            dto.setId(termin.getId());
+            dto.setIdDvorana(id);
+            dto.setIdKorisnik(user.getId());
+            dto.setDatumVrijemeEnd(termin.getDatumVrijemeEnd());
+            dto.setDatumVrijemeStart(termin.getDatumVrijemeStart());
+            dto.setOpisDogadanja(termin.getOpisDogadanja());
+            dto.setImeDogadanja(termin.getImeDogadanja());
+            dto.setJeJavniEvent(termin.getJeJavniEvent());
+
+            dto.setImeVlasnika(user.getName());
+
+            result.add(dto);
         }
 
-        return sviTerminiDTO;
+        return result;
     }
 
     public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
@@ -187,6 +233,8 @@ public class ModeratorService {
         terminDTO.setJeJavniEvent(zahtjev.getJeJavniEvent());
         terminDTO.setIdKorisnik(zahtjev.getIdKorisnik());
         terminDTO.setIdDvorana(zahtjev.getIdDvorana());
+        terminDTO.setOpisDogadanja(zahtjev.getOpisDogadanja());
+        terminDTO.setImeDogadanja(zahtjev.getImeDogadanja());
 
         terminService.create(terminDTO);
         zahtjevTerminRepository.delete(zahtjev);
