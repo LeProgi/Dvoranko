@@ -111,8 +111,11 @@ const AdminPage = () => {
     }
   };
 
-
-
+  // const handleCreateKategorija = async(ime_kategorije) => {
+  //   try{
+  //     const res = await fetch(`${url}/api/public/kategorije`)
+  //   }
+  // }
 
   const handleAcceptDvorana = async (id) => {
     setLoadingDvorane(prev => new Set(prev).add(id));
@@ -226,20 +229,41 @@ const AdminPage = () => {
           </Link>
         </div>
         <h2 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Administrator</h2>
-        <button
-          onClick={() => setShowRequests(prev => !prev)}
-          className="
-            px-6 py-2
-            bg-white text-[#3B5B80]
-            rounded-xl font-semibold
-            transition-colors duration-200
-            hover:bg-gray-100
-            cursor-pointer
-          "
-        >
-          {showRequests ? "Prikaži korisnike i dvorane" : "Prikaži zahtjeve"}
-        </button>
 
+        <div className= "flex flex-col gap-4">
+          <div
+            className="
+              px-6 py-2
+              bg-white text-[#3B5B80]
+              rounded-xl font-semibold
+              transition-colors duration-200
+              hover:bg-gray-100
+              cursor-pointer
+            "
+          >
+            <Link to = '/admin/updatecategory'>
+              <h2 className="text-lg font-semibold">
+                Ažuriraj kategorije
+              </h2>
+            </Link>
+              
+          </div>
+              
+          <button
+            onClick={() => setShowRequests(prev => !prev)}
+            className="
+              px-6 py-2
+              bg-white text-[#3B5B80]
+              rounded-xl font-semibold
+              transition-colors duration-200
+              hover:bg-gray-100
+              cursor-pointer
+            "
+          >
+            {showRequests ? "Prikaži korisnike i dvorane" : "Prikaži zahtjeve"}
+          </button>
+
+        </div>
       </div>
 
       <div className="flex-grow w-[90vw] px-6 py-6 bg-[#8091A6] mt-[2%] mb-[2%] rounded-2xl">
