@@ -173,6 +173,15 @@ const Home = () => {
                         <p className="text-gray-500">Učitavanje dvorana...</p>
                         <div className="border-4 border-gray-300 border-t-4 border-t-blue-500 rounded-full w-12 h-12 animate-spin"></div>
                     </div>
+                ) : filteredVenues.length === 0 ? (
+                    <div className="flex flex-col justify-center items-center w-full py-10">
+                        <p className="text-gray-600 text-lg font-medium">
+                            Nema dvorana po vašim željama.
+                        </p>
+                        <p className="text-gray-500 text-sm mt-2">
+                            Pokušajte promijeniti filtere.
+                        </p>
+                    </div>
                 ) : (
                     <div className="flex flex-col items-center gap-4 w-full">
                     {filteredVenues.map((venue) => (
