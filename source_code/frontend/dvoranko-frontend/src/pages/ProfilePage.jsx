@@ -1,11 +1,12 @@
 import Form from "../components/Form.jsx";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { url } from "../main.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 import VenueCard from "../components/VenueCard.jsx";
+import ModeratorReservationsCard from "../components/ModeratorReservationsCard.jsx";
 
 
 const zahtjevIznajmljivac = () => { 
@@ -37,6 +38,7 @@ const ProfilePage = () => {
     const [dvoranaCache, setDvoranaCache] = useState({})
 
     const [zahtjeviCount, setZahtjeviCount] = useState({});
+    const [myRequests, setMyRequests] = useState([]);
 
     useEffect(() => {
 
@@ -49,7 +51,7 @@ const ProfilePage = () => {
             })
             .then((data) => {
                 setUser(data)
-                console.log("User data fetched:", data);
+                // console.log("User data fetched:", data);
             })
             .catch(() => {
                 setUser(null);
@@ -73,34 +75,6 @@ const ProfilePage = () => {
         }
         };
 
-    const getDateFromTimestamp = (timestamp) => {
-        try{
-            const date = timestamp.slice(0, 10);
-            const[year, month, day] = date.split("-")
-            return `${day}.${month}.${year}`
-        }
-        catch(err){
-            console.log(err)
-        }
-    }
-
-    const getTimeFromTimestamp = (timestamp) => {
-        try{
-            if (!timestamp) return "";
-
-            const timePart = timestamp.includes("T")
-                ? timestamp.split("T")[1]
-                : timestamp.split(" ")[1]
-                
-            if (!timePart) return "";
-
-            const [hours, minutes] = timePart.split(":");
-            return `${hours}:${minutes}`;
-        }
-        catch(err){
-            console.log(err)
-        }
-    };
 
     const deleteReservation = async (id) => {
         try {
@@ -114,6 +88,24 @@ const ProfilePage = () => {
                 ...prevReservations,
                 data: prevReservations.data.filter((reservation) => reservation.id !== id)
             }));
+            }
+        catch(err){
+            console.error(err)
+        }
+    }
+
+
+    const deleteRequest = async (id) => {
+        try {
+              const res = await fetch(`${url}/api/public/termini/zahtjevi/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+              })
+        
+              if (!res.ok) throw new Error("Kume nesto ti se strgalo, server kaze da nije ok");
+              setMyRequests((prevRequests) => (
+                prevRequests.filter((request) => request.id !== id)
+            ));
             }
         catch(err){
             console.error(err)
@@ -152,7 +144,7 @@ const ProfilePage = () => {
             })
             .then(data => {
                 setMyDvorane(data);
-                console.log("My dvorane fetched:", data);
+                // console.log("My dvorane fetched:", data);
             })
             .catch(err => {
                 console.error(err);
@@ -196,8 +188,8 @@ const ProfilePage = () => {
             setMyReservations(data)
             console.log("My reservations fetched:", data)
             data?.data?.forEach(reservation => {
-                console.log(reservation)
-                console.log(reservation.idDvorana)
+                // console.log(reservation)
+                // console.log(reservation.idDvorana)
 
                 if(reservation.idDvorana) {
                     getDvorana(reservation.idDvorana)
@@ -211,8 +203,26 @@ const ProfilePage = () => {
         .finally(() =>{
             setLoadingReservations(false);
         });
-        
-    },[])
+
+        fetch(`${url}/api/public/termini/my/requests`, {
+            method: "GET",
+            credentials: "include",
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Greška pri dohvaćanju mojih zahtjeva");
+            return res.json();
+        })
+        .then(data => {
+            setMyRequests(data);
+            console.log("My requests fetched:", data);
+        })
+        .catch(err => {
+            console.error(err);
+            setMyRequests([]);
+        });
+
+    }, [])
+
 
     const logout = async () => {
         try {
@@ -221,7 +231,7 @@ const ProfilePage = () => {
                 credentials: "include",
             });
             
-            console.log("Logout response:", res);
+            // console.log("Logout response:", res);
             if (!res.ok) throw new Error("Logout failed");
 
             setUser(null);
@@ -259,14 +269,6 @@ const ProfilePage = () => {
         });
     }, [myDvorane]);
 
-
-    // if (!user) {
-    //     return (
-    //         <div className="flex min-h-screen items-center justify-center">
-    //         <p>Učitavanje profila...</p>
-    //         </div>
-    //     );
-    // }
 
     return (
         <div className="flex flex-col min-h-screen items-center bg-gray-100 relative">
@@ -390,10 +392,6 @@ const ProfilePage = () => {
                                         className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
                                         Uredi dvoranu
                                         </Link>
-                                        {/* <Link to = {`/reservations/${dvorana.idDvorana}`}
-                                            className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
-                                            Pogledaj termine     
-                                        </Link> */}
 
                                         <Link
                                             to={`/reservations/${dvorana.idDvorana}`}
@@ -421,39 +419,50 @@ const ProfilePage = () => {
                     <div className="flex flex-col items-center gap-3 mt-10 mb-12 w-full">
                         {myReservations?.data?.map((reservation, index) => (
                             <div key={index} className="flex w-3/4 gap-4 items-center">
+                                <ModeratorReservationsCard
+                                    key={reservation.id}
+                                    imeVlasnika={dvoranaCache[reservation.idDvorana]?.vlasnik?.name || "Nepoznato"}
+                                    imeDogadanja={reservation.imeDogadanja}
+                                    opisDogadanja={reservation.opisDogadanja}
+                                    datumVrijemeStart={reservation.datumVrijemeStart}
+                                    datumVrijemeEnd={reservation.datumVrijemeEnd}
+                                    jeJavniEvent={reservation.je_javni_event}
+                                    idRequest={reservation.id}
+                                    cijenaPoSatu={dvoranaCache[reservation.idDvorana]?.cijenaPoSatu || 0}
+                                    potvrdeno={true}
+                                />
 
-                            <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-                                <div className="flex justify-between items-center">
-                                <h2 className="text-xl font-bold">
-                                    {dvoranaCache[reservation.idDvorana]?.nazivDvorana}
-                                </h2>
-                                <p className="text-gray-700">
-                                <span className="font-semibold">Adresa:</span> {dvoranaCache[reservation.idDvorana]?.adresa?.ulica}, {dvoranaCache[reservation.idDvorana]?.adresa.kucniBroj}, {dvoranaCache[reservation.idDvorana]?.adresa.mjesto.nazivMjesto}
-                                </p>
-                                <span className="text-sm text-gray-500">
-                                    {reservation.je_javni_event ? "Javni" : "Privatni"}
-                                </span>
-                                </div>
-
-                                <p className="text-gray-700 text-sm text-left">
-                                <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
-                                </p>
-
-                                <div className="flex flex-row gap-2 text-sm text-gray-700">
-                                    <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
-                                    <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
-                                </div>
-
-                            </div>
-
-                            <button
-                            className ="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
-                            onClick={() => deleteReservation(reservation.id)}>
-                                Otkaži termin
-                            </button>
+                                <button
+                                className ="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
+                                onClick={() => deleteReservation(reservation.id)}>
+                                    Otkaži termin
+                                </button>
                             </div>
                         ))}
-                        </div>
+
+                        {myRequests?.map((request) => (
+                            <div key={request.id} className="flex w-3/4 gap-4 items-center">
+                                <ModeratorReservationsCard
+                                    key={request.id}
+                                    imeVlasnika={""}
+                                    imeDogadanja={request.imeDogadanja}
+                                    opisDogadanja={request.opisDogadanja}
+                                    datumVrijemeStart={request.datumVrijemeStart}
+                                    datumVrijemeEnd={request.datumVrijemeEnd}
+                                    jeJavniEvent={request.jeJavniEvent}
+                                    idRequest={request.id}
+                                    cijenaPoSatu={request.dvorana.cijenaPoSatu}
+                                    potvrdeno={false}
+                                />
+
+                                <button
+                                className ="px-4 py-2 bg-[#3B5B80] text-white rounded-lg bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
+                                onClick={() => deleteRequest(request.id)}>
+                                    Otkaži zahtjev
+                                </button>
+                            </div>
+                        ))}
+                    </div>
 
                 </div>
                 </>

@@ -15,4 +15,6 @@ public interface ZahtjevTerminRepository extends JpaRepository<ZahtjevTermin, Lo
 
 
     List<ZahtjevTermin> findAllByIdDvorana(Long idDvorana);
+
+    List<ZahtjevTermin> findAllByIdKorisnik(Long userId);
 }

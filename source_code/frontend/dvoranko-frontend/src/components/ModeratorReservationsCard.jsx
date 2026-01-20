@@ -8,6 +8,7 @@ const ModeratorReservationsCard = ({
   datumVrijemeEnd,
   jeJavniEvent,
   cijenaPoSatu,
+  potvrdeno,
 }) => {
 
     function getDurationInHours(start, end) {
@@ -60,79 +61,88 @@ const ModeratorReservationsCard = ({
 
 
     return (
-    <div className="flex-1 bg-white shadow-lg rounded-xl p-5 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-        {/* GORNJI RED */}
-        <div className="flex justify-between items-start">
-            <div>
-                <h2 className="text-xl font-bold text-gray-800">
-                    {imeVlasnika}
-                </h2>
+    // <div className="w-full flex-1 bg-white shadow-lg rounded-xl p-5 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
+        <div className={`flex-1 rounded-xl p-5 flex flex-col gap-3 transition ${potvrdeno ? "bg-white shadow-lg hover:shadow-2xl" : "bg-gray-100 opacity-60 cursor-not-allowed shadow-md"}`}>
+            {/* GORNJI RED */}
+            <div className="flex justify-between items-start">
+                <div>
+                    <h2 className="text-xl font-bold text-gray-800">
+                        {imeVlasnika}
+                    </h2>
 
-                {jeJavniEvent ? (
-                    <p className="text-sm">
-                        <span className="text-gray-500">Naziv događanja: </span>{" "}
-                        <span className="text-[#3B5B80] font-semibold">{imeDogadanja}</span>
-                    </p>
-                ) : (
-                    <p className="text-sm">
-                        <span className="text-[#3B5B80] font-semibold">Privatno događanje</span>
+                    {jeJavniEvent ? (
+                        <p className="text-sm">
+                            <span className="text-gray-500">Naziv događanja: </span>{" "}
+                            <span className="text-[#3B5B80] font-semibold">{imeDogadanja}</span>
+                        </p>
+                    ) : (
+                        <p className="text-sm">
+                            <span className="text-[#3B5B80] font-semibold">Privatno događanje</span>
+                        </p>
+                    )}
+
+                </div>
+
+                <div className="flex flex-col items-end gap-1">
+                    {!potvrdeno && (
+                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-yellow-100 text-yellow-700">
+                        ⏳ Čeka potvrdu
+                        </span>
+                    )}
+
+                    <span
+                        className={`text-sm font-semibold px-3 py-1 rounded-full
+                        ${jeJavniEvent
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                    >
+                        {jeJavniEvent ? "Javni" : "Privatni"}
+                    </span>
+                </div>
+            </div>
+
+            {/* OPIS */}
+            <div className="flex flex-col gap-1 items-start w-full">
+                <p className="text-sm left-3 text-gray-500">
+                    Opis:
+                </p>
+                {opisDogadanja && (
+                    <p className={`text-gray-700 text-sm rounded-lg p-3 w-full ${potvrdeno ? "bg-gray-100 " : "bg-white"}`}>
+                    {opisDogadanja}
                     </p>
                 )}
-
             </div>
 
-            <span
-            className={`text-sm font-semibold px-3 py-1 rounded-full
-                ${jeJavniEvent
-                ? "bg-green-100 text-green-700"
-                : "bg-gray-200 text-gray-700"
-                }`}
-            >
-            {jeJavniEvent ? "Javni" : "Privatni"}
-            </span>
-        </div>
-
-        {/* OPIS */}
-        <div className="flex flex-col gap-1 items-start w-full">
-            <p className="text-sm left-3 text-gray-500">
-                Opis:
-            </p>
-            {opisDogadanja && (
-                <p className="text-gray-700 text-sm bg-gray-100 rounded-lg p-3 w-full">
-                {opisDogadanja}
+            {/* DATUM I VRIJEME */}
+            <div className="flex flex-wrap justify-between text-sm text-gray-700 gap-2">
+                <p>
+                <span className="font-semibold">Datum:</span>{" "}
+                {getDateFromTimestamp(datumVrijemeStart)}
                 </p>
-            )}
-        </div>
 
-        {/* DATUM I VRIJEME */}
-        <div className="flex flex-wrap justify-between text-sm text-gray-700 gap-2">
-            <p>
-            <span className="font-semibold">Datum:</span>{" "}
-            {getDateFromTimestamp(datumVrijemeStart)}
-            </p>
-
-            <div className="flex gap-4">
-            <p>
-                <span className="font-semibold">Od:</span>{" "}
-                {getTimeFromTimestamp(datumVrijemeStart)}
-            </p>
-            <p>
-                <span className="font-semibold">Do:</span>{" "}
-                {getTimeFromTimestamp(datumVrijemeEnd)}
-            </p>
+                <div className="flex gap-4">
+                <p>
+                    <span className="font-semibold">Od:</span>{" "}
+                    {getTimeFromTimestamp(datumVrijemeStart)}
+                </p>
+                <p>
+                    <span className="font-semibold">Do:</span>{" "}
+                    {getTimeFromTimestamp(datumVrijemeEnd)}
+                </p>
+                </div>
             </div>
-        </div>
 
-        {/* CIJENA */}
-        <p className="text-right font-semibold text-gray-800">
-            Cijena:{" "}
-            {getDurationInHours(
-            getTimeFromTimestamp(datumVrijemeStart),
-            getTimeFromTimestamp(datumVrijemeEnd)
-            ) * cijenaPoSatu}{" "}
-            €
-        </p>
-    </div>
+            {/* CIJENA */}
+            <p className="text-right font-semibold text-gray-800">
+                Cijena:{" "}
+                {getDurationInHours(
+                getTimeFromTimestamp(datumVrijemeStart),
+                getTimeFromTimestamp(datumVrijemeEnd)
+                ) * cijenaPoSatu}{" "}
+                €
+            </p>
+        </div>
     );
 }
 

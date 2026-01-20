@@ -6,10 +6,12 @@ import fer.leprogi.dvoranko.dto.TerminZaFrontDTO;
 import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
 import fer.leprogi.dvoranko.model.Termin;
 import fer.leprogi.dvoranko.model.ZahtjevTermin;
+import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.service.TerminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,10 +56,21 @@ public class TerminController {
     }
 
 
+    @DeleteMapping("/zahtjevi/{id}")
+    public ResponseEntity<Void> deleteZahtjevTermin(@PathVariable Long id) {
+        terminService.deleteZahtjev(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTermin(@PathVariable Long id) {
         terminService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/my/requests")
+    public ResponseEntity<List<TerminZaFrontDTO>> getMyZahtjeviTermini(@AuthenticationPrincipal CustomOAuth2User principal) {
+        List<TerminZaFrontDTO> zahtjevi = terminService.getMyZahtjeviTermini(principal);
+        return ResponseEntity.ok(zahtjevi);
+    }
 }
