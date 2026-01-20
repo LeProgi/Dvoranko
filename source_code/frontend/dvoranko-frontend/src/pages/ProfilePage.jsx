@@ -314,7 +314,7 @@ const ProfilePage = () => {
             
                     <div className="flex flex-row items-center gap-[5vw] mt-16 bg-[#3B5B80] px-6 py-4 rounded-2xl ">
                     <img
-                    src={user.pictureUrl}
+                    src={user.pictureUrl ? user.pictureUrl : "../../public/user.svg"}
                     alt={user.name}
                     className="w-24 h-24 rounded-full border-4 border-white object-cover"
                     />
