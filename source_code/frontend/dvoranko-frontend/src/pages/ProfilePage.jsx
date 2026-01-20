@@ -32,7 +32,9 @@ const ProfilePage = () => {
     const navigate = useNavigate();
 
     const [myDvorane, setMyDvorane] = useState([]);
+    const [myDvoraneZahtjevi, setMyDvoraneZahtjevi] = useState([]);
     const [loadingDvorane, setLoadingDvorane] = useState(false);
+    const [loadingDvoraneZahtjevi, setLoadingDvoraneZahtjevi] = useState(false);
     const [myReservations, setMyReservations] = useState(false);
     const [loadingReservations, setLoadingReservations] = useState(false);
     const [dvoranaCache, setDvoranaCache] = useState({})
@@ -153,7 +155,33 @@ const ProfilePage = () => {
             .finally(() => {
                 setLoadingDvorane(false);
             });
+
+        setLoadingDvoraneZahtjevi(true);
+        fetch(`${url}/api/moderator/getMyDvoraneRequests`, {
+            method: "GET",
+            credentials: "include",
+        })
+        .then(res => {
+            console.log("Response for dvorane zahtjevi:", res);
+            if (!res.ok) throw new Error("Greška pri dohvaćanju zahtjeva za dvorane");
+            return res.json();
+            
+        })
+        .then(data => {
+            setMyDvoraneZahtjevi(data);
+            console.log("My dvorane zahtjevi fetched:", data);
+        })
+        .catch(err => {
+            console.error(err);
+            setMyDvoraneZahtjevi([]);
+        })
+        .finally(() => {
+            setLoadingDvoraneZahtjevi(false);
+        });
     }, [location.key, user]);
+
+
+
 
     useEffect(() => {
         if (!user) return;
@@ -221,7 +249,7 @@ const ProfilePage = () => {
             setMyRequests([]);
         });
 
-    }, [])
+    }, [location.key, user])
 
 
     const logout = async () => {
@@ -373,8 +401,8 @@ const ProfilePage = () => {
                         {myDvorane?.data?.length === 0 && (
                             <p>Nemate oglašenih dvorana</p>
                         )}
-                        {myDvorane?.data?.length > 0 &&(
-                            <div className="flex flex-col items-center gap-3 w-full">
+                        {(myDvorane?.data?.length > 0 || myDvoraneZahtjevi?.data?.length > 0) &&(
+                            <div className="flex flex-col items-center gap-3 w-full justify-center">
                                 {myDvorane.data?.map((dvorana) => (
                                     <div key={dvorana.idDvorana} className ="flex items-center gap-3 w-11/12">
                                         <Link to = {`/venue/${dvorana.idDvorana}`} state={{ from: '/my-profile' }} className="w-11/12 block">
@@ -386,6 +414,7 @@ const ProfilePage = () => {
                                                     }
                                             imgUrl={ dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "" }
                                             cijenaPoSatu={dvorana.cijenaPoSatu}
+                                            potvrdeno={true}
                                             />
                                         </Link>   
                                         <Link to = {`/editform/${dvorana.idDvorana}`}
@@ -404,6 +433,22 @@ const ProfilePage = () => {
                                                 </span>
                                             )}
                                         </Link>
+                                    </div>
+                                ))}
+
+                                {myDvoraneZahtjevi.data?.map((dvorana) => (
+                                    <div key={dvorana.idDvorana} className ="flex items-center w-11/12 gap-3">
+                                        {/* <Link to = {`/venue/${dvorana.idDvorana}`} state={{ from: '/my-profile' }} className="w-11/12 block"> */}
+                                        <div className="w-full">
+                                            <VenueCard 
+                                            name = {dvorana.naziv}
+                                            adresa = {dvorana.street + " " + dvorana.streetNumber + ", " + dvorana.city}
+                                            imgUrl={ dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlike : "" }
+                                            cijenaPoSatu={dvorana.cijenaPoSatu}
+                                            potvrdeno={false}
+                                            />
+                                        </div>
+                                        {/* </Link>    */}
                                     </div>
                                 ))}
                             </div>

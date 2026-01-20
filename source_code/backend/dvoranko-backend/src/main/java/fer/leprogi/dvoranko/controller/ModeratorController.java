@@ -1,9 +1,6 @@
 package fer.leprogi.dvoranko.controller;
 
-import fer.leprogi.dvoranko.dto.DvoranaDTO;
-import fer.leprogi.dvoranko.dto.TerminDTO;
-import fer.leprogi.dvoranko.dto.TerminZaFrontDTO;
-import fer.leprogi.dvoranko.dto.ZahtjevTerminDTO;
+import fer.leprogi.dvoranko.dto.*;
 import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
 import fer.leprogi.dvoranko.dto.createRequest.CreateZahtjevOglas;
 import fer.leprogi.dvoranko.model.Dvorana;
@@ -44,9 +41,22 @@ public class ModeratorController {
     @PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<Iterable<DvoranaDTO>>> getAllDvoraneForModerator(@AuthenticationPrincipal CustomOAuth2User principal) {
 
-        Iterable<DvoranaDTO> dvorane = moderatorService.getAllDvoranaForModerator(principal);
+            Iterable<DvoranaDTO> dvorane = moderatorService.getAllDvoranaForModerator(principal);
 
-        return ResponseEntity.ok(ApiResponse.success(dvorane, "My dvorane fetched successfully"));
+            return ResponseEntity.ok(ApiResponse.success(dvorane, "My dvorane fetched successfully"));
+
+
+    }
+
+    @GetMapping("/getMyDvoraneRequests")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<ApiResponse<List<ZahtjevOglasDTO>>> getAllDvoranaRequestsForModerator(@AuthenticationPrincipal CustomOAuth2User principal) {
+        List<ZahtjevOglasDTO> dvorane = moderatorService.getAllDvoranaRequestsForModerator(principal);
+        System.out.println("ovo je velicina na kontroleru " + dvorane.size());
+
+        return ResponseEntity.ok(ApiResponse.success(dvorane, "My dvorane requests fetched successfully"));
+
+
     }
 
     @PostMapping("/approveTeminRequest/{id}")

@@ -55,6 +55,8 @@ public class ModeratorService {
     private SlikaDvoranaService slikaDvoranaService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private ZahtjevOglasRepository zahtjevOglasRepository;
 
     @Transactional
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request, List<MultipartFile> images) throws Exception {
@@ -111,11 +113,22 @@ public class ModeratorService {
     }
 
 
+    @Transactional
     public Iterable<DvoranaDTO> getAllDvoranaForModerator(CustomOAuth2User principal) {
 
         Long ownerId = userService.getIdForPrincipal(principal);
 
         return dvoranaService.getDvoraneByOwner(ownerId);
+    }
+    @Transactional
+    public List<ZahtjevOglasDTO> getAllDvoranaRequestsForModerator(CustomOAuth2User principal) {
+
+        Long ownerId = userService.getIdForPrincipal(principal);
+        System.out.println("OWner id je " + ownerId );
+
+        List<ZahtjevOglas> zahtjevi = zahtjevOglasRepository.findAllByOwner_Id(ownerId);
+        System.out.println("proslo dalje idemo" + zahtjevi.size());
+        return zahtjevi.stream().map(dtoMapper::toZahtjevOglasDTO).toList();
     }
 
     public Iterable<ZahtjevTerminDTO> getAllTerminRequestsForModerator(CustomOAuth2User principal) {

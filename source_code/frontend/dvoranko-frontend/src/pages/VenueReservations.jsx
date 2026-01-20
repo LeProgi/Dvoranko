@@ -297,6 +297,7 @@ const VenueReservations = () => {
                         datumVrijemeEnd={reservation.datumVrijemeEnd}
                         jeJavniEvent={reservation.jeJavniEvent}
                         cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                        potvrdeno={true}
                         />
 
 
