@@ -4,11 +4,8 @@ import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.TerminDTO;
 import fer.leprogi.dvoranko.dto.UserDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateTerminRequest;
-import fer.leprogi.dvoranko.model.Termin;
-import fer.leprogi.dvoranko.model.User;
+import fer.leprogi.dvoranko.model.*;
 
-import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
-import fer.leprogi.dvoranko.model.ZahtjevTermin;
 import fer.leprogi.dvoranko.repository.*;
 import fer.leprogi.dvoranko.security.CustomOAuth2User;
 
@@ -40,6 +37,10 @@ public class UserService {
 
     @Autowired
     private DtoMapper dtoMapper;
+    @Autowired
+    private DvoranaRepository dvoranaRepository;
+    @Autowired
+    private MailService mailService;
 
 
     public UserDTO convertToDTO(User user) {
@@ -80,6 +81,12 @@ public class UserService {
         if(request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
+
+        Dvorana dvorana = dvoranaRepository.findById(request.getIdDvorana())
+                .orElseThrow(() -> new IllegalArgumentException("Dvorana with id " + request.getIdDvorana() + " does not exist"));
+
+        User owner = dvorana.getVlasnik();
+
         ZahtjevTermin  zahtjev = new ZahtjevTermin();
         zahtjev.setDatumVrijemeStart(request.getDatumVrijemeStart());
         zahtjev.setDatumVrijemeEnd(request.getDatumVrijemeEnd());
@@ -89,6 +96,8 @@ public class UserService {
         zahtjev.setOpisDogadanja(request.getOpisDogadanja());
         zahtjev.setImeDogadanja(request.getImeDogadanja());
         zahtjevTerminRepository.save(zahtjev);
+
+        mailService.sendMail(owner.getEmail(), "Zahtjev termina za dvoranu '" + dvorana.getNazivDvorana() + "'","Poštovani, \n\nimate novi zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "' na platformi Dvoranko.\n\nLijep pozdrav,\nDvoranko tim");
     }
 
 
@@ -97,6 +106,13 @@ public class UserService {
         if (principal.getUser() == null) throw new IllegalArgumentException("User cannot be null");
 
         return principal.getUser().getId();
+    }
+
+    public UserDTO getUSerForPrincipal(CustomOAuth2User principal) {
+        if (principal == null) throw new IllegalArgumentException("Principal cannot be null");
+        if (principal.getUser() == null) throw new IllegalArgumentException("User cannot be null");
+
+        return dtoMapper.toUserDTO(principal.getUser());
     }
 
 

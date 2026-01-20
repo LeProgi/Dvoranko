@@ -12,8 +12,10 @@ import fer.leprogi.dvoranko.repository.DvoranaRepository;
 import fer.leprogi.dvoranko.repository.TerminRepository;
 import fer.leprogi.dvoranko.repository.UserRepository;
 import fer.leprogi.dvoranko.repository.ZahtjevTerminRepository;
+import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.internal.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class TerminService {
     private final DvoranaRepository dvoranaRepository;
     private final ZahtjevTerminRepository zahtjevTerminRepository;
     private final DtoMapper dtoMapper;
+    private final UserService userService;
 
     public Termin create(TerminDTO terminDTO) {
 
@@ -97,7 +100,7 @@ public class TerminService {
         return terminRepository.save(existing);
     }
 
-
+    @Transactional
     public void delete(Long id) {
         if (!terminRepository.existsById(id)) {
             throw new RuntimeException("Termin s ID-om " + id + " ne postoji");
@@ -105,6 +108,15 @@ public class TerminService {
         terminRepository.deleteById(id);
     }
 
+    @Transactional
+    public void deleteZahtjev(Long id) {
+        if (!zahtjevTerminRepository.existsById(id)) {
+            throw new RuntimeException("Zahtejv termin s ID-om " + id + " ne postoji");
+        }
+        zahtjevTerminRepository.deleteById(id);
+    }
+
+    @Transactional
     public List<ZahtjevTerminDTO> getZahtjeviTerminiByDvoranaId(Long dvoranaId) {
 
         List<ZahtjevTermin> zahtjevi = zahtjevTerminRepository.findByIdDvorana(dvoranaId);
@@ -121,7 +133,7 @@ public class TerminService {
     public List<TerminZaFrontDTO> getAllPublicTermin (){
         List<Termin> termini = terminRepository.findAllByJeJavniEvent(1);
 //        List<Termin> termini = terminRepository.findAllPublicTerminWithDvorana();
-        System.out.println(termini.size());
+//        System.out.println(termini.size());
 
 //        System.out.println(termini.get(0).getDvorana().getSlike().getFirst().getUrlSlika());
 
@@ -150,7 +162,57 @@ public class TerminService {
             result.add(dto);
         }
 
-        System.out.println("Proslo");
+//        System.out.println("Proslo");
+
+        return result;
+    }
+
+
+    @Transactional
+    public List<TerminZaFrontDTO> getMyZahtjeviTermini(CustomOAuth2User principal){
+
+        Long userId = userService.getIdForPrincipal(principal);
+
+        List<ZahtjevTermin> mojiZahtjevi = zahtjevTerminRepository.findAllByIdKorisnik(userId);
+        System.out.println("moje zahtjevi: " + mojiZahtjevi.size());
+
+        List<TerminZaFrontDTO> result = new LinkedList<>();
+
+        for (ZahtjevTermin zahtjev : mojiZahtjevi) {
+            System.out.println("abananana");
+            System.out.println("dvorana id od zahtjeva: " + zahtjev.getIdDvorana());
+
+            Dvorana dvorana = dvoranaRepository.findById(zahtjev.getIdDvorana())
+                    .orElseThrow(() -> new RuntimeException("Dvorana ne postoji"));
+
+            if(dvorana != null) {
+                dvorana.getVlasnik().getName(); // inicijaliziraj vlasnika
+                dvorana.getAdresa().getLongitude();
+                dvorana.getKategorije().size();
+                dvorana.getSlike().size();
+            }
+
+            System.out.println("dohvatio dovranu " + dvorana.getNazivDvorana());
+
+
+            TerminZaFrontDTO dto = new TerminZaFrontDTO();
+
+            dto.setId(zahtjev.getId());
+            dto.setIdDvorana(zahtjev.getIdDvorana());
+            dto.setIdKorisnik(zahtjev.getIdKorisnik());
+            dto.setDatumVrijemeEnd(zahtjev.getDatumVrijemeEnd());
+            dto.setDatumVrijemeStart(zahtjev.getDatumVrijemeStart());
+            dto.setOpisDogadanja(zahtjev.getOpisDogadanja());
+            dto.setImeDogadanja(zahtjev.getImeDogadanja());
+            dto.setJeJavniEvent(zahtjev.getJeJavniEvent());
+
+            System.out.println("nesto");
+            dto.setDvorana(dtoMapper.toDvoranaDTO(dvorana));
+            System.out.println("nesto2");
+            result.add(dto);
+
+            System.out.println("proslo");
+        }
 
         return result;
     }

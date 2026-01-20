@@ -53,6 +53,10 @@ public class ModeratorService {
     private ZahtjevSlikaRepository zahtjevSlikaRepository;
     @Autowired
     private SlikaDvoranaService slikaDvoranaService;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private ZahtjevOglasRepository zahtjevOglasRepository;
 
     @Transactional
     public ZahtjevOglasDTO createAddRequest(CreateZahtjevOglas request, List<MultipartFile> images) throws Exception {
@@ -109,11 +113,22 @@ public class ModeratorService {
     }
 
 
+    @Transactional
     public Iterable<DvoranaDTO> getAllDvoranaForModerator(CustomOAuth2User principal) {
 
         Long ownerId = userService.getIdForPrincipal(principal);
 
         return dvoranaService.getDvoraneByOwner(ownerId);
+    }
+    @Transactional
+    public List<ZahtjevOglasDTO> getAllDvoranaRequestsForModerator(CustomOAuth2User principal) {
+
+        Long ownerId = userService.getIdForPrincipal(principal);
+        System.out.println("OWner id je " + ownerId );
+
+        List<ZahtjevOglas> zahtjevi = zahtjevOglasRepository.findAllByOwner_Id(ownerId);
+        System.out.println("proslo dalje idemo" + zahtjevi.size());
+        return zahtjevi.stream().map(dtoMapper::toZahtjevOglasDTO).toList();
     }
 
     public Iterable<ZahtjevTerminDTO> getAllTerminRequestsForModerator(CustomOAuth2User principal) {
@@ -155,7 +170,7 @@ public class ModeratorService {
         List<ZahtjevTermin> sviTermini = zahtjevTerminRepository.findAllByIdDvorana(id);
         List<TerminZaFrontDTO> result = new ArrayList<>();
 
-        System.out.println(sviTermini.size());
+//        System.out.println(sviTermini.size());
 
         for(ZahtjevTermin termin : sviTermini){
             UserDTO user = userService.getUserById(termin.getIdKorisnik());
@@ -199,7 +214,7 @@ public class ModeratorService {
         List<Termin> sviTermini = terminRepository.findAllByDvorana(dvorana);
         List<TerminZaFrontDTO> result = new ArrayList<>();
 
-        System.out.println(sviTermini.size());
+//        System.out.println(sviTermini.size());
 
         for(Termin termin : sviTermini){
             UserDTO user = dtoMapper.toUserDTO(termin.getKorisnik());
@@ -222,10 +237,18 @@ public class ModeratorService {
         return result;
     }
 
+    @Transactional
     public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
 
         ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
+
+        User user = userRepository.findById(zahtjev.getIdKorisnik())
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + zahtjev.getIdKorisnik() + " not found"));
+
+        Dvorana dvorana = dvoranaRepository.findById(zahtjev.getIdDvorana())
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with id " + zahtjev.getIdDvorana() + " not found"));
+
 
         TerminDTO terminDTO = new TerminDTO();
         terminDTO.setDatumVrijemeStart(zahtjev.getDatumVrijemeStart());
@@ -238,6 +261,8 @@ public class ModeratorService {
 
         terminService.create(terminDTO);
         zahtjevTerminRepository.delete(zahtjev);
+
+        mailService.sendMail(user.getEmail(),"Vaš termin je odobren", "Poštovani,\n\nVaš zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "', pod nazivom '" + zahtjev.getImeDogadanja() + "' je odobren.\n\nLijep pozdrav,\nDvoranko tim");
     }
 
     public void rejectTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
@@ -245,7 +270,15 @@ public class ModeratorService {
         ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
 
+        User user = userRepository.findById(zahtjev.getIdKorisnik())
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + zahtjev.getIdKorisnik() + " not found"));
+
+        Dvorana dvorana = dvoranaRepository.findById(zahtjev.getIdDvorana())
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with id " + zahtjev.getIdDvorana() + " not found"));
+
         zahtjevTerminRepository.delete(zahtjev);
+
+        mailService.sendMail(user.getEmail(),"Vaš termin je odbijen", "Poštovani,\n\nVaš zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "', pod nazivom '" + zahtjev.getImeDogadanja() + "' je odbijen.\n\nLijep pozdrav,\nDvoranko tim");
     }
 
 

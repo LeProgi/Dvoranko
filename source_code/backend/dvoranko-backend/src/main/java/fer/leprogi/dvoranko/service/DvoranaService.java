@@ -32,6 +32,7 @@ public class DvoranaService {
     private final SlikaDvoranaService slikaDvoranaService;
     private final CloudinaryService cloudinaryService;
     private final SlikaDvoranaRepository slikaDvoranaRepository;
+    private final ZahtjevOglasRepository zahtjevOglasRepository;
 
 
     @Transactional
@@ -155,7 +156,6 @@ public class DvoranaService {
                 .map(dtoMapper::toDvoranaDTO)
                 .collect(Collectors.toList());
     }
-
 
     @Transactional
     public void deleteDvorana(Long idDvorana) {

@@ -249,7 +249,7 @@ const VenueReservations = () => {
             <Link to="/my-profile" state={{ user }}>
                 <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md hover:scale-105 transition-transform duration-200">
                     <img
-                        src={user.pictureUrl}
+                        src={user.pictureUrl ? user.pictureUrl : "../../public/user.svg"}
                         alt={user.name}
                         title={user.name}
                         className="w-full h-full object-cover"
@@ -297,6 +297,7 @@ const VenueReservations = () => {
                         datumVrijemeEnd={reservation.datumVrijemeEnd}
                         jeJavniEvent={reservation.jeJavniEvent}
                         cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                        potvrdeno={true}
                         />
 
 
@@ -320,10 +321,7 @@ const VenueReservations = () => {
                 ))
             )}
         </div>
-
     </div>
-
-      
 
       {/* POTVRĐENE */}
       <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
@@ -345,33 +343,10 @@ const VenueReservations = () => {
                     datumVrijemeStart={reservation.datumVrijemeStart}
                     datumVrijemeEnd={reservation.datumVrijemeEnd}
                     jeJavniEvent={reservation.jeJavniEvent}
-                    cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                    cijenaPoSatu={dvorana.cijenaPoSatu}
+                    potvrdeno={true}
                 />
 
-                {/* <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-                    <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-bold">
-                        {getUserFromId(reservation.idKorisnik).name}
-                    </h2>
-                    <p className="text-gray-700">
-                    <span className="font-semibold"> 
-                        Cijena: {getDurationInHours(getTimeFromTimestamp(reservation.datumVrijemeStart), getTimeFromTimestamp(reservation.datumVrijemeEnd)) * dvorana.cijenaPoSatu}€ </span> 
-                    </p>
-                    <span className="text-sm text-gray-500">
-                        {reservation.je_javni_event ? "Javni" : "Privatni"}
-                    </span>
-                    </div>
-
-                    <p className="text-gray-700 text-sm text-left">
-                    <span className="font-semibold">Datum:</span> {getDateFromTimestamp(reservation.datumVrijemeStart)}
-                    </p>
-
-                    <div className="flex flex-row gap-2 text-sm text-gray-700">
-                        <p><span className="font-semibold">Od:</span> {getTimeFromTimestamp(reservation.datumVrijemeStart)}</p>
-                        <p><span className="font-semibold">Do:</span> {getTimeFromTimestamp(reservation.datumVrijemeEnd)}</p>
-                    </div>
-
-                </div> */}
             </div>
           ))}
         </div>
