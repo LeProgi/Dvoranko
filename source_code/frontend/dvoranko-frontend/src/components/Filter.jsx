@@ -22,7 +22,7 @@ const Filter = ({ onApply , categories}) => {
     return (
         <>
             {/* FILTER BAR */}
-            <div className="flex flex-row gap-4 w-3/4 h-10 bg-[#d9d9d9] rounded-[10px] justify-start mt-4 mb-4 pr-8">
+            <div className="flex flex-row gap-4 md:w-3/4 w-[95%] h-10 bg-[#d9d9d9] rounded-[10px] justify-start mt-4 mb-4 pr-8">
                 <Button
                     variant="filter"
                     className="flex justify-center items-center p-2"

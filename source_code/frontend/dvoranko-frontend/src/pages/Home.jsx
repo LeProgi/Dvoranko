@@ -137,7 +137,7 @@ const Home = () => {
 
       <div className="bg-[#3B5B80] w-full pb-10 rounded-b-[40%] flex flex-col items-center text-center">
         
-        <div className="flex justify-evenly gap-12 mt-8 w-3/4">
+        <div className="flex justify-evenly md:gap-12 gap-6 mt-8 w-3/4">
             <Link to="/event-board" className="w-[50vw] block">
                 <Button variant="default" title="Oglasna ploča" />
             </Link>
@@ -164,7 +164,7 @@ const Home = () => {
         <h1 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Dvoranko</h1>
       </div>
         <Filter onApply={applyFilters} categories={categories}/>
-        <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
+        <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
 
                 {!imagesLoaded ? (

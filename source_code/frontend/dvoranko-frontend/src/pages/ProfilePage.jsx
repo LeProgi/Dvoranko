@@ -310,9 +310,9 @@ const ProfilePage = () => {
 
             {user && (
                 <>
-                <div className="relative bg-[#3B5B80] w-full pb-5 px-[5vw] flex flex-row justify-between items-center text-white">
+                <div className="relative bg-[#3B5B80] w-full pb-5 px-[5vw] flex md:flex-row flex-col justify-between items-center text-white">
             
-                    <div className="flex flex-row items-center gap-[5vw] mt-16 bg-[#3B5B80] px-6 py-4 rounded-2xl ">
+                    <div className="flex md:flex-row flex-col items-center md:gap-[5vw] gap-[2vw] mt-16 bg-[#3B5B80] md:px-6 px-1 py-4 rounded-2xl ">
                     <img
                     src={user.pictureUrl ? user.pictureUrl : "../../public/user.svg"}
                     alt={user.name}
@@ -328,7 +328,7 @@ const ProfilePage = () => {
                     <div className="flex flex-col justify-center gap-[0.5vw]">
 
 
-                        <Link to="/" className="w-[20vw] block">
+                        <Link to="/" className="md:w-[20vw] w-[70vw] block">
                             <Button variant="default" title="Početna stranica" />
                         </Link>
 
@@ -377,7 +377,7 @@ const ProfilePage = () => {
                 )}
 
                 {user.role === "MODERATOR"  && (
-                    <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
+                    <div className="flex justify-between items-center md:w-3/4 w-[95%] bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                         <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
                         <Link to="/form" >
                         <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition">
@@ -389,7 +389,7 @@ const ProfilePage = () => {
                 )}
 
                 {user.role === "MODERATOR" && (
-                    <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
+                    <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
                         <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
                             Moje dvorane
                         </h2>
@@ -466,7 +466,7 @@ const ProfilePage = () => {
                 )}
 
                 
-                <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
+                <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
                     <h2 className="text-xl font-semibold mb-6 text-[#3B5B80]">
                     Moje rezervacije
                     </h2>
@@ -520,7 +520,7 @@ const ProfilePage = () => {
 
                 </div>
                 </>
-            )};
+            )}
             <Footer />
         </div>
     );

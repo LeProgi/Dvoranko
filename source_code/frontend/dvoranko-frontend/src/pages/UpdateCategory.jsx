@@ -122,16 +122,16 @@ const UpdateCategory = () => {
                 </button>
         </div>
 
-            <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
-            <h2 className="text-xl font-semibold mb-6 text-[#3B5B80]">
+            <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
+            <h2 className="text-xl font-semibold md:mb-6 mb-3 text-[#3B5B80]">
             Postojeće kategorije
             </h2>
-            <div className="flex flex-col items-center gap-3 mt-10 mb-12 w-full">
+            <div className="flex flex-col items-center gap-3 md:mt-10 mt-5 md:mb-12 mb-6 w-full">
                 {kategorije.map((kategorija) => (
-                    <div  className="flex w-3/4 gap-4 items-center">
+                    <div  className="flex md:w-3/4 w-[95%] gap-4 items-center">
                     <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
-                        <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-bold">
+                        <div className="flex justify-center items-center">
+                        <h2 className="text-xl font-bold text-center">
                             {kategorija.nazivKategorije}
                         </h2>
 

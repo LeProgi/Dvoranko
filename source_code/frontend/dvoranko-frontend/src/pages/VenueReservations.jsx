@@ -238,7 +238,7 @@ const VenueReservations = () => {
           </Link>
         </div> */}
 
-        <div className="flex justify-evenly gap-12 mt-4 w-3/4">
+        <div className="flex justify-evenly md:gap-12 gap-6 mt-4 w-3/4">
             <Link to="/" className="w-[50vw] block">
                 <Button variant="default" title="Početna stranica" />
             </Link>
@@ -272,13 +272,13 @@ const VenueReservations = () => {
 
     </div>
     {/* ZAHTJEVI */}
-    <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12">
+    <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12">
         <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
           Zahtjevi za rezervacije
         </h2>
 
 
-        <div className="flex flex-col items-center gap-6 w-3/4">
+        <div className="flex flex-col items-center gap-6 md:w-3/4 w-[95%]">
 
             {reservationRequests.length === 0 ? (
                 <div className="text-gray-600 text-lg py-10">
@@ -286,7 +286,7 @@ const VenueReservations = () => {
                 </div>
             ) : (
                 reservationRequests.map((reservation, index) => (
-                <div className="flex w-full gap-6 items-stretch">
+                <div className="flex md:flex-row flex-col w-full gap-6 items-stretch">
 
                     <ModeratorReservationsCard 
                         key={reservation.id}
@@ -302,16 +302,16 @@ const VenueReservations = () => {
 
 
                     {/* GUMBI */}
-                    <div className="flex flex-col gap-3 justify-center">
+                    <div className="flex flex-col gap-3 justify-center items-center">
                     <button
-                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold w-[200px]"
                         onClick={() => acceptReservationRequest(reservation.id)}
                     >
                         PRIHVATI
                     </button>
 
                     <button
-                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold w-[200px]"
                         onClick={() => rejectReservationRequest(reservation.id)}
                     >
                         ODBIJ
@@ -324,16 +324,16 @@ const VenueReservations = () => {
     </div>
 
       {/* POTVRĐENE */}
-      <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
+      <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
         <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
           Potvrđene rezervacije
         </h2>
 
         {reservations.length === 0 && <p>Nema potvrđenih rezervacija</p>}
 
-        <div className="flex flex-col justify-center items-center gap-4 w-3/4">
+        <div className="flex flex-col justify-center items-center gap-4 md:w-3/4 w-[95%]">
           {reservations.map((reservation, index) => (
-            <div className="flex w-3/4 gap-4 items-center">
+            <div className="flex md:w-3/4 w-[95%] gap-4 items-center">
 
                 <ModeratorReservationsCard 
                     key={reservation.id}
