@@ -280,9 +280,9 @@ const ProfilePage = () => {
 
             {user && (
                 <>
-                <div className="relative bg-[#3B5B80] w-full pb-5 px-[5vw] flex flex-row justify-between items-center text-white">
+                <div className="relative bg-[#3B5B80] w-full pb-5 px-[5vw] flex md:flex-row flex-col justify-between items-center text-white">
             
-                    <div className="flex flex-row items-center gap-[5vw] mt-16 bg-[#3B5B80] px-6 py-4 rounded-2xl ">
+                    <div className="flex md:flex-row flex-col items-center md:gap-[5vw] gap-[2vw] mt-16 bg-[#3B5B80] md:px-6 px-1 py-4 rounded-2xl ">
                     <img
                     src={user.pictureUrl}
                     alt={user.name}
@@ -298,7 +298,7 @@ const ProfilePage = () => {
                     <div className="flex flex-col justify-center gap-[0.5vw]">
 
 
-                        <Link to="/" className="w-[20vw] block">
+                        <Link to="/" className="md:w-[20vw] w-[70vw] block">
                             <Button variant="default" title="Početna stranica" />
                         </Link>
 
@@ -347,7 +347,7 @@ const ProfilePage = () => {
                 )}
 
                 {user.role === "MODERATOR"  && (
-                    <div className="flex justify-between items-center w-3/4 bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
+                    <div className="flex justify-between items-center md:w-3/4 w-[95%] bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                         <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
                         <Link to="/form" >
                         <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition">
@@ -359,7 +359,7 @@ const ProfilePage = () => {
                 )}
 
                 {user.role === "MODERATOR" && (
-                    <div className="flex flex-col w-3/4 bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
+                    <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-12 mb-12">
                         <h2 className="text-xl font-semibold text-[#3B5B80] mb-6">
                             Moje dvorane
                         </h2>
@@ -374,8 +374,8 @@ const ProfilePage = () => {
                         {myDvorane?.data?.length > 0 &&(
                             <div className="flex flex-col items-center gap-3 w-full">
                                 {myDvorane.data?.map((dvorana) => (
-                                    <div key={dvorana.idDvorana} className ="flex items-center gap-3 w-11/12">
-                                        <Link to = {`/venue/${dvorana.idDvorana}`} state={{ from: '/my-profile' }} className="w-11/12 block">
+                                    <div key={dvorana.idDvorana} className ="flex md:flex-row flex-col items-center gap-3 md:w-11/12 w-[95%]">
+                                        <Link to = {`/venue/${dvorana.idDvorana}`} state={{ from: '/my-profile' }} className="md:w-11/12 w-[95%] block">
                                             <VenueCard 
                                             name = {dvorana.nazivDvorana}
                                             adresa = {dvorana.adresa
@@ -385,27 +385,29 @@ const ProfilePage = () => {
                                             imgUrl={ dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "" }
                                             cijenaPoSatu={dvorana.cijenaPoSatu}
                                             />
-                                        </Link>   
-                                        <Link to = {`/editform/${dvorana.idDvorana}`}
-                                        className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
-                                        Uredi dvoranu
                                         </Link>
-                                        {/* <Link to = {`/reservations/${dvorana.idDvorana}`}
+                                        <div className="flex flex-row gap-3 md:justify-start justify-center items-center md:w-11/12 w-[95%]">
+                                            <Link to = {`/editform/${dvorana.idDvorana}`}
                                             className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
-                                            Pogledaj termine     
-                                        </Link> */}
+                                            Uredi dvoranu
+                                            </Link>
+                                            {/* <Link to = {`/reservations/${dvorana.idDvorana}`}
+                                                className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
+                                                Pogledaj termine     
+                                            </Link> */}
 
-                                        <Link
-                                            to={`/reservations/${dvorana.idDvorana}`}
-                                            className="relative px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
-                                            Pogledaj termine
+                                            <Link
+                                                to={`/reservations/${dvorana.idDvorana}`}
+                                                className="relative px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
+                                                Pogledaj termine
 
-                                            {zahtjeviCount[dvorana.idDvorana] > 0 && (
-                                                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
-                                                    {zahtjeviCount[dvorana.idDvorana]}
-                                                </span>
-                                            )}
-                                        </Link>
+                                                {zahtjeviCount[dvorana.idDvorana] > 0 && (
+                                                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                                                        {zahtjeviCount[dvorana.idDvorana]}
+                                                    </span>
+                                                )}
+                                            </Link>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -414,13 +416,13 @@ const ProfilePage = () => {
                 )}
 
                 
-                <div className="flex flex-col w-3/4 bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
+                <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] shadow-lg rounded-[10px] items-center py-6 mt-12 mb-12">
                     <h2 className="text-xl font-semibold mb-6 text-[#3B5B80]">
                     Moje rezervacije
                     </h2>
                     <div className="flex flex-col items-center gap-3 mt-10 mb-12 w-full">
                         {myReservations?.data?.map((reservation, index) => (
-                            <div key={index} className="flex w-3/4 gap-4 items-center">
+                            <div key={index} className="flex md:flex-row flex-col md:w-3/4 w-[95%] gap-4 items-center">
 
                             <div className="flex-1 bg-white shadow-lg rounded-xl p-3 flex flex-col gap-3 hover:shadow-2xl transition-shadow">
                                 <div className="flex justify-between items-center">
@@ -457,7 +459,7 @@ const ProfilePage = () => {
 
                 </div>
                 </>
-            )};
+            )}
             <Footer />
         </div>
     );

@@ -37,11 +37,11 @@ const ReservationCard = ({
     };
 
     return (
-        <button className="w-11/12">
-            <div className="flex items-center bg-[#e5e5e5] h-24 w-full rounded-lg shadow-sm hover:bg-[#d0d0d0] cursor-pointer transition-colors">
+        <button className="md:w-11/12 w-[95%]">
+            <div className="flex items-center bg-[#e5e5e5] md:h-24 min-h-24 h-auto w-full rounded-lg shadow-sm hover:bg-[#d0d0d0] cursor-pointer transition-colors">
 
                 {/* Slika */}
-                <div className="w-16 h-16 bg-white rounded-md ml-6 overflow-hidden">
+                <div className="w-16 h-16 bg-white rounded-md md:ml-6 ml-3 overflow-hidden">
                     {imgUrl ? (
                         <img
                             src={imgUrl}
@@ -54,7 +54,7 @@ const ReservationCard = ({
                 </div>
 
                 {/* Tekst */}
-                <div className="ml-6 text-left flex-1 overflow-hidden">
+                <div className="md:ml-6 ml-3 text-left flex-1 overflow-hidden">
                     <h3 className="text-lg font-semibold text-gray-700 truncate">
                         {nameDogadanje}
                     </h3>
@@ -71,7 +71,7 @@ const ReservationCard = ({
                 </div>
 
                 {/* Datum + vrijeme */}
-                <div className="mr-6 text-right whitespace-nowrap">
+                <div className="md:mr-6 mr-1 text-right whitespace-nowrap">
                     <p className="text-sm text-gray-500">
                         {getDateFromTimestamp(vrijemeOd)}
                     </p>

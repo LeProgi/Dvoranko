@@ -56,7 +56,7 @@ const handleGoogleLogin = () => {
     <div className="flex flex-col items-center min-h-screen bg-[#f5f5f5]">
         <div className="bg-[#3B5B80] w-full pb-10 rounded-b-[40%] flex flex-col items-center justify-center text-center mb-10%">
         
-            <div className="flex justify-evenly gap-12 mt-8 w-3/4">
+            <div className="flex justify-evenly md:gap-12 gap-6 mt-8 w-3/4">
                 <Link to="/" className="w-[50vw] block">
                  <Button variant="default" title="Početna stranica" />
                 </Link>
@@ -86,11 +86,11 @@ const handleGoogleLogin = () => {
             </div>
             <h2 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Karta</h2>
         </div>
-        <div className="flex-grow w-[90vw] h-[80vh] px-6 py-4 bg-[#8091A6] mt-[2%] mb-[2%] rounded-2xl flex gap-4">
-            <div className="flex-1 h-full rounded-2xl shadow-lg overflow-hidden">
+        <div className="md:flex-grow md:flex-row flex-col  w-[90vw] h-[80vh] px-6 py-4 bg-[#8091A6] mt-[2%] mb-[2%] rounded-2xl flex gap-4">
+            <div className="md:flex-1 md:h-full h-[1000px] rounded-2xl shadow-lg overflow-hidden">
                 <Map hoveredVenue={hoveredVenue} />
             </div>
-            <div className="w-1/5 min-w-[200px]  h-full bg-white rounded-2xl p-3 overflow-y-auto">
+            <div className="md:w-1/5 w-full min-w-[200px] h-full bg-white rounded-2xl p-3 overflow-y-auto">
                 <h3 className="text-gray-700 font-semibold text-lg mb-3">Dvorane</h3>
                 <div className="space-y-0">
                     {venues.map((venue, index) => (
@@ -104,7 +104,7 @@ const handleGoogleLogin = () => {
                             <div className={`p-3 hover:bg-gray-50 transition cursor-pointer ${index !== venues.length - 1 ? 'border-b border-gray-200' : ''}`}>
                                 <h4 className="font-semibold text-sm text-gray-800">{venue.name}</h4>
                                 <p className="text-xs text-gray-600 mt-1">{venue.adresa}</p>
-                                <div className="flex justify-between mt-2">
+                                <div className="flex md:justify-between justify-center mt-2">
                                     <span className="text-xs text-gray-700">Kapacitet: {venue.kapacitet}</span>
                                     <span className="text-xs font-semibold text-[#3B5B80]">{venue.cijenaPoSatu} €/h</span>
                                 </div>

@@ -266,10 +266,10 @@ const AdminPage = () => {
         </div>
       </div>
 
-      <div className="flex-grow w-[90vw] px-6 py-6 bg-[#8091A6] mt-[2%] mb-[2%] rounded-2xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+      <div className="flex-grow md:w-[90vw] w-[95vw] md:p-6 p-2 bg-[#8091A6] mt-[2%] mb-[2%] rounded-2xl">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-full">
 
-          <div className="bg-[#f5f5f5] rounded-2xl p-6 overflow-y-auto">
+          <div className="bg-[#f5f5f5] rounded-2xl md:p-6 p-2 pt-6 overflow-y-auto">
             <h3 className="text-2xl font-semibold mb-4 text-center">
               {showRequests ? "Zahtjevi za nove dvorane" : "Sve postojeće dvorane"}
             </h3>
@@ -280,8 +280,8 @@ const AdminPage = () => {
                 : zahtjevDvorana.map((request) => (
                   <div key={request.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
 
-                    <div className={`transition-all duration-200 ${loadingDvorane.has(request.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
-                      <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                    <div className={`transition-all duration-200 w-auto overflow-x-auto ${loadingDvorane.has(request.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                      <div className="grid md:grid-cols-[140px_1fr] grid-cols-[100px_minmax(0,1fr)] gap-y-2 grid-auto-rows: auto">
                         <span className="font-semibold">Ime dvorane:</span>
                         <span>{request.naziv}</span>
 
@@ -334,8 +334,8 @@ const AdminPage = () => {
             ? <p className="text-center text-gray-500">Nema dvorana</p>
             : allDvorane.map((d) => (
                 <div key={d.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
-                  <div className={`transition-all duration-200 ${dvoranaToDelete.has(d.idDvorana) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
-                    <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                  <div className={`transition-all duration-200 w-auto overflow-x-auto ${dvoranaToDelete.has(d.idDvorana) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                    <div className="grid md:grid-cols-[140px_1fr] grid-cols-[100px_minmax(0,1fr)] gap-y-2 grid-auto-rows: auto">
                       <span className="font-semibold">Ime dvorane:</span>
                       <span>{d.nazivDvorana}</span>
                       <span className="font-semibold">Vlasnik:</span>
@@ -372,7 +372,7 @@ const AdminPage = () => {
             ))}
           </div>
 
-          <div className="bg-[#f5f5f5] rounded-2xl p-6 overflow-y-auto">
+          <div className="bg-[#f5f5f5] rounded-2xl md:p-6 p-2 pt-6 overflow-y-auto">
             <h3 className="text-2xl font-semibold mb-4 text-center">
               {showRequests ? "Zahtjevi za nove iznajmljivače" : "Svi korisnici"}
             </h3>
@@ -382,8 +382,8 @@ const AdminPage = () => {
               ? <p className="text-center text-gray-500">Nema novih zahtjeva</p>
               :zahtjevIznajmljivac.map((request) => (
                 <div key={request.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
-                  <div className={`transition-all duration-200 ${loadingUsers.has(request.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
-                    <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                  <div className={`transition-all duration-200 w-auto overflow-x-auto ${loadingUsers.has(request.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                    <div className="grid md:grid-cols-[140px_1fr] grid-cols-[100px_minmax(0,1fr)] gap-y-2 grid-auto-rows: auto">
                       <span className="font-semibold">ID:</span>
                       <span>{request.id}</span>
 
@@ -422,8 +422,8 @@ const AdminPage = () => {
             ? <p className="text-center text-gray-500">Nema korisnika</p>
             : allUsers.map((user) => (
               <div key={user.id} className="relative bg-white rounded-xl p-4 shadow-md mb-4">
-                <div className={`transition-all duration-200 ${userToDelete.has(user.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
-                  <div className="grid grid-cols-[140px_1fr] gap-y-2">
+                <div className={`transition-all duration-200 w-auto overflow-x-auto ${userToDelete.has(user.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                  <div className="grid md:grid-cols-[140px_1fr] grid-cols-[100px_minmax(0,1fr)] gap-y-2 grid-auto-rows: auto">
                     <span className="font-semibold">Ime:</span>
                     <span>{user.name}</span>
                     <span className="font-semibold">Uloga:</span>

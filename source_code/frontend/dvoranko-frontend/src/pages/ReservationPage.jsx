@@ -48,7 +48,11 @@ const ReservationPage = () => {
          .catch((error) => {
             setOwnerIdLocal(null);
             console.error(error);
-            navigate("/", { replace: true });
+            if (error.message === "Not logged in") {
+               window.location.href = `${url}/oauth2/authorization/google`;
+            } else {
+               navigate("/", { replace: true });
+            }
          });
    }, [navigate]);
 

@@ -171,6 +171,14 @@ function Form() {
             return;
         }
 
+        if (!cijenaPoSatu.trim()) {
+            setFormError("Molimo unesite cijenu.");
+            return;
+        }else if(!/^([1-9]\d*)$/.test(cijenaPoSatu.trim())) {
+            setFormError("Molimo da cijena po satu bude pozitivan cijeli broj.");
+            return;
+        }
+
         if (selectedCategories.length === 0) {
             setFormError("Molimo odaberite barem jednu kategoriju.");
             return;
@@ -274,10 +282,10 @@ function Form() {
     return (
         <div className="relative">
         <div className={`w-full max-w-full relative transition-all duration-200 ${isSubmitting ? 'blur-sm pointer-events-none select-none opacity-50' : ''}`}>
-            <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative w-full px-4">
+            <div className="bg-[#5B7692] min-h-screen flex justify-center items-center relative w-full md:px-4 px-2">
 
                 <form
-                    className="w-full max-w-full overflow-x-auto px-4" 
+                    className="w-full max-w-full overflow-x-auto md:px-4" 
                     onSubmit={handleSubmit}
                     noValidate
                     onKeyDown={(e) => {
@@ -285,13 +293,13 @@ function Form() {
                     }}
                 >
                     <div className="flex flex-col xl:flex-row justify-center items-center gap-10 w-full">
-                        <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[20px] items-center relative">
+                        <div className="w-full max-w-[900px] bg-[#F5F5F5] rounded-[20px] flex flex-col items-center relative">
                             <div className="bg-[#3B5B80] rounded-tl-[19px] rounded-tr-[19px] p-4 text-white text-center text-[24px] font-bold w-full">
                                 <label>Nova lokacija</label>
                             </div>
 
-                            <div className="flex flex-col xl:flex-row w-full">
-                                <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-r xl:border-black px-4">
+                            <div className="flex flex-col xl:flex-row w-full mt-[20px]">
+                                <div className="flex flex-col gap-4 w-full xl:w-[60%] xl:border-r xl:border-black px-4">
                                     <div className="mb-[5px]">
                                         <label>Naziv dvorane</label>
                                         <input
@@ -349,7 +357,7 @@ function Form() {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col gap-4 w-full xl:w-1/2 xl:border-l xl:border-black px-4">
+                                <div className="flex flex-col gap-4 w-full xl:w-[40%] xl:border-l xl:border-black px-4">
                                     <div className="flex flex-col items-center gap-1 w-full">
                                         <label>Adresa</label>
                                         <AddressAutocomplete
@@ -372,8 +380,8 @@ function Form() {
                                             const day = days[key];
 
                                             return (
-                                            <div key={key} className="flex justify-center items-start gap-4 mx-auto w-full max-w-[400px]">
-                                                <div className="flex items-center gap-2 flex-shrink-0 w-[120px]">
+                                            <div key={key} className="flex justify-center items-start md:gap-4 gap-1 mx-auto w-full max-w-[400px]">
+                                                <div className="flex items-center md:gap-2 gap-1 flex-shrink-0 w-[120px]">
                                                     <label>{label}</label>
 
                                                     <input
@@ -394,7 +402,7 @@ function Form() {
                                                     />
                                                 </div>
 
-                                                <div className="flex items-center gap-2 w-full">
+                                                <div className="flex items-center md:gap-2 gap-1 w-full">
                                                     <label className="mr-[5px]">Od:</label>
 
                                                     <TimeDropdown
@@ -423,10 +431,14 @@ function Form() {
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="xl:h-[0px] h-[70px]"></div>
                             
-                            <button type="submit" className="h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
+                            <button type="submit" className="h-[40px] w-[45%] min-w-[220px] text-white font-bold border-none rounded-[10px] cursor-pointer mt-[20px] mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
                                 Zatraži zahtjev za lokaciju
                             </button>
+
+                            <div className="md:h-[0px] h-[50px]"></div>
 
                             <div className="absolute bottom-[10px] right-[10px]">
                                 <Link to="/my-profile">
@@ -435,6 +447,12 @@ function Form() {
                                     </button>
                                 </Link>
                             </div>
+
+                            {formError && (
+                                <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-fit max-w-[85vw] xl:max-w-[280px] md:max-w-[700px] text-center font-medium absolute xl:bottom-[70px] xl:right-[10px] xl:left-auto md:bottom-[60px] bottom-[110px] right-0 left-0 mx-auto">
+                                    {formError}
+                                </div>
+                            )}
                         </div>
 
                         <div className="p-[10px] bg-[#F5F5F5] rounded-[20px] flex flex-col gap-[10px] w-full max-w-[400px] h-fit min-h-[20vh]">
@@ -479,12 +497,6 @@ function Form() {
                         </div>
                     </div>
                 </form>
-
-                {formError && (
-                    <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-fit text-center font-medium absolute top-[20px] right-[20px]">
-                        {formError}
-                    </div>
-                )}
             </div>
 
         </div>
