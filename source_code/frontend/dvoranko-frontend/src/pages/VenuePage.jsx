@@ -52,22 +52,22 @@ const VenuePage = () => {
                         >
                             X
                         </button>
-                        <h2 className="text-2xl font-semibold text-[#1C2D3A] mb-6">
+                        <h2 className="text-2xl font-semibold text-[#1C2D3A] mb-6" id="ime-dvorana">
                             {venue.name}
                         </h2>
 
-                        <p className="text-[#1C2D3A] mb-2">
+                        <p className="text-[#1C2D3A] mb-2" id="lokacija">
                             <span className="font-semibold">Lokacija: </span> {venue.adresa}
                         </p>
-                        <p className="text-[#1C2D3A] mb-2">
+                        <p className="text-[#1C2D3A] mb-2" id="kapacitet">
                             <span className="font-semibold">Kapacitet: </span> {venue.kapacitet}
                         </p>
                         {venue.cijenaPoSatu && (
-                            <p className="text-[#1C2D3A] mb-2">
+                            <p className="text-[#1C2D3A] mb-2" id="cijena">
                                 <span className="font-semibold">Cijena po satu: </span> {venue.cijenaPoSatu} €/h
                             </p>
                         )}
-                        <p className="text-[#1C2D3A] mb-2">
+                        <p className="text-[#1C2D3A] mb-2" id="opis">
                             <span className="font-semibold">Opis prostora: </span> 
                             {venue.opis}
                         </p>

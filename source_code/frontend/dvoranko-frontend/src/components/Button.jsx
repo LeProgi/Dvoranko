@@ -19,11 +19,12 @@ const buttonVariants = cva(
         }
     }
 )
-const Button = ({ title, variant, onClick }) => {
+const Button = ({ title, variant, onClick, id = "" }) => {
   return (
     <button
       onClick={onClick}
       className={cn(buttonVariants({ variant }))}
+      id={id}
     >
       {title}
     </button>

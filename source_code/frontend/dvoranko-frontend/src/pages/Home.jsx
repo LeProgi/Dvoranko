@@ -156,7 +156,7 @@ const Home = () => {
                 />
             </div>
             </Link>
-            ):<Button variant="default" title="Prijavi se"  onClick={handleGoogleLogin}/>
+            ):<Button id="login-button" variant="default" title="Prijavi se"  onClick={handleGoogleLogin}/>
 }
             
         </div>

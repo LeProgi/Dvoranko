@@ -380,7 +380,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between items-center md:w-3/4 w-[95%] bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                         <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
                         <Link to="/form" >
-                        <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 hover:cursor-pointer transition">
+                        <button id="add-venue-button" className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 hover:cursor-pointer transition">
                             +
                         </button>
                         </Link>
@@ -395,10 +395,8 @@ const ProfilePage = () => {
                         </h2>
 
                         
-                        {myDvorane === null && (
-                            <p>Ucitavanje...</p>
-                        )}
-                        {myDvorane?.data?.length === 0 && (
+                    
+                        {myDvorane?.data?.length === 0 && myDvoraneZahtjevi?.data?.length === 0 && (
                             <p>Nemate oglašenih dvorana</p>
                         )}
                         {(myDvorane?.data?.length > 0 || myDvoraneZahtjevi?.data?.length > 0) &&(
@@ -412,7 +410,7 @@ const ProfilePage = () => {
                                     <>
                                         {myDvorane.data?.map((dvorana) => (
                                             <div key={dvorana.idDvorana} className ="flex items-center gap-3 w-11/12">
-                                                <Link to = {`/venue/${dvorana.idDvorana}`} state={{ from: '/my-profile' }} className="w-11/12 block">
+                                                <Link to = {`/venue/${dvorana.idDvorana}`} state={{ from: '/my-profile' }} className="w-11/12 block" id={`view-venue-${dvorana.idDvorana}`}>
                                                     <VenueCard 
                                                     name = {dvorana.nazivDvorana}
                                                     adresa = {dvorana.adresa
@@ -425,6 +423,7 @@ const ProfilePage = () => {
                                                     />
                                                 </Link>   
                                                 <Link to = {`/editform/${dvorana.idDvorana}`}
+                                                id={`uredi-dvoranu-${dvorana.idDvorana}`}
                                                 className="px-4 py-2 bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors text-white rounded cursor-pointer">
                                                 Uredi dvoranu
                                                 </Link>

@@ -353,6 +353,7 @@ function Form() {
                                         <div className="mb-[5px]">
                                             <label>Naziv dvorane</label>
                                             <input
+                                                id="naziv-input"
                                                 type="text"
                                                 value={naziv}
                                                 onChange={(e) => setName(e.target.value)}
@@ -365,6 +366,7 @@ function Form() {
                                         <div className="mb-[5px]">
                                             <label>Kapacitet dvorane</label>
                                             <input
+                                                id="kapacitet-input"
                                                 type="text"
                                                 value={kapacitet}
                                                 onChange={(e) => setCapacity(e.target.value)}
@@ -377,6 +379,7 @@ function Form() {
                                         <div className="mb-[5px]">
                                             <label>Cijena po satu</label>
                                             <input
+                                                id="cijena-input"
                                                 type="text"
                                                 value={cijenaPoSatu}
                                                 onChange={(e) => setPricePerHour(e.target.value)}
@@ -397,6 +400,7 @@ function Form() {
                                         <div className="mb-[5px] flex flex-col items-center">
                                             <label>Opis</label>
                                             <textarea
+                                                id="opis-input"
                                                 value={opis}
                                                 onChange={(e) => setDescription(e.target.value)}
                                                 rows={4}
@@ -474,7 +478,7 @@ function Form() {
 
                                 <div className="xl:h-[0px] h-[70px]"></div>
                                 
-                                <button type="submit" className="min-w-[220px] mt-[20px] h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
+                                <button id="submit-update-button" type="submit" className="min-w-[220px] mt-[20px] h-[40px] w-[45%] text-white font-bold border-none rounded-[10px] cursor-pointer mb-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
                                     Promjeni podatke o dvorani
                                 </button>
 
