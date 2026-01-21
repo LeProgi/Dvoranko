@@ -5,12 +5,15 @@ import fer.leprogi.dvoranko.model.Dvorana;
 import fer.leprogi.dvoranko.repository.DvoranaRepository;
 import fer.leprogi.dvoranko.service.DvoranaService;
 import fer.leprogi.dvoranko.utils.DtoMapper;
+import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,6 +45,12 @@ public class DvoranaTest {
 
         assertEquals(dvoranaIzBaze.getIdDvorana(), dvorana1.getIdDvorana());
         assertEquals(dvoranaIzBaze.getNazivDvorana(), dvorana1.getNazivDvorana());
+    }
+
+    @Test
+    void gettingNonExistingDvoranaByID() {
+        when(dvoranaRepository.findById(1L)).thenReturn(java.util.Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> dvoranaService.getDvoranaById(1L));
     }
 
 }

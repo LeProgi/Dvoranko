@@ -28,6 +28,28 @@ public class MjestoTest {
     private DtoMapper dtoMapper;
 
     @Test
+    void createMjestoKreiranjeNepostojecegMjesta(){
+        CreateMjestoRequest request = new CreateMjestoRequest();
+        request.setPostanskiBroj(10000L);
+        request.setNazivMjesto("Zagreb");
+
+        when(mjestoRepository.existsByPostanskiBroj(10000L)).thenReturn(false);
+
+        Mjesto savedMjesto = new Mjesto();
+        savedMjesto.setPostanskiBroj(10000L);
+        savedMjesto.setNazivMjesto("Zagreb");
+
+        when(mjestoRepository.save(any(Mjesto.class))).thenReturn(savedMjesto);
+
+        MjestoDTO dto = new MjestoDTO();
+        dto.setPostanskiBroj(10000L);
+        dto.setNazivMjesto("Zagreb");
+        when(dtoMapper.toMjestoDTO(savedMjesto)).thenReturn(dto);
+
+        assertDoesNotThrow(() -> mjestoService.createMjesto(request));
+    }
+
+    @Test
     void createMjestoKreiranjeIstogMjestaDvaPuta() {
         CreateMjestoRequest request = new CreateMjestoRequest();
         request.setPostanskiBroj(10000L);
