@@ -40,11 +40,11 @@ const VenuePage = () => {
    
     return (
         <div className="flex justify-center items-center min-h-screen bg-[#5B7692]">
-            <div className="flex flex-col bg-[#F5F5F5] w-[95%] md:w-3/4 max-w-6xl min-h-[80vh] rounded-[20px] shadow-lg overflow-hidden">
+            <div className="flex flex-col bg-[#F5F5F5] w-[95%] md:w-3/4 max-w-6xl min-h-[80vh] max-h-[100vh] rounded-[20px] shadow-lg overflow-hidden">
                 
 
                 
-                <div className="flex flex-col justify-between w-full p-8 md:p-10 relative">
+                <div className="flex flex-col justify-between w-full p-3 md:p-6 relative">
                     <div>
                         <button 
                             onClick={() => navigate(fromPath)}
@@ -74,7 +74,7 @@ const VenuePage = () => {
                     </div>
 
                     
-                    <div className="self-end mt-8">
+                    <div className="self-end mt-2">
                         <Link to="/reservation" state={{ venueId: id }}>
                             <Button 
                                 variant="default"
