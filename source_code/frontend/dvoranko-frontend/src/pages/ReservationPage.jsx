@@ -131,7 +131,16 @@ const ReservationPage = () => {
    };
 
    const namjestiAvailableTimes = (dateString, terminiDay) => {
-      const filtriraniTermini = termini.filter(termin => termin.start.startsWith(dateString));
+      const filtriraniTermini = termini
+         .filter(termin => termin.start.startsWith(dateString))
+         .map(termin => {
+            const endFixed = termin.end.replace("T00:00:00", "T24:00:00");
+
+            return {
+               ...termin,
+               end: endFixed
+            };
+         });
       const start = terminiDay.substring(terminiDay.indexOf(":") + 1, terminiDay.indexOf("-"));
       const end = terminiDay.substring(terminiDay.indexOf("-") + 1, terminiDay.length);
       const startIndex = allTimes.findIndex(time => time.startsWith(start));
@@ -139,6 +148,7 @@ const ReservationPage = () => {
       const availableTimesPomocna = allTimes.slice(startIndex, endIndex + 1);
       const notStart = [];
       const disabled = [];
+      console.log(filtriraniTermini);
       filtriraniTermini.forEach(termin => {
          const start = termin.start.substring(11, 16);
          const end = termin.end.substring(11, 16);
@@ -285,14 +295,22 @@ const ReservationPage = () => {
          return;
       }
 
-
-
       setFormError("");
 
       try {
+         let datumVrijemeEnd = "";
+         if (endTime === "24:00") {
+            let date = new Date(dateStr);
+            date.setDate(date.getDate() + 1);
+            console.log(date);
+            let dateDatum = String(date.getFullYear()) + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate());
+            datumVrijemeEnd = dateDatum + "T" + "00:00" + ":00";
+         } else {
+            datumVrijemeEnd = dateStr + "T" + endTime + ":00";
+         }
          const payload = {
             datumVrijemeStart: dateStr + "T" + startTime + ":00",
-            datumVrijemeEnd: dateStr + "T" + endTime + ":00",
+            datumVrijemeEnd: datumVrijemeEnd,
             idDvorana: parseInt(venueId),
             jeJavniEvent: javno ? 1 : 0,
             idKorisnik: ownerIdLocal,
@@ -303,7 +321,7 @@ const ReservationPage = () => {
 
          await postZahtjevTermin(payload);
          setFormError("Zahtjev uspješno poslan");
-         navigate("/my-profile");
+         //navigate("/my-profile");
       } catch (err) {
          console.error(err);
          setFormError("Greška pri slanju zahtjeva. Pokušajte ponovno.");
@@ -347,7 +365,7 @@ const ReservationPage = () => {
                <Calendar handleDateClick={handleDateClick} venueId={venueId}/>
             </div>
 
-            <div className="w-[100%] lg:w-[49%] h-auto lg:h-[100%] flex items-center justify-start">
+            <div className={`w-[100%] lg:w-[49%] h-auto lg:h-[100%] flex justify-center ${selectedDate ? "items-start" : "items-center"}`}>
                {!selectedDate ? (
                   <div className="w-[100%]">
                      <p className="text-xl m-4">
@@ -358,7 +376,7 @@ const ReservationPage = () => {
                         <Link key={venueId} to={`/venue/${venueId}`}>
                         <button
                            type="button"
-                           className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
+                           className="h-[40px] md:w-[25%] w-[40%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
                            >Odustani</button>
                         </Link>
                      </div>
@@ -375,7 +393,7 @@ const ReservationPage = () => {
                               <Link key={venueId} to={`/venue/${venueId}`}>
                               <button
                                  type="button"
-                                 className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
+                                 className="h-[40px] md:w-[25%] w-[40%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
                                  >Odustani</button>
                               </Link>
                            </div>
@@ -428,7 +446,7 @@ const ReservationPage = () => {
 
                               <hr></hr>
                               
-                              <div className="mt-2 flex flex-col justify-between h-[350px] lg:h-[300px]">
+                              <div className="mt-2 flex flex-col justify-between h-auto lg:h-[300px]">
                                  <div className="flex flex-col items-center mb-2 gap-[8px]">
                                     <div className="flex flex-row items-center justify-center">
                                        <p className="mr-2 ml-2">
@@ -506,20 +524,11 @@ const ReservationPage = () => {
                                  </div>
                                  <div className="flex justify-center mt-3">
                                     {formError && (
-                                       <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-[70%] text-center font-medium top-[20px] right-[20px]">
+                                       <div className="text-white bg-[#b91c1c] p-[10px_10px] rounded-[40px] w-auto max-w-[90%] text-center font-medium top-[20px] right-[20px]">
                                           {formError}
                                        </div>
                                     )}
                                  </div>
-
-                                 {/* <div>
-                                    <Link key={venueId} to={`/venue/${venueId}`}>
-                                    <button
-                                       type="button"
-                                       className="h-[40px] w-[25%] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]"
-                                       >Odustani</button>
-                                    </Link>
-                                 </div> */}
                               </div>
                            </form>
                         </div>

@@ -237,7 +237,7 @@ const AdminPage = () => {
               bg-white text-[#3B5B80]
               rounded-xl font-semibold
               transition-colors duration-200
-              hover:bg-gray-100
+              hover:bg-gray-200
               cursor-pointer
             "
           >
@@ -256,7 +256,7 @@ const AdminPage = () => {
               bg-white text-[#3B5B80]
               rounded-xl font-semibold
               transition-colors duration-200
-              hover:bg-gray-100
+              hover:bg-gray-200
               cursor-pointer
             "
           >
@@ -313,10 +313,10 @@ const AdminPage = () => {
                       </div>
 
                       <div className="flex justify-between mt-4">
-                        <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptDvorana(request.id)}>
+                        <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:cursor-pointer" onClick={() => handleAcceptDvorana(request.id)}>
                           PRIHVATI
                         </button>
-                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectDvorana(request.id)}>
+                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:cursor-pointer" onClick={() => handleRejectDvorana(request.id)}>
                           ODBIJ
                         </button>
                       </div>
@@ -358,7 +358,7 @@ const AdminPage = () => {
                         )}
                     </div>
                     <div className="flex justify-center mt-4">
-                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleDeleteDvorana(d.idDvorana)}>
+                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:cursor-pointer" onClick={() => handleDeleteDvorana(d.idDvorana)}>
                         IZBRIŠI DVORANU
                       </button>
                     </div>
@@ -401,10 +401,10 @@ const AdminPage = () => {
                     </div>
 
                     <div className="flex justify-between mt-4">
-                      <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" onClick={() => handleAcceptIznajmljivac(request.id)}>
+                      <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:cursor-pointer" onClick={() => handleAcceptIznajmljivac(request.id)}>
                         PRIHVATI 
                       </button>
-                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleRejectIznajmljivac(request.id)}>
+                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:cursor-pointer" onClick={() => handleRejectIznajmljivac(request.id)}>
                         ODBIJ 
                       </button>
                     </div>
@@ -432,7 +432,7 @@ const AdminPage = () => {
                     <span>{user.email}</span>
                   </div>
                   <div className="flex justify-center mt-4">
-                    <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" onClick={() => handleDeleteUser(user.id)}>
+                    <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:cursor-pointer" onClick={() => handleDeleteUser(user.id)}>
                       IZBRIŠI KORISNIKA
                     </button>
                   </div>

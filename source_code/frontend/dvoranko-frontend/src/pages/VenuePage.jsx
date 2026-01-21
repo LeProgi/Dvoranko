@@ -48,7 +48,7 @@ const VenuePage = () => {
                     <div>
                         <button 
                             onClick={() => navigate(fromPath)}
-                            className="absolute top-6 right-6 bg-[#3B5B80] text-[#f5f5f5] rounded-[15%] w-[25px] h-[25px] flex items-center justify-center cursor-pointer hover:bg-[#2F4B6A] transition-colors"
+                            className="absolute top-6 right-6 bg-[#3B5B80] text-[#f5f5f5] rounded-[15%] w-[25px] h-[25px] flex items-center justify-center cursor-pointer hover:bg-[#2F4B6A]"
                         >
                             X
                         </button>
@@ -79,7 +79,7 @@ const VenuePage = () => {
                             <Button 
                                 variant="default"
                                 title="Rezerviraj dvoranu"
-                                className="bg-[#3B5B80] text-white px-6 py-2 rounded-lg hover:bg-[#2F4B6A]"
+                                className="text-white px-6 py-2 rounded-lg"
                             />
                         </Link>
                     </div>

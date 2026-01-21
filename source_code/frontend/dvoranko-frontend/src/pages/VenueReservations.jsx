@@ -304,14 +304,14 @@ const VenueReservations = () => {
                     {/* GUMBI */}
                     <div className="flex flex-col gap-3 justify-center items-center">
                     <button
-                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold w-[200px]"
+                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold w-[200px] hover:cursor-pointer"
                         onClick={() => acceptReservationRequest(reservation.id)}
                     >
                         PRIHVATI
                     </button>
 
                     <button
-                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold w-[200px]"
+                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold w-[200px] hover:cursor-pointer"
                         onClick={() => rejectReservationRequest(reservation.id)}
                     >
                         ODBIJ

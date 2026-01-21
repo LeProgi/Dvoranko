@@ -380,7 +380,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between items-center md:w-3/4 w-[95%] bg-[#3B5B80] text-white p-4 rounded-lg mb-6 mt-6">
                         <h2 className="text-lg font-semibold">Objavi dvoranu</h2>
                         <Link to="/form" >
-                        <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 transition">
+                        <button className="bg-white text-[#3B5B80] font-bold px-4 py-1 rounded hover:bg-gray-200 hover:cursor-pointer transition">
                             +
                         </button>
                         </Link>
