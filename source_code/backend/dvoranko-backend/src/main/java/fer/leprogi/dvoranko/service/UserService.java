@@ -77,7 +77,7 @@ public class UserService {
         return zahtjev;
     }
 
-    public void createTerminRequest(CreateTerminRequest request) {
+    public void createTerminRequest(CreateTerminRequest request) throws Exception {
         if(request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }

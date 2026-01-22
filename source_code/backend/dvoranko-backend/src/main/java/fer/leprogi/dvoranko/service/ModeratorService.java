@@ -238,7 +238,7 @@ public class ModeratorService {
     }
 
     @Transactional
-    public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
+    public void approveTerminRequest(Long idZahtjev, CustomOAuth2User principal) throws Exception {
 
         ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
@@ -265,7 +265,7 @@ public class ModeratorService {
         mailService.sendMail(user.getEmail(),"Vaš termin je odobren", "Poštovani,\n\nVaš zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "', pod nazivom '" + zahtjev.getImeDogadanja() + "' je odobren.\n\nLijep pozdrav,\nDvoranko tim");
     }
 
-    public void rejectTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
+    public void rejectTerminRequest(Long idZahtjev, CustomOAuth2User principal) throws Exception {
 
         ZahtjevTermin zahtjev = zahtjevTerminRepository.findById(idZahtjev)
                 .orElseThrow(() -> new ResourceNotFoundException("ZahtjevTermin with id " + idZahtjev + " not found for this moderator"));
