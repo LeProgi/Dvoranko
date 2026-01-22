@@ -469,6 +469,10 @@ const ProfilePage = () => {
                     Moje rezervacije
                     </h2>
                     <div className="flex flex-col items-center gap-3 mt-10 mb-12 w-full">
+                        {(!myReservations?.data?.length && !myRequests?.length) ? (
+                            <p className="text-gray-600 text-lg">Nemate rezervacija</p>
+                            ) : (
+                            <>
                         {myReservations?.data?.map((reservation, index) => (
                             <div key={index} className="flex w-3/4 gap-4 items-center">
                                 <ModeratorReservationsCard
@@ -513,7 +517,9 @@ const ProfilePage = () => {
                                     Otkaži zahtjev
                                 </button>
                             </div>
-                        ))}
+                          ))}
+                        </>
+                      )}
                     </div>
 
                 </div>
