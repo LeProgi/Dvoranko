@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class    MjestoService {
+public class MjestoService {
 
     private final MjestoRepository mjestoRepository;
     private final DtoMapper dtoMapper;
