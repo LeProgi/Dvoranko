@@ -104,7 +104,7 @@ const handleGoogleLogin = () => {
                             <div className={`p-3 hover:bg-gray-50 transition cursor-pointer ${index !== venues.length - 1 ? 'border-b border-gray-200' : ''}`}>
                                 <h4 className="font-semibold text-sm text-gray-800">{venue.name}</h4>
                                 <p className="text-xs text-gray-600 mt-1">{venue.adresa}</p>
-                                <div className="flex md:justify-between justify-center mt-2">
+                                <div className="flex md:justify-between justify-center gap-4 mt-2">
                                     <span className="text-xs text-gray-700">Kapacitet: {venue.kapacitet}</span>
                                     <span className="text-xs font-semibold text-[#3B5B80]">{venue.cijenaPoSatu} €/h</span>
                                 </div>
