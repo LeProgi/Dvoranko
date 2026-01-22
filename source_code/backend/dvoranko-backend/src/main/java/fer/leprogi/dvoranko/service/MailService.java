@@ -18,6 +18,6 @@ public class MailService {
         message.setSubject(subject);
         message.setText(text);
 
-        mailSender.send(message);
+        //mailSender.send(message);
     }
 }
