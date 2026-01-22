@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Button from "../components/Button";
-import { data, Link } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import { url } from "../main";
 import { all } from "axios";
@@ -18,7 +18,24 @@ const AdminPage = () => {
   const [dvoranaToDelete, setDvoranaToDelete] = useState(new Set());
   const [userToDelete, setUserToDelete] = useState(new Set());
 
+  const navigate = useNavigate();
+
   useEffect(() => {
+
+    fetch(`${url}/api/auth/user`, {
+        credentials: "include",
+    })
+        .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error("Not logged in");
+        })
+        .then((data) => {
+            if(data.role !== "ADMIN"){
+                    navigate("/", {replace:true});
+                    return;
+                }
+            })
+
     const fetchRequests = async () => {
       try {
         //zahtjevi za dvorane
@@ -111,11 +128,23 @@ const AdminPage = () => {
     }
   };
 
-  // const handleCreateKategorija = async(ime_kategorije) => {
-  //   try{
-  //     const res = await fetch(`${url}/api/public/kategorije`)
-  //   }
-  // }
+  const logout = async () => {
+        try {
+            const res = await fetch(`${url}/api/auth/logout`, {
+                method: "POST",
+                credentials: "include",
+            });
+            
+            // console.log("Logout response:", res);
+            if (!res.ok) throw new Error("Logout failed");
+
+            //setUser(null);
+            console.log("uspjesno si logoutan")
+            navigate("/", { replace: true });
+        } catch (err) {
+            console.error("Logout error:", err);
+        }
+    };
 
   const handleAcceptDvorana = async (id) => {
     setLoadingDvorane(prev => new Set(prev).add(id));
@@ -224,9 +253,7 @@ const AdminPage = () => {
     <div className="flex flex-col items-center min-h-screen bg-[#f5f5f5]">
       <div className="bg-[#3B5B80] w-full pb-10 rounded-b-[40%] flex flex-col items-center justify-center text-center mb-10%">
         <div className="flex justify-evenly gap-12 mt-8 w-3/4">
-          <Link to="/" className="w-[50vw] block">
-            <Button variant="default" title="Početna stranica" />
-          </Link>
+            <Button className="w-[50vw] block" variant="default" title="Odjavi se" onClick={logout} />
         </div>
         <h2 className="text-4xl text-white mt-10 mb-10 font-semibold tracking-wide">Administrator</h2>
 

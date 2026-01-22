@@ -46,6 +46,28 @@ function Form() {
 
 
     useEffect(() => {
+
+        fetch(`${url}/api/auth/user`, {
+            credentials: "include",
+          })
+            .then((res) => {
+              if (!res.ok) {
+                navigate("/", {replace:true})
+              }
+                return res.json();
+            })
+            .then((data) => {
+                if(data.role === "ADMIN") {
+                  navigate("/admin", {replace:true});
+                  return;
+                }
+                if(data.role === "USER") {
+                    navigate("/", {replace:true});
+                    return;
+                }
+              })
+
+
         const fetchCategories = async () => {
             try {
                 const res = await fetch(`${url}/api/public/kategorije`);

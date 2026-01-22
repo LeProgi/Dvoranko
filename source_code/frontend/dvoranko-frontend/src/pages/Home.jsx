@@ -1,10 +1,11 @@
 import Button from "../components/Button";
-import { data, Link } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import VenueCard from "../components/VenueCard";
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Form from "../components/Form";
 import Filter from "../components/Filter.jsx"
+
 import { url } from "../main.jsx";
 const Home = () => {
     
@@ -14,10 +15,22 @@ const Home = () => {
     const [filteredVenues, setFilteredVenues] = useState([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [categories, setCategories] = useState([]);
+    const navigate = useNavigate();
 
 
     
     useEffect(() =>{
+        fetch(`${url}/api/auth/user`, {
+            credentials: "include",
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            if(data.role === "ADMIN"){
+                    navigate("/admin", {replace:true});
+                    return;
+                }
+        })
+
         console.log(`${url}/api/public/dvorane`);
         fetch(`${url}/api/public/dvorane`,{
             credentials: "include",

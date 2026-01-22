@@ -1,7 +1,7 @@
 import { use, useEffect, useState } from "react";
 import { url } from "../main.jsx";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import ReservationCard from "../components/ReservationCard.jsx";
 
@@ -10,7 +10,8 @@ import ReservationCard from "../components/ReservationCard.jsx";
 const EventBoard = () => {
     const [user, setUser] = useState(null);
     const [publicEvents, setPublicEvents] = useState([]);
-
+    const navigate = useNavigate();
+    
     useEffect(() => {
     fetch(`${url}/api/auth/user`, {
         credentials: "include",
@@ -19,7 +20,13 @@ const EventBoard = () => {
         if (res.status === 200) return res.json();
         throw new Error("Not logged in");
         })
-        .then((data) => setUser(data))
+        .then((data) => {
+            if(data.role === "ADMIN"){
+                    navigate("/admin", {replace:true});
+                    return;
+                }
+                setUser(data)
+            })
         .catch(() => setUser(null));
     }, []);
 
