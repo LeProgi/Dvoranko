@@ -9,6 +9,7 @@ import fer.leprogi.dvoranko.security.CustomOAuth2User;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.FolderName;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
+import org.bouncycastle.asn1.cms.PasswordRecipientInfo;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
@@ -17,6 +18,7 @@ import fer.leprogi.dvoranko.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.*;
 
 
@@ -283,10 +285,17 @@ public class ModeratorService {
 
 
     @Transactional
-    public DvoranaDTO updateDvorana(Long idDvorana, CreateDvoranaRequest request, List<MultipartFile> images) throws Exception{
+    public DvoranaDTO updateDvorana(Long idDvorana, CreateDvoranaRequest request, List<MultipartFile> images, CustomOAuth2User principal) throws Exception{
+
+        UserDTO user = userService.getUSerForPrincipal(principal);
+
         Dvorana dvorana = dvoranaRepository.findById(idDvorana)
                 .orElseThrow(() -> new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist"));
 
+
+        if (!dvorana.getVlasnik().getId().equals(user.getId())) {
+            throw new Exception("Moderator does not own this dvorana");
+        }
 //        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
 //                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
 
