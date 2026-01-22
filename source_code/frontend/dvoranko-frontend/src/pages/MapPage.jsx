@@ -72,7 +72,7 @@ const handleGoogleLogin = () => {
                 <Link to="/my-profile" state={{ user }}>
                     <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md hover:scale-105 transition-transform duration-200">
                     <img
-                        src={user.pictureUrl ? user.pictureUrl : "../../public/user.svg"}
+                        src={user.pictureUrl ? user.pictureUrl : "../user.svg"}
                         alt={user.name}
                         title={user.name}
                         className="w-full h-full object-cover"
