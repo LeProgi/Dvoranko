@@ -24,6 +24,7 @@ const Filter = ({ onApply , categories}) => {
             {/* FILTER BAR */}
             <div className="flex flex-row gap-4 md:w-3/4 w-[95%] h-10 bg-[#d9d9d9] rounded-[10px] justify-start mt-4 mb-4 pr-8">
                 <Button
+                    id="filter-btn"
                     variant="filter"
                     className="flex justify-center items-center p-2"
                     onClick={() => setOpen(true)}
@@ -78,6 +79,7 @@ const Filter = ({ onApply , categories}) => {
                         <div className="mb-4">
                             <label className="font-semibold">Cijena po satu - €</label>
                             <select
+                                id="filter-cijena-options"
                                 className="w-full border p-2 rounded"
                                 value={price}
                                 onChange={e => setPrice(e.target.value)}
@@ -99,6 +101,7 @@ const Filter = ({ onApply , categories}) => {
                                 Odustani
                             </button>
                             <button
+                                id="filter-submit-btn"
                                 className="px-4 py-2 bg-[#3B5B80] text-white rounded"
                                 onClick={apply}
                             >

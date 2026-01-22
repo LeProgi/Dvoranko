@@ -56,6 +56,7 @@ const VenueCard = ({
         {cijenaPoSatu && (
           <div className="mr-6 text-right">
             <p
+              name="cijena-po-satu"
               className={`text-lg font-bold ${
                 potvrdeno ? "text-[#3B5B80]" : "text-gray-500"
               }`}

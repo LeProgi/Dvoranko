@@ -34,7 +34,7 @@ const ModeratorReservationsCard = ({
         try{
             const date = timestamp.slice(0, 10);
             const[year, month, day] = date.split("-")
-            return `${day}.${month}.${year}`
+            return `${day}.${month}.${year}.`
         }
         catch(err){
             console.log(err)

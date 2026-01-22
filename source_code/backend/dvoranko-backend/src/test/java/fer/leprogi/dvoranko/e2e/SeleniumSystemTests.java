@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -19,8 +20,10 @@ public class SeleniumSystemTests {
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.get("http://localhost:8080/test/login/1");
+        driver.get("http://localhost:8080/test/login/moderator");
         driver.get("http://localhost:5173/my-profile");
+
+        driver.quit();
     }
 
     @Test
@@ -42,10 +45,9 @@ public class SeleniumSystemTests {
         System.out.println("Navigating to create dvorana page");
 
         WebElement editVenueButton = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.id("uredi-dvoranu-33")
-                )
+                ExpectedConditions.visibilityOfElementLocated(By.id("uredi-dvoranu-33"))
         );
+
         editVenueButton.click();
         System.out.println("Clicking edit dvorana button for dvorana with id 33");
 
@@ -69,8 +71,8 @@ public class SeleniumSystemTests {
         WebElement categoryButton = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.xpath("//div[@class='flex flex-wrap gap-[5px] w-[90%]']/button[normalize-space()='Odbojka']")
-                )
-        );
+                    )
+                );
         categoryButton.click();
         System.out.println("Clicking category");
 
@@ -79,7 +81,6 @@ public class SeleniumSystemTests {
         eopis.clear();
         eopis.sendKeys(newOpis);
         System.out.println("Inputing opis");
-
 //        WebElement mondayCheckbox = wait.until(
 //                ExpectedConditions.elementToBeClickable(
 //                        By.xpath("//label[normalize-space()='Ponedjeljak']/following-sibling::input[@type='checkbox']")
@@ -130,18 +131,14 @@ public class SeleniumSystemTests {
         System.out.println("Navigating back to profile page");
 
 
-        WebElement visitDvorana = wait.until(
-                ExpectedConditions.elementToBeClickable(By.id("view-venue-33"))
-        );
+        WebElement visitDvorana = wait.until(ExpectedConditions.elementToBeClickable(By.id("view-venue-33")));
         visitDvorana.click();
         System.out.println("Navigating to edited dvorana page");
 
 
         System.out.println("Verifying edited dvorana data");
 
-        WebElement editedIme =  wait.until(
-                ExpectedConditions.elementToBeClickable(By.id("ime-dvorana")));
-//                driver.findElement(By.id("ime-dvorana"));
+        WebElement editedIme =  wait.until(ExpectedConditions.elementToBeClickable(By.id("ime-dvorana")));
         String ime = editedIme.getText();
 
         WebElement editedKapacitet = driver.findElement(By.id("kapacitet"));
@@ -212,6 +209,9 @@ public class SeleniumSystemTests {
         int dvoranaId = 33;
         String opisText = "Na ovom terminu radimo testiranje sustava";
         int brojLjudiText = 10;
+        String odVrijeme = "20:00";
+        String doVrijme = "22:00";
+        String datum = "31.01.2026.";
 
         driver.get("http://localhost:8080/test/login/moderator");
         driver.get("http://localhost:5173/");
@@ -229,11 +229,11 @@ public class SeleniumSystemTests {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@aria-label='31. siječnja 2026.' and text()='31']"))).click();
         System.out.println("Clicking on date 31. siječnja 2026.");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("time-select-20:00"))).click();
-        System.out.println("Selecting starting time: 20:00");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("time-select-" + odVrijeme))).click();
+        System.out.println("Selecting starting time: " + odVrijeme);
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("time-select-22:00"))).click();
-        System.out.println("Selecting ending time: 22:00");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("time-select-" + doVrijme))).click();
+        System.out.println("Selecting ending time: " + doVrijme);
 
         WebElement opis = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-opis-dogadanja")));
         opis.sendKeys(opisText);
@@ -246,12 +246,123 @@ public class SeleniumSystemTests {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submit-zahtjev-termin-btn"))).click();
         System.out.println("Submitting termin zahtjev");
 
-        driver.get("http://localhost:5173/my-profile/" + dvoranaId);
+//        driver.get("http://localhost:5173/my-profile/" + dvoranaId);
         System.out.println("Navigating to my profile page");
 
-        
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.flex-1.rounded-xl.p-5.flex.flex-col.gap-3")));
+
+        List<WebElement> kartice = driver.findElements(By.cssSelector("div.flex-1.rounded-xl.p-5.flex.flex-col.gap-3"));
+
+        String opisOut = null;
+        String odOut = null;
+        String doOut = null;
+        String datumOut = null;
 
 
+        System.out.println("Verifying termin zahtjev data");
+        for (WebElement kartica : kartice) {
+            // 2️⃣ Dohvati opis unutar kartice
+            WebElement opisElement = kartica.findElement(
+                    By.cssSelector("div.flex.flex-col.gap-1.items-start.w-full > p.text-gray-700")
+            );
+
+            String opisTekst = opisElement.getText().trim();
+            if (opisTekst.equals(opisText)) {
+//                System.out.println("Pronađena kartica s opisom: " + opisTekst);
+                opisOut = opisTekst;
+
+                // Dohvati "Datum", “Od” i “Do” unutar kartice
+                WebElement datumElement = kartica.findElement(By.xpath(".//p[span[text()='Datum:']]"));
+                WebElement odElement = kartica.findElement(By.xpath(".//p[span[text()='Od:']]"));
+                WebElement doElement = kartica.findElement(By.xpath(".//p[span[text()='Do:']]"));
+
+                odOut= odElement.getText().replace("Od: ", "").trim();
+                doOut = doElement.getText().replace("Do: ", "").trim();
+                datumOut = datumElement.getText().replace("Datum: ", "").trim();
+
+//                System.out.println("Od: " + odOut);
+//                System.out.println("Do: " + doOut);
+//                System.out.println("Datum: " + datumOut);
+
+                break;
+            }
+        }
+
+
+        assert opisText.equals(opisOut) : "Opis dogadanja nije ispravan";
+        assert odVrijeme.equals(odOut) : "Vrijeme pocetka nije ispravno";
+        assert doVrijme.equals(doOut) : "Vrijeme zavrsetka nije ispravno";
+        assert datum.equals(datumOut) : "Datum nije ispravan";
+
+        System.out.println("Termin zahtjev test completed successfully");
+
+        driver.quit();
+
+    }
+
+
+    @Test
+    public void testFilterDvorana(){
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        driver.get("http://localhost:8080/test/login/user");
+        driver.get("http://localhost:5173/");
+
+        String cijenaRange = "40-60";
+
+        System.out.println("Navigating to home page");
+
+        //cekaj da se ucita neka dvorana
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[id^='dvorana-link-']")));
+        List<WebElement> kartice = driver.findElements(By.cssSelector("a[id^='dvorana-link-']"));
+
+        boolean postojiDvorana = false;
+        for (WebElement kartica : kartice) {
+            WebElement cijenaElement = kartica.findElement(By.name("cijena-po-satu"));
+
+            int cijena = Integer.parseInt(cijenaElement.getText().replace("cijena: ", "").replace("€/h", "").trim());
+
+            if (Integer.parseInt(cijenaRange.split("-")[0]) <= cijena && cijena <= Integer.parseInt(cijenaRange.split("-")[1])) {
+                System.out.println("Postoji dvorana sa cijenom iz raspona " + cijenaRange);
+                postojiDvorana = true;
+                break;
+            }
+        }
+        assert postojiDvorana : "Nema dvorana sa cijenom iz raspona " + cijenaRange;
+
+        driver.findElement(By.id("filter-btn")).click();
+        System.out.println("Clicking filter button");
+
+        WebElement cijenaOptions = driver.findElement(By.id("filter-cijena-options"));
+        Select cijenaSelect = new Select(cijenaOptions);
+        cijenaSelect.selectByValue(cijenaRange);
+        System.out.println("Selecting new cijena range: " + cijenaRange);
+
+        driver.findElement(By.id("filter-submit-btn")).click();
+        System.out.println("Submitting filter form");
+
+        System.out.println("Verifying filtered dvorana data");
+
+        //cekaj da se ucita neka dvorana
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[id^='dvorana-link-']")));
+        List<WebElement> karticeAfter = driver.findElements(By.cssSelector("a[id^='dvorana-link-']"));
+
+        for (WebElement kartica: karticeAfter) {
+            WebElement cijenaElement = kartica.findElement(By.name("cijena-po-satu"));
+
+            int cijena = Integer.parseInt(cijenaElement.getText().replace("cijena: ", "").replace("€/h", "").trim());
+
+            if (Integer.parseInt(cijenaRange.split("-")[0]) > cijena && cijena > Integer.parseInt(cijenaRange.split("-")[1])) {
+                throw new AssertionError("Postoji dvorana sa cijenom iz raspona " + cijenaRange + " nakon filtriranja na raspon " + cijenaRange);
+            }
+        }
+
+        System.out.println("Filter dvorana test completed successfully, no dvorana found outside the cijena range :" + cijenaRange);
+
+        driver.quit();
     }
 
 
