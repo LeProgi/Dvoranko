@@ -1,7 +1,6 @@
 package fer.leprogi.dvoranko.controller;
 
 import fer.leprogi.dvoranko.service.MailService;
-import fer.leprogi.dvoranko.service.MailgunService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MailTestController {
 
-    private final MailgunService mailgunService;
     private final MailService mailService;
 
     @PostMapping("/send")

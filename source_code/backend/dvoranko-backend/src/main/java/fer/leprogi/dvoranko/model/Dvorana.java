@@ -59,4 +59,12 @@ public class Dvorana {
     )
     private List<SlikaDvorana> slike = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "dvorana",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ZahtjevTermin>  zahtjevTermins = new ArrayList<>();
+
+
 }

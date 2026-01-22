@@ -30,8 +30,9 @@ public class ZahtjevTermin {
     @Column(name = "id_korisnik", nullable = false)
     private Long idKorisnik;
 
-    @Column(name = "id_dvorana", nullable = false)
-    private Long idDvorana;
+    @ManyToOne
+    @JoinColumn(name = "id_dvorana", nullable = false)
+    private Dvorana dvorana;
 
     @Column(name = "ime_dogadanja")
     private String imeDogadanja;
