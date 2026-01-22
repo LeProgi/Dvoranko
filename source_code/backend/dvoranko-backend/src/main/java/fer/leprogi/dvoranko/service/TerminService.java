@@ -119,7 +119,7 @@ public class TerminService {
     @Transactional
     public List<ZahtjevTerminDTO> getZahtjeviTerminiByDvoranaId(Long dvoranaId) {
 
-        List<ZahtjevTermin> zahtjevi = zahtjevTerminRepository.findByIdDvorana(dvoranaId);
+        List<ZahtjevTermin> zahtjevi = zahtjevTerminRepository.findByDvorana_IdDvorana(dvoranaId);
         List<ZahtjevTerminDTO> zahtjeviDTO = zahtjevi.stream().map(zahtjev -> {
             ZahtjevTerminDTO dto = dtoMapper.toZahtjevTerminDTO(zahtjev);
             return dto;
@@ -180,9 +180,9 @@ public class TerminService {
 
         for (ZahtjevTermin zahtjev : mojiZahtjevi) {
             System.out.println("abananana");
-            System.out.println("dvorana id od zahtjeva: " + zahtjev.getIdDvorana());
+            System.out.println("dvorana id od zahtjeva: " + zahtjev.getDvorana().getIdDvorana());
 
-            Dvorana dvorana = dvoranaRepository.findById(zahtjev.getIdDvorana())
+            Dvorana dvorana = dvoranaRepository.findById(zahtjev.getDvorana().getIdDvorana())
                     .orElseThrow(() -> new RuntimeException("Dvorana ne postoji"));
 
             if(dvorana != null) {
@@ -198,7 +198,7 @@ public class TerminService {
             TerminZaFrontDTO dto = new TerminZaFrontDTO();
 
             dto.setId(zahtjev.getId());
-            dto.setIdDvorana(zahtjev.getIdDvorana());
+            dto.setIdDvorana(zahtjev.getDvorana().getIdDvorana());
             dto.setIdKorisnik(zahtjev.getIdKorisnik());
             dto.setDatumVrijemeEnd(zahtjev.getDatumVrijemeEnd());
             dto.setDatumVrijemeStart(zahtjev.getDatumVrijemeStart());

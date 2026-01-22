@@ -92,7 +92,7 @@ public class UserService {
         zahtjev.setDatumVrijemeEnd(request.getDatumVrijemeEnd());
         zahtjev.setJeJavniEvent(request.getJeJavniEvent());
         zahtjev.setIdKorisnik(request.getIdKorisnik());
-        zahtjev.setIdDvorana(request.getIdDvorana());
+        zahtjev.setDvorana(dvorana);
         zahtjev.setOpisDogadanja(request.getOpisDogadanja());
         zahtjev.setImeDogadanja(request.getImeDogadanja());
         zahtjevTerminRepository.save(zahtjev);
