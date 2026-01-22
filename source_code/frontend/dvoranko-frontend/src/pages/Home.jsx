@@ -42,6 +42,7 @@ const Home = () => {
                 setVenues(formatted);
                 setFilteredVenues(formatted);
 
+
                 const allCategories = Array.from(
                     new Set(data.data.flatMap(dvorana => dvorana.kategorije.map(k => k.nazivKategorije)))
                 );
@@ -166,14 +167,14 @@ const Home = () => {
         <Filter onApply={applyFilters} categories={categories}/>
         <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
-
-                {!imagesLoaded ? (
+                {venues.length == 0 && <p className="text-gray-500">Nema objavljenih dvorana...</p>}
+                {!imagesLoaded && venues.length > 0 ? (
                     
                     <div className="flex flex-col justify-center items-center w-full py-10 gap-4">
                         <p className="text-gray-500">Učitavanje dvorana...</p>
                         <div className="border-4 border-gray-300 border-t-4 border-t-blue-500 rounded-full w-12 h-12 animate-spin"></div>
                     </div>
-                ) : filteredVenues.length === 0 ? (
+                ) : filteredVenues.length === 0 && venues.length > 0 ? (
                     <div className="flex flex-col justify-center items-center w-full py-10">
                         <p className="text-gray-600 text-lg font-medium">
                             Nema dvorana po vašim željama.
