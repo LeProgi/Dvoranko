@@ -2,23 +2,18 @@ package fer.leprogi.dvoranko.service;
 
 import fer.leprogi.dvoranko.dto.DvoranaDTO;
 import fer.leprogi.dvoranko.dto.createRequest.CreateDvoranaRequest;
-import fer.leprogi.dvoranko.model.Adresa;
-import fer.leprogi.dvoranko.model.Dvorana;
-import fer.leprogi.dvoranko.model.Kategorija;
-import fer.leprogi.dvoranko.model.User;
-import fer.leprogi.dvoranko.repository.AdresaRepository;
-import fer.leprogi.dvoranko.repository.DvoranaRepository;
-import fer.leprogi.dvoranko.repository.KategorijaRepository;
-import fer.leprogi.dvoranko.repository.UserRepository;
+import fer.leprogi.dvoranko.model.*;
+import fer.leprogi.dvoranko.repository.*;
 import fer.leprogi.dvoranko.utils.DtoMapper;
 import fer.leprogi.dvoranko.utils.exceptions.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,10 +29,14 @@ public class DvoranaService {
     private final KategorijaRepository kategorijaRepository;
     private final DtoMapper dtoMapper;
     private final UserRepository userRepository;
+    private final SlikaDvoranaService slikaDvoranaService;
+    private final CloudinaryService cloudinaryService;
+    private final SlikaDvoranaRepository slikaDvoranaRepository;
+    private final ZahtjevOglasRepository zahtjevOglasRepository;
 
 
     @Transactional
-    public DvoranaDTO createDvorana(CreateDvoranaRequest request) {
+    public DvoranaDTO createDvorana(CreateDvoranaRequest request, List<ZahtjevSlika> images) {
         Adresa adresa = adresaRepository.findById(request.getIdAdresa())
                 .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
 
@@ -46,6 +45,8 @@ public class DvoranaService {
         dvorana.setKapacitet(request.getKapacitet());
         dvorana.setOpis(request.getOpis());
         dvorana.setAdresa(adresa);
+        dvorana.setDaysOpen(request.getDaysOpen());
+        dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
 
         if (request.getIdKategorija() != null && !request.getIdKategorija().isEmpty()) {
             Set<Kategorija> kategorije = new HashSet<>();
@@ -63,6 +64,28 @@ public class DvoranaService {
         dvorana.setVlasnik(vlasnik);
 
         Dvorana saved = dvoranaRepository.save(dvorana);
+
+        try {
+            for (ZahtjevSlika zahtjevSlika : images) {
+                SlikaDvorana slikaDvorana = new SlikaDvorana();
+
+                String noviUrl = cloudinaryService.confirmImage(zahtjevSlika.getUrlSlika(), saved.getIdDvorana());
+
+                slikaDvorana.setUrlSlika(noviUrl);
+                slikaDvorana.setPoredakSlike(zahtjevSlika.getPoredakSlike());
+                slikaDvorana.setDvorana(saved);
+
+                saved.getSlike().add(slikaDvorana);
+
+                slikaDvoranaRepository.save(slikaDvorana);
+            }
+
+//            String parts[] = images.get(0).getUrlSlika().split("/");
+//            String folderName = parts[parts.length - 3] + "/" + parts[parts.length - 2];
+//
+//            cloudinaryService.deleteEmptyFolder(folderName);
+
+        }catch (Exception e){}
 
         return dtoMapper.toDvoranaDTO(saved);
     }
@@ -92,6 +115,7 @@ public class DvoranaService {
 
         dvorana.setNazivDvorana(request.getNazivDvorana());
         dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
         dvorana.setOpis(request.getOpis());
         dvorana.setAdresa(adresa);
 
@@ -133,17 +157,58 @@ public class DvoranaService {
                 .collect(Collectors.toList());
     }
 
-
     @Transactional
     public void deleteDvorana(Long idDvorana) {
 //        if (!dvoranaRepository.existsById(idDvorana)) {
 //            throw new ResourceNotFoundException("Dvorana with idDvorana " + idDvorana + " does not exist");
 //        }
 //        dvoranaRepository.deleteById(idDvorana);
-
         Dvorana dvorana = dvoranaRepository.findById(idDvorana)
                 .orElseThrow(() -> new ResourceNotFoundException("dvorana that you want to delete not found"));
+
+
+        for (SlikaDvorana slika : dvorana.getSlike()) {
+            try {
+                cloudinaryService.deleteImage(slika.getUrlSlika());
+            }catch (Exception e){
+                System.out.println("Error deleting image on server");
+            }
+        }
+
         dvoranaRepository.delete(dvorana);
+    }
+
+    @Transactional
+    public DvoranaDTO createDvorana(CreateDvoranaRequest request) {
+        Adresa adresa = adresaRepository.findById(request.getIdAdresa())
+                .orElseThrow(() -> new ResourceNotFoundException("Adresa with idAdresa " + request.getIdAdresa() + " does not exist"));
+
+        Dvorana dvorana = new Dvorana();
+        dvorana.setNazivDvorana(request.getNazivDvorana());
+        dvorana.setKapacitet(request.getKapacitet());
+        dvorana.setOpis(request.getOpis());
+        dvorana.setAdresa(adresa);
+        dvorana.setDaysOpen(request.getDaysOpen());
+        dvorana.setCijenaPoSatu(request.getCijenaPoSatu());
+
+        if (request.getIdKategorija() != null && !request.getIdKategorija().isEmpty()) {
+            Set<Kategorija> kategorije = new HashSet<>();
+            for (Long idKategorija : request.getIdKategorija()) {
+                Kategorija kategorija = kategorijaRepository.findById(idKategorija)
+                        .orElseThrow(() -> new ResourceNotFoundException("Kategorija with id " + idKategorija + " does not exist"));
+                kategorije.add(kategorija);
+            }
+            dvorana.setKategorije(kategorije);
+        }
+
+        User vlasnik = userRepository.findById(request.getIdVlasnik())
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + request.getIdVlasnik() + " does not exist"));
+
+        dvorana.setVlasnik(vlasnik);
+
+        Dvorana saved = dvoranaRepository.save(dvorana);
+
+        return dtoMapper.toDvoranaDTO(saved);
     }
 
 }

@@ -1,7 +1,9 @@
 package fer.leprogi.dvoranko.dto.createRequest;
 
+import fer.leprogi.dvoranko.dto.ZahtjevSlikaDTO;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -11,6 +13,8 @@ public class CreateZahtjevOglas {
     private String naziv;
     private String opis;
     private Integer kapacitet;
+    private String daysOpen;
+    private Float cijenaPoSatu;
 
     private Set<Long> idKategorije;
 
@@ -20,5 +24,8 @@ public class CreateZahtjevOglas {
     private String streetNumber;
     private Double lat;
     private Double lng;
+
+    private List<ZahtjevSlikaDTO> slike;
+
 
 }

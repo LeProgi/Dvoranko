@@ -19,25 +19,11 @@ public class SlikaDvorana {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idSlika;
 
-    @Lob
-    @NotNull
-    private byte[] imageData;
+    private String poredakSlike;
+    private String urlSlika;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "idDvorana", nullable = false)
     private Dvorana dvorana;
 
-
-//    @ManyToOne
-//    @JoinColumn(name = "idDvorana", nullable = false)
-//    private Dvorana dvorana;
-//
-//    @Override
-//    public String toString() {
-//        return "SlikaDvorana{" +
-//                "idSlika=" + idSlika +
-//                ", imageData=" + Arrays.toString(imageData) +
-//                ", dvorana=" + dvorana +
-//                '}';
-//    }
 }

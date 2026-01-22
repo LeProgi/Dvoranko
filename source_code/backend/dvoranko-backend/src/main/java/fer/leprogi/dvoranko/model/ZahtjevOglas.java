@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -32,6 +31,11 @@ public class ZahtjevOglas {
     @Column(name = "opis", columnDefinition = "TEXT")
     private String opis;
 
+
+    private String daysOpen;
+
+    private Float cijenaPoSatu;
+
     private Integer kapacitet;
 
     @ManyToMany
@@ -48,6 +52,16 @@ public class ZahtjevOglas {
     private String streetNumber;
     private Double latitude;
     private Double longitude;
+
+
+    @OneToMany(
+            mappedBy = "zahtjevOglas",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    private List<ZahtjevSlika> slike = new ArrayList<>();
+
 
     @PrePersist
     protected void onCreate() {

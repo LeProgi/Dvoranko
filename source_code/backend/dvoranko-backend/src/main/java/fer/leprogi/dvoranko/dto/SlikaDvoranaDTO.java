@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class SlikaDvoranaDTO {
     private Long idSlika;
-    private byte[] imageData;
+    private String poredakSlike;
+    private String urlSlika;
 }

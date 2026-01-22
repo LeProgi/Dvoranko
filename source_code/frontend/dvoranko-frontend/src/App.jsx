@@ -9,6 +9,10 @@ import MapPage from './pages/MapPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import FormPage from './pages/FormPage';
+import EditFormPage from './pages/EditFormPage'
+import Reservation from './pages/ReservationPage';
+import VenueReservations from './pages/VenueReservations';
+import UpdateCategory from './pages/UpdateCategory';
 
 const App = () => {
   
@@ -22,6 +26,10 @@ const App = () => {
         <Route path='/my-profile' element={<ProfilePage/>}/>
         <Route path='/admin' element ={<AdminPage/>}/>
         <Route path='/form' element={<FormPage/>}/>
+        <Route path='/editform/:id' element= {<EditFormPage/>}/>
+        <Route path='/reservation' element={<Reservation/>}/>
+        <Route path='/reservations/:idDvorana' element={<VenueReservations/>}/>
+        <Route path='/admin/updatecategory' element={<UpdateCategory/>}/>
       </Routes>
     </Router>
   )

@@ -15,6 +15,8 @@ public class ZahtjevOglasDTO {
     private String opis;
     private Integer kapacitet;
     private Iterable<KategorijaDTO> kategorije;
+    private String daysOpen;
+    private Float cijenaPoSatu;
 
     private Long postalCode;
     private String city;
@@ -24,5 +26,6 @@ public class ZahtjevOglasDTO {
     private Double longitude;
 
 
+    private Iterable<ZahtjevSlikaDTO> slike;
 
 }
