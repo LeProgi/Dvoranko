@@ -175,7 +175,7 @@ public class DtoMapper {
         dto.setDatumVrijemeEnd(zahtjev.getDatumVrijemeEnd());
         dto.setJeJavniEvent(zahtjev.getJeJavniEvent());
         dto.setIdKorisnik(zahtjev.getIdKorisnik());
-        dto.setIdDvorana(zahtjev.getIdDvorana());
+        dto.setIdDvorana(zahtjev.getDvorana().getIdDvorana());
         dto.setOpisDogadanja(zahtjev.getOpisDogadanja());
         dto.setImeDogadanja(zahtjev.getImeDogadanja());
 

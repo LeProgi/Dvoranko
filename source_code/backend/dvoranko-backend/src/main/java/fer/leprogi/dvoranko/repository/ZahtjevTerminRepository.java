@@ -11,10 +11,9 @@ import java.util.Optional;
 public interface ZahtjevTerminRepository extends JpaRepository<ZahtjevTermin, Long> {
     public Optional<ZahtjevTermin> findById(Long id);
 
-    List<ZahtjevTermin> findByIdDvorana(Long idDvorana);
+    List<ZahtjevTermin> findByDvorana_IdDvorana(Long idDvorana);
 
-
-    List<ZahtjevTermin> findAllByIdDvorana(Long idDvorana);
+    List<ZahtjevTermin> findAllByDvorana_IdDvorana(Long idDvorana);
 
     List<ZahtjevTermin> findAllByIdKorisnik(Long userId);
 }

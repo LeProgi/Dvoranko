@@ -139,7 +139,7 @@ public class ModeratorService {
 
         Iterable<Dvorana> dvoraneModerator = dvoranaRepository.findAllByVlasnik_Id(moderatorId);
         for (Dvorana dvorana : dvoraneModerator) {
-            Iterable<ZahtjevTermin> zahtjeviDvorana = zahtjevTerminRepository.findByIdDvorana(dvorana.getIdDvorana());
+            Iterable<ZahtjevTermin> zahtjeviDvorana = zahtjevTerminRepository.findByDvorana_IdDvorana(dvorana.getIdDvorana());
             for (ZahtjevTermin zahtjev : zahtjeviDvorana) {
                 sviZahtjevi.add(zahtjev);
             }
@@ -167,7 +167,7 @@ public class ModeratorService {
 //            sviZahtjeviDTO.add(dtoMapper.toZahtjevTerminDTO(zahtjev));
 //        }
 
-        List<ZahtjevTermin> sviTermini = zahtjevTerminRepository.findAllByIdDvorana(id);
+        List<ZahtjevTermin> sviTermini = zahtjevTerminRepository.findAllByDvorana_IdDvorana(id);
         List<TerminZaFrontDTO> result = new ArrayList<>();
 
 //        System.out.println(sviTermini.size());
@@ -246,8 +246,8 @@ public class ModeratorService {
         User user = userRepository.findById(zahtjev.getIdKorisnik())
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + zahtjev.getIdKorisnik() + " not found"));
 
-        Dvorana dvorana = dvoranaRepository.findById(zahtjev.getIdDvorana())
-                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with id " + zahtjev.getIdDvorana() + " not found"));
+        Dvorana dvorana = dvoranaRepository.findById(zahtjev.getDvorana().getIdDvorana())
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with id " + zahtjev.getDvorana().getIdDvorana() + " not found"));
 
 
         TerminDTO terminDTO = new TerminDTO();
@@ -255,7 +255,7 @@ public class ModeratorService {
         terminDTO.setDatumVrijemeEnd(zahtjev.getDatumVrijemeEnd());
         terminDTO.setJeJavniEvent(zahtjev.getJeJavniEvent());
         terminDTO.setIdKorisnik(zahtjev.getIdKorisnik());
-        terminDTO.setIdDvorana(zahtjev.getIdDvorana());
+        terminDTO.setIdDvorana(zahtjev.getDvorana().getIdDvorana());
         terminDTO.setOpisDogadanja(zahtjev.getOpisDogadanja());
         terminDTO.setImeDogadanja(zahtjev.getImeDogadanja());
 
@@ -273,8 +273,8 @@ public class ModeratorService {
         User user = userRepository.findById(zahtjev.getIdKorisnik())
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + zahtjev.getIdKorisnik() + " not found"));
 
-        Dvorana dvorana = dvoranaRepository.findById(zahtjev.getIdDvorana())
-                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with id " + zahtjev.getIdDvorana() + " not found"));
+        Dvorana dvorana = dvoranaRepository.findById(zahtjev.getDvorana().getIdDvorana())
+                .orElseThrow(() -> new ResourceNotFoundException("Dvorana with id " + zahtjev.getDvorana().getIdDvorana() + " not found"));
 
         zahtjevTerminRepository.delete(zahtjev);
 

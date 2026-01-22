@@ -20,6 +20,7 @@ public class MailService {
 
         try{
             mailSender.send(message);
+//            throw new Exception("FOrce err");
         }catch (Exception e){
             System.out.println("Error sending mail");
             throw new Exception("Kume strgo se mail");
