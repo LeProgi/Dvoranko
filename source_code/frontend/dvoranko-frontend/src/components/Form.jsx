@@ -303,6 +303,7 @@ function Form() {
                                     <div className="mb-[5px]">
                                         <label>Naziv dvorane</label>
                                         <input
+                                            id="naziv-input"
                                             type="text"
                                             value={naziv}
                                             onChange={(e) => setName(e.target.value)}
@@ -315,6 +316,7 @@ function Form() {
                                     <div className="mb-[5px]">
                                         <label>Kapacitet dvorane</label>
                                         <input
+                                            id="kapacitet-input"
                                             type="text"
                                             value={kapacitet}
                                             onChange={(e) => setCapacity(e.target.value)}
@@ -326,6 +328,7 @@ function Form() {
                                     <div className="mb-[5px]">
                                         <label>Cijena po satu</label>
                                         <input
+                                            id="cijena-input"
                                             type="text"
                                             value={cijenaPoSatu}
                                             onChange={(e) => setPricePerHour(e.target.value)}
@@ -347,6 +350,7 @@ function Form() {
                                     <div className="mb-[5px] flex flex-col items-center">
                                         <label>Opis</label>
                                         <textarea
+                                            id="opis-input"
                                             value={opis}
                                             onChange={(e) => setDescription(e.target.value)}
                                             rows={4}

@@ -28,6 +28,8 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+
+        <skip.selenium>true</skip.selenium>
     </properties>
     <dependencies>
         <dependency>
@@ -96,12 +98,32 @@
             <version>2.0.0</version>
         </dependency>
         <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.38.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.5.0</version> <!-- najnovija verzija -->
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>e2e</id>
+            <properties>
+                <!-- Kad je aktivan e2e profile, Selenium se pali -->
+                <skip.selenium>false</skip.selenium>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -128,6 +150,20 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <skipTests>${skip.selenium}</skipTests>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/e2e/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

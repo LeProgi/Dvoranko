@@ -30,6 +30,7 @@ function TimeDropdown({ value, onChange, options, disabled }) {
                 <div className="absolute top-[30px] left-0 right-0 max-h-[130px] overflow-y-auto border-2 border-black rounded-[4px] bg-white z-[1000]">
                     {options.map((opt) => (
                         <div
+                            id={ `time-option-${opt}` }
                             key={opt}
                             onClick={() => {
                                 onChange(opt);
