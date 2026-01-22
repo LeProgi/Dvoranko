@@ -26,9 +26,9 @@ public class SeleniumSystemTests {
     public void testEditDvorana(){
 
         int newPrice = 50;
-        int newMaxCapacity = 100;
-        String newOpis = "Novi opis za dvoranu";
-        String newIme = "Bananero banana";
+        int newMaxCapacity = 200;
+        String newOpis = "Big boy dvorana";
+        String newIme = "Matijina dvorana";
 
 
         WebDriverManager.chromedriver().setup();
@@ -47,6 +47,7 @@ public class SeleniumSystemTests {
                 )
         );
         editVenueButton.click();
+        System.out.println("Clicking edit dvorana button for dvorana with id 33");
 
 
 
@@ -136,7 +137,11 @@ public class SeleniumSystemTests {
         System.out.println("Navigating to edited dvorana page");
 
 
-        WebElement editedIme = driver.findElement(By.id("ime-dvorana"));
+        System.out.println("Verifying edited dvorana data");
+
+        WebElement editedIme =  wait.until(
+                ExpectedConditions.elementToBeClickable(By.id("ime-dvorana")));
+//                driver.findElement(By.id("ime-dvorana"));
         String ime = editedIme.getText();
 
         WebElement editedKapacitet = driver.findElement(By.id("kapacitet"));
@@ -157,4 +162,7 @@ public class SeleniumSystemTests {
 
         driver.quit();
     }
+
+
+
 }
