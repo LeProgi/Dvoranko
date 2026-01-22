@@ -47,15 +47,15 @@ const Filter = ({ onApply , categories}) => {
                         <div className="mb-4">
                             <label className="font-semibold">Kapacitet</label>
                             <select
-                                className="w-full border p-2 rounded"
+                                className="w-full border p-2 rounded hover:bg-gray-100 hover:cursor-pointer"
                                 value={capacity}
                                 onChange={e => setCapacity(e.target.value)}
                             >
-                                <option value="">Sve</option>
-                                <option value="0-20">0-20</option>
-                                <option value="20-50">20-50</option>
-                                <option value="50-70">50-70</option>
-                                <option value="70+">70+</option>
+                                <option value="" className="hover:cursor-pointer">Sve</option>
+                                <option value="0-20" className="hover:cursor-pointer">0-20</option>
+                                <option value="20-50" className="hover:cursor-pointer">20-50</option>
+                                <option value="50-70" className="hover:cursor-pointer">50-70</option>
+                                <option value="70+" className="hover:cursor-pointer">70+</option>
                             </select>
                         </div>
 
@@ -63,13 +63,13 @@ const Filter = ({ onApply , categories}) => {
                         <div className="mb-4">
                             <label className="font-semibold">Kategorija</label>
                                 <select
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border p-2 rounded hover:bg-gray-100 hover:cursor-pointer"
                                     value={category}
                                     onChange={e => setCategory(e.target.value)}
                                 >
                                 <option value="">Sve</option>
                                 {categories.map(cat => (
-                                    <option key={cat} value={cat}>{cat}</option>
+                                    <option key={cat} value={cat} className="hover:cursor-pointer">{cat} </option>
                                 ))}
                                 </select>
                         </div>
@@ -80,29 +80,29 @@ const Filter = ({ onApply , categories}) => {
                             <label className="font-semibold">Cijena po satu - €</label>
                             <select
                                 id="filter-cijena-options"
-                                className="w-full border p-2 rounded"
+                                className="w-full border p-2 rounded hover:bg-gray-100 hover:cursor-pointer"
                                 value={price}
                                 onChange={e => setPrice(e.target.value)}
                             >
-                                <option value="">Sve</option>
-                                <option value="0-20">0-20</option>
-                                <option value="20-40">20-40</option>
-                                <option value="40-60">40-60</option>
-                                <option value="60+">60+</option>
+                                <option value="" className="hover:cursor-pointer">Sve</option>
+                                <option value="0-20" className="hover:cursor-pointer">0-20</option>
+                                <option value="20-40" className="hover:cursor-pointer">20-40</option>
+                                <option value="40-60" className="hover:cursor-pointer">40-60</option>
+                                <option value="60+" className="hover:cursor-pointer">60+</option>
                             </select>
                         </div>
 
                         
                         <div className="flex justify-end gap-4 mt-6">
                             <button
-                                className="px-4 py-2 bg-gray-300 rounded"
+                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 hover:cursor-pointer"
                                 onClick={() => setOpen(false)}
                             >
                                 Odustani
                             </button>
                             <button
                                 id="filter-submit-btn"
-                                className="px-4 py-2 bg-[#3B5B80] text-white rounded"
+                                className="px-4 py-2 bg-[#3B5B80] text-white rounded hover:bg-[#2F4B6A] hover:cursor-pointer"
                                 onClick={apply}
                             >
                                 Primijeni
