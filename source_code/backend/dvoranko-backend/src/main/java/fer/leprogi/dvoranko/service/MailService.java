@@ -21,9 +21,8 @@ public class MailService {
         try{
             mailSender.send(message);
         }catch (Exception e){
-            System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
             System.out.println("Error sending mail");
-            System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+            throw new Exception("Kume strgo se mail");
         }
     }
 }
