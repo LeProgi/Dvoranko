@@ -79,7 +79,7 @@ function Form() {
                     setAddressId(dvorana.adresa.idAdresa)
                     setselectedCategories(dvorana.kategorije.map(kategorija => kategorija.idKategorija));
                     setDays(parseDaysOpen(dvorana.daysOpen))
-                    setImagePreview(dvorana.slike[0])
+                    setImagePreview(dvorana.slike[0].urlSlika)
                     //znaci na pocetku cemo ucitat tu bekend sliku i image ce biti Null
                     //ak posaljemo null onda ostavljamo staru, ak ne posaljemo null na back brisemo staru i dodajemo novu
                     //setImage(dvorana.slike[0].urlSlika)
@@ -486,7 +486,7 @@ function Form() {
 
                                 <div className="absolute bottom-[10px] right-[10px]">
                                     <Link to="/my-profile">
-                                        <button className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
+                                        <button type="button" className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
                                             Odustani
                                         </button>
                                     </Link>
