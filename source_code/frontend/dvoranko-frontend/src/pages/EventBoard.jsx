@@ -91,7 +91,7 @@ const EventBoard = () => {
                                 opisDogadanje={event.opisDogadanja}
                                 nameDvorana={event.dvorana.nazivDvorana}
                                 adresa={event.dvorana.adresa.ulica + " " + event.dvorana.adresa.kucniBroj + ", " + event.dvorana.adresa.mjesto.nazivMjesto}
-                                imgUrl={event.dvorana.slike[0]}
+                                imgUrl={event.dvorana.slike[0].urlSlika}
                                 vrijemeOd={event.datumVrijemeStart}
                                 vrijemeDo={event.datumVrijemeEnd}
                             />
