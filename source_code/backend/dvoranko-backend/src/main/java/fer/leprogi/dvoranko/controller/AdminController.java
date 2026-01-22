@@ -64,21 +64,28 @@ public class AdminController {
     @PostMapping("/requests/{id}/approve")
     @PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<DvoranaDTO>> approve(@PathVariable Long id) {
-        DvoranaDTO dvorana = adminService.approveOglasRequest(id);
+        try {
+            DvoranaDTO dvorana = adminService.approveOglasRequest(id);
 
-		return ResponseEntity
+            return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(dvorana, "Zahtjev odobren, dvorana kreirana"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(ApiResponse.error("Kume nes ne dela", e.getMessage()));
+        }
 	}
 
 	@PostMapping("/requests/{id}/reject")
     @PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<Null>> reject(@PathVariable Long id) {
-
-        adminService.rejectOglasRequest(id);
-		return ResponseEntity
-                .status(200)
-                .body(ApiResponse.success(null, "Zahtjev odbijen"));
+        try {
+            adminService.rejectOglasRequest(id);
+            return ResponseEntity
+                    .status(200)
+                    .body(ApiResponse.success(null, "Zahtjev odbijen"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(ApiResponse.error("Kume nes ne dela", e.getMessage()));
+        }
 	}
 
     @GetMapping("/getall/zahtjeviznajmljivac")

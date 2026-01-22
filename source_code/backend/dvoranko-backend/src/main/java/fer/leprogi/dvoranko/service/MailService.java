@@ -12,12 +12,18 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendMail(String to, String subject, String text) {
+    public void sendMail(String to, String subject, String text) throws Exception {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
 
-        mailSender.send(message);
+        try{
+            mailSender.send(message);
+        }catch (Exception e){
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("Error sending mail");
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+        }
     }
 }
