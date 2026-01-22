@@ -15,6 +15,18 @@ const VenuePage = () => {
     const [venue, setVenue] = useState(null);
     const fromPath = location.state?.from || '/';
     useEffect(() =>{
+        
+        fetch(`${url}/api/auth/user`, {
+            credentials: "include",
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            if(data.role === "ADMIN"){
+                    navigate("/admin", {replace:true});
+                    return;
+                }
+        })
+
         fetch(`${url}/api/public/dvorane/${id}`,{
             credentials: "include",
         })

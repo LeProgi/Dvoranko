@@ -30,6 +30,7 @@ const ReservationPage = () => {
    const [ownerIdLocal, setOwnerIdLocal] = useState("");
 
    const [isSubmitting, setIsSubmitting] = useState(false);
+   
 
    useEffect(() => {
       fetch(`${url}/api/auth/user`, {
@@ -40,6 +41,10 @@ const ReservationPage = () => {
             return res.json();
          })
          .then((data) => {
+            if(data.role === "ADMIN"){
+               navigate("/admin", {replace:true});
+               return;
+            }
             setOwnerIdLocal(data.id)
             console.log("User data fetched:", data);
             if (!venueId) throw new Error("Nema podatka o izabranoj dvorani");

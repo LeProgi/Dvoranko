@@ -20,7 +20,6 @@ const zahtjevIznajmljivac = () => {
       console.error("Error pri pokušaju slanja zahtjva:", err);
     }
   };
-    
 
 
 const ProfilePage = () => {
@@ -52,6 +51,10 @@ const ProfilePage = () => {
                 return res.json();
             })
             .then((data) => {
+                if(data.role === "ADMIN"){
+                    navigate("/admin", {replace:true});
+                    return;
+                }
                 setUser(data)
                 // console.log("User data fetched:", data);
             })
@@ -251,7 +254,6 @@ const ProfilePage = () => {
 
     }, [location.key, user])
 
-
     const logout = async () => {
         try {
             const res = await fetch(`${url}/api/auth/logout`, {
@@ -268,9 +270,6 @@ const ProfilePage = () => {
             console.error("Logout error:", err);
         }
     };
-
-
-    
 
     useEffect(() => {
         if (!myDvorane?.data) return;

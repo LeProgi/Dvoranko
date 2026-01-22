@@ -4,24 +4,33 @@ import { useEffect, useState } from "react";
 import { url } from "../main.jsx";
 import Map from "../components/Map";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import Footer from "../components/Footer";
 
 const MapPage = () => {
     const [user, setUser] = useState(null);
     const [venues, setVenues] = useState([]);
     const [hoveredVenue, setHoveredVenue] = useState(null);
+    const navigate = useNavigate();
 
 useEffect(() => {
   fetch(`${url}/api/auth/user`, {
     credentials: "include",
   })
     .then((res) => {
-      if (res.status === 200) return res.json();
-      throw new Error("Not logged in");
+      if (!res.ok) throw new Error("Not logged in");
+        return res.json();
     })
-    .then((data) => setUser(data))
-    .catch(() => setUser(null));
+    .then((data) => {
+        if(data.role === "ADMIN") {
+          navigate("/admin", {replace:true});
+          return;
+        }
+        setUser(data)
+      })
+    .catch(() => {
+      setUser(null)
+    });
 }, []);
 
 useEffect(() => {
