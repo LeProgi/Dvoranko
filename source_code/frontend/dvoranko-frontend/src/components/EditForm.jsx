@@ -486,7 +486,7 @@ function Form() {
 
                                 <div className="absolute bottom-[10px] right-[10px]">
                                     <Link to="/my-profile">
-                                        <button className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
+                                        <button type="button" className="w-fit h-[40px] font-bold border-none rounded-[10px] text-white cursor-pointer px-[10px] bg-[#3B5B80] hover:bg-[#2F4B6A] transition-colors">
                                             Odustani
                                         </button>
                                     </Link>
