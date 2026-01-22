@@ -26,11 +26,7 @@ useEffect(() => {
           navigate("/admin", {replace:true});
           return;
         }
-        setUser(data)
       })
-    .catch(() => {
-      setUser(null)
-    });
 }, []);
 
 useEffect(() => {

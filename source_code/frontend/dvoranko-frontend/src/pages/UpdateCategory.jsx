@@ -13,6 +13,21 @@ const UpdateCategory = () => {
 
 
   useEffect(() => {
+    
+    fetch(`${url}/api/auth/user`, {
+            credentials: "include",
+        })
+            .then((res) => {
+            if (res.status === 200) return res.json();
+            throw new Error("Not logged in");
+            })
+            .then((data) => {
+                if(data.role !== "ADMIN"){
+                        navigate("/", {replace:true});
+                        return;
+                    }
+                })
+
     const fetchKategorije = async () => {
       try {
         //zahtjevi za dvorane

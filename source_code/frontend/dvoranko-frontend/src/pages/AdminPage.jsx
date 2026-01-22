@@ -35,7 +35,6 @@ const AdminPage = () => {
                     return;
                 }
             })
-        .catch(() => setUser(null));
 
     const fetchRequests = async () => {
       try {

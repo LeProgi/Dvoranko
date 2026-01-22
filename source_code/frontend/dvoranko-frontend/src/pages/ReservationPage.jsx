@@ -37,7 +37,9 @@ const ReservationPage = () => {
          credentials: "include",
       })
          .then((res) => {
-            if (!res.ok) throw new Error("Not logged in");
+            if (!res.ok) {
+                navigate("/", {replace:true})
+              }
             return res.json();
          })
          .then((data) => {

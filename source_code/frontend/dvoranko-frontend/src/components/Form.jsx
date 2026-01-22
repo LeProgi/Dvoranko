@@ -46,11 +46,14 @@ function Form() {
 
 
     useEffect(() => {
+
         fetch(`${url}/api/auth/user`, {
             credentials: "include",
           })
             .then((res) => {
-              if (!res.ok) throw new Error("Not logged in");
+              if (!res.ok) {
+                navigate("/", {replace:true})
+              }
                 return res.json();
             })
             .then((data) => {
@@ -58,11 +61,11 @@ function Form() {
                   navigate("/admin", {replace:true});
                   return;
                 }
-                setUser(data)
+                if(data.role === "USER") {
+                    navigate("/", {replace:true});
+                    return;
+                }
               })
-            .catch(() => {
-              setUser(null)
-            });
 
 
         const fetchCategories = async () => {

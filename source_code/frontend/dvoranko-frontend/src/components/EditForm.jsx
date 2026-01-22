@@ -52,7 +52,7 @@ function Form() {
 
 
     useEffect(() => {
-        
+
         fetch(`${url}/api/auth/user`, {
             credentials: "include",
           })
@@ -65,11 +65,11 @@ function Form() {
                   navigate("/admin", {replace:true});
                   return;
                 }
-                setUser(data)
+                if(data.role === "USER") {
+                    navigate("/", {replace:true});
+                    return;
+                }
               })
-            .catch(() => {
-              setUser(null)
-            });
 
         const fetchCategories = async () => {
             try {
