@@ -80,6 +80,7 @@ const VenuePage = () => {
                                 variant="default"
                                 title="Rezerviraj dvoranu"
                                 className="text-white px-6 py-2 rounded-lg"
+                                id="rezerviraj-dvoranu-btn"
                             />
                         </Link>
                     </div>

@@ -29,6 +29,8 @@ const ReservationPage = () => {
    const [opisDogadanja, setOpisDogadanja] = useState("");
    const [ownerIdLocal, setOwnerIdLocal] = useState("");
 
+   const [isSubmitting, setIsSubmitting] = useState(false);
+
    useEffect(() => {
       fetch(`${url}/api/auth/user`, {
          credentials: "include",
@@ -297,6 +299,8 @@ const ReservationPage = () => {
 
       setFormError("");
 
+      setIsSubmitting(true);
+
       try {
          let datumVrijemeEnd = "";
          if (endTime === "24:00") {
@@ -321,10 +325,12 @@ const ReservationPage = () => {
 
          await postZahtjevTermin(payload);
          setFormError("Zahtjev uspješno poslan");
-         //navigate("/my-profile");
+         navigate("/my-profile");
       } catch (err) {
          console.error(err);
          setFormError("Greška pri slanju zahtjeva. Pokušajte ponovno.");
+      } finally {
+         setIsSubmitting(false);
       }
    }
 
@@ -359,6 +365,8 @@ const ReservationPage = () => {
    }
 
    return (
+      <div className="relative">
+      <div className={`w-full max-w-full relative transition-all duration-200 ${isSubmitting ? 'blur-sm pointer-events-none select-none opacity-50' : ''}`}>
       <div className="bg-[#5B7692] min-h-screen flex justify-center lg:items-center h-auto">
          <div className="flex flex-col lg:flex-row justify-between bg-white rounded-[20px] w-[90vw] lg:h-[90vh] p-5 h-auto mt-5 lg:mt-0 mb-5 lg:mb-0">
             <div className="w-[100%] lg:w-[50%] h-[550px] lg:h-[100%]" >
@@ -422,6 +430,7 @@ const ReservationPage = () => {
                                     const isGray = grayTimes.includes(time);
                                     return (
                                     <button
+                                       id={`time-select-${time}`}
                                        type="button"
                                        key={idx}
                                        onClick={() => !isDisabled && handleClick(time)}
@@ -486,6 +495,7 @@ const ReservationPage = () => {
                                     <div className="w-full flex flex-col items-center gap-1">
                                        <label>Opis događanja:</label>
                                        <textarea
+                                          id="input-opis-dogadanja"
                                           value={opisDogadanja}
                                           onChange={(e) => setOpisDogadanja(e.target.value)}
                                           placeholder="Opis događanja"
@@ -496,6 +506,7 @@ const ReservationPage = () => {
                                     <div className="flex flex-row items-center justify-center">
                                        <label className="mr-2">Broj ljudi:</label>
                                        <input
+                                          id="input-broj-ljudi"
                                           type="text"
                                           value={brojLjudi}
                                           onChange={(e) => setBrojLjudi(e.target.value)}
@@ -518,7 +529,7 @@ const ReservationPage = () => {
                                        </button>
                                     </Link>
 
-                                    <button type="submit" className="h-[40px] w-[120px] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]">
+                                    <button id="submit-zahtjev-termin-btn" type="submit" className="h-[40px] w-[120px] text-white font-bold rounded-[10px] cursor-pointer bg-[#3B5B80] hover:bg-[#2F4B6A]">
                                        Submit
                                     </button>
                                  </div>
@@ -537,6 +548,20 @@ const ReservationPage = () => {
                )}
             </div>
          </div>
+      </div>
+
+      </div>
+      {isSubmitting && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 border-4 border-[#536F8F] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-white text-lg font-semibold animate-pulse">
+                        Slanje zahtjeva...
+                    </p>
+                    </div>
+                </div>
+                )
+            }
       </div>
    );
 };

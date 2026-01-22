@@ -185,7 +185,7 @@ const Home = () => {
                 ) : (
                     <div className="flex flex-col items-center gap-4 w-full">
                     {filteredVenues.map((venue) => (
-                        <Link key={venue.id} to={`/venue/${venue.id}`} state={{ from: '/' }} className="w-11/12 block">
+                        <Link id={`dvorana-link-${venue.id}`} key={venue.id} to={`/venue/${venue.id}`} state={{ from: '/' }} className="w-11/12 block">
                             <VenueCard name={venue.name} adresa={venue.adresa} imgUrl = {venue.imgUrl}  cijenaPoSatu={venue.cijenaPoSatu} potvrdeno={true}/>
                         </Link>
                     ))}

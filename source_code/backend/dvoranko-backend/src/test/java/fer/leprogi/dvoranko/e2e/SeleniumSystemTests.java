@@ -1,4 +1,4 @@
-package fer.leprogi.dvoranko;
+package fer.leprogi.dvoranko.e2e;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class SeleniumSystemTests {
 
@@ -18,28 +19,27 @@ public class SeleniumSystemTests {
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.get("http://localhost:8080/test/login");
+        driver.get("http://localhost:8080/test/login/1");
         driver.get("http://localhost:5173/my-profile");
     }
 
     @Test
     public void testEditDvorana(){
 
+        String newIme = "Testna dvorana (edit test)";
         int newPrice = 50;
         int newMaxCapacity = 200;
-        String newOpis = "Big boy dvorana";
-        String newIme = "Matijina dvorana";
+        String newOpis = "Opis nove testne dvorane, promijenjen u testu";
 
 
         WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.get("http://localhost:8080/test/login");
+        driver.get("http://localhost:8080/test/login/moderator");
         driver.get("http://localhost:5173/my-profile");
 
         System.out.println("Navigating to create dvorana page");
-//        driver.findElement(By.id("add-venue-button")).click();
 
         WebElement editVenueButton = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
@@ -91,7 +91,7 @@ public class SeleniumSystemTests {
 //        WebElement odDropdown = wait.until(
 //                ExpectedConditions.elementToBeClickable(
 //                        By.xpath("//label[normalize-space()='Od:']/following-sibling::div")
-////                        By.xpath("//div[label[normalize-space()='Ponedjeljak']]//label[normalize-space()='Od:']/following-sibling::div")
+//                        By.xpath("//div[label[normalize-space()='Ponedjeljak']]//label[normalize-space()='Od:']/following-sibling::div")
 //
 //                )
 //        );
@@ -163,6 +163,96 @@ public class SeleniumSystemTests {
         driver.quit();
     }
 
+
+
+    @Test
+    public void testAdminDeleteDvorana(){
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        int dvoranaId = 31;
+
+        driver.get("http://localhost:8080/test/login/admin");
+        driver.get("http://localhost:5173/admin");
+
+        System.out.println("Navigating to admin page");
+
+        driver.findElement(By.xpath("//button[text()='Prikaži korisnike i dvorane']")).click();
+        System.out.println("Clicking button to show users and venues");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("delete-dvorana-btn-"+dvoranaId))).click();
+        System.out.println("Clicking delete button for dvorana with id "+dvoranaId);
+
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("delete-dvorana-btn-"+dvoranaId)));
+        System.out.println("Verifying that delete button is no longer visible");
+
+        driver.navigate().refresh();
+        System.out.println("Refreshing the page to confirm deletion, (frontend fetches data again)");
+
+        driver.findElement(By.xpath("//button[text()='Prikaži korisnike i dvorane']")).click();
+        System.out.println("Clicking button to show users and venues again");
+
+        List<WebElement> elements = driver.findElements(By.id("delete-dvorana-btn-"+dvoranaId));
+
+        assert elements.isEmpty() : "Dvorana with id " + dvoranaId + " is not deleted and still visible on admin page";
+
+        System.out.println("Admin delete dvorana test completed successfully");
+
+        driver.quit();
+
+    }
+
+    @Test
+    public void testCreateTerminZahtjev(){
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        int dvoranaId = 33;
+        String opisText = "Na ovom terminu radimo testiranje sustava";
+        int brojLjudiText = 10;
+
+        driver.get("http://localhost:8080/test/login/moderator");
+        driver.get("http://localhost:5173/");
+
+        System.out.println("Navigating to home page");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("dvorana-link-" + dvoranaId))).click();
+        System.out.println("Clicking link to dvorana with id " + dvoranaId);
+
+        System.out.println("Navigating to dvorana with id: " + dvoranaId + " page");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("rezerviraj-dvoranu-btn"))).click();
+        System.out.println("Clicking button to create termin zahtjev");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@aria-label='31. siječnja 2026.' and text()='31']"))).click();
+        System.out.println("Clicking on date 31. siječnja 2026.");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("time-select-20:00"))).click();
+        System.out.println("Selecting starting time: 20:00");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("time-select-22:00"))).click();
+        System.out.println("Selecting ending time: 22:00");
+
+        WebElement opis = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-opis-dogadanja")));
+        opis.sendKeys(opisText);
+        System.out.println("Inputing opis dogadanja");
+
+        WebElement brojLjudi = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-broj-ljudi")));
+        brojLjudi.sendKeys(String.valueOf(brojLjudiText));
+        System.out.println("Inputing broj ljudi");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submit-zahtjev-termin-btn"))).click();
+        System.out.println("Submitting termin zahtjev");
+
+        driver.get("http://localhost:5173/my-profile/" + dvoranaId);
+        System.out.println("Navigating to my profile page");
+
+        
+
+
+    }
 
 
 }
