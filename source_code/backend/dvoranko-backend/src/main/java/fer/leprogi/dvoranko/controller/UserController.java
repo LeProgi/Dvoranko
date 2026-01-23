@@ -77,8 +77,12 @@ public class UserController {
     @PostMapping("/request/createZahtjevTermin")
     //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createTerminRequest(@RequestBody CreateTerminRequest request) {
-        userService.createTerminRequest(request);
-        return ResponseEntity.ok("termin request created");
+        try {
+            userService.createTerminRequest(request);
+            return ResponseEntity.ok("termin request created");
+        }catch (Exception e){
+            return ResponseEntity.ok(e.getMessage());
+        }
     }
 
     @GetMapping("/getUserById/{id}")

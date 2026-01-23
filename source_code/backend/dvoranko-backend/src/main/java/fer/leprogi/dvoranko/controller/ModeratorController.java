@@ -63,15 +63,23 @@ public class ModeratorController {
     @PostMapping("/approveTeminRequest/{id}")
     //@PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<Void>> approveTerminRequest(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User principal) {
-        moderatorService.approveTerminRequest(id, principal);
-        return ResponseEntity.ok(ApiResponse.success(null, "Termin request approved successfully"));
+        try{
+            moderatorService.approveTerminRequest(id, principal);
+            return ResponseEntity.ok(ApiResponse.success(null, "Termin request approved successfully"));
+        }catch (Exception e){
+            return ResponseEntity.ok(ApiResponse.error("Kume nes ne dela", e.getMessage()));
+        }
     }
 
     @PostMapping("/rejectTeminRequest/{id}")
     //@PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<Void>> rejectTerminRequest(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User principal) {
-        moderatorService.rejectTerminRequest(id, principal);
-        return ResponseEntity.ok(ApiResponse.success(null, "Termin request rejected successfully"));
+       try {
+           moderatorService.rejectTerminRequest(id, principal);
+           return ResponseEntity.ok(ApiResponse.success(null, "Termin request rejected successfully"));
+       }catch (Exception e){
+           return ResponseEntity.ok(ApiResponse.error("Kume nes ne dela", e.getMessage()));
+       }
     }
       
       

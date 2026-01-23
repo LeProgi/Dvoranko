@@ -83,7 +83,7 @@ public class AdminService {
 
 
     @Transactional
-    public DvoranaDTO approveOglasRequest(Long requestId) {
+    public DvoranaDTO approveOglasRequest(Long requestId) throws Exception {
         ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("request not found"));
 
@@ -129,7 +129,7 @@ public class AdminService {
         return novaDvorana;
     }
 
-    public void rejectOglasRequest(Long requestId) {
+    public void rejectOglasRequest(Long requestId) throws Exception {
         System.out.println("PROBNI PRINT");
 
         ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)

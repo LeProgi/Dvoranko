@@ -77,7 +77,7 @@ public class UserService {
         return zahtjev;
     }
 
-    public void createTerminRequest(CreateTerminRequest request) {
+    public void createTerminRequest(CreateTerminRequest request) throws Exception {
         if(request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
@@ -92,7 +92,7 @@ public class UserService {
         zahtjev.setDatumVrijemeEnd(request.getDatumVrijemeEnd());
         zahtjev.setJeJavniEvent(request.getJeJavniEvent());
         zahtjev.setIdKorisnik(request.getIdKorisnik());
-        zahtjev.setIdDvorana(request.getIdDvorana());
+        zahtjev.setDvorana(dvorana);
         zahtjev.setOpisDogadanja(request.getOpisDogadanja());
         zahtjev.setImeDogadanja(request.getImeDogadanja());
         zahtjevTerminRepository.save(zahtjev);

@@ -65,7 +65,7 @@ const EventBoard = () => {
                     <Link to="/my-profile" state={{ user }}>
                         <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md hover:scale-105 transition-transform duration-200">
                         <img
-                            src={user.pictureUrl ? user.pictureUrl : "../../public/user.svg"}
+                            src={user.pictureUrl ? user.pictureUrl : "../user.svg"}
                             alt={user.name}
                             title={user.name}
                             className="w-full h-full object-cover"
@@ -98,7 +98,7 @@ const EventBoard = () => {
                                 opisDogadanje={event.opisDogadanja}
                                 nameDvorana={event.dvorana.nazivDvorana}
                                 adresa={event.dvorana.adresa.ulica + " " + event.dvorana.adresa.kucniBroj + ", " + event.dvorana.adresa.mjesto.nazivMjesto}
-                                imgUrl={event.dvorana.slike[0]}
+                                imgUrl={event.dvorana.slike[0].urlSlika}
                                 vrijemeOd={event.datumVrijemeStart}
                                 vrijemeDo={event.datumVrijemeEnd}
                             />
