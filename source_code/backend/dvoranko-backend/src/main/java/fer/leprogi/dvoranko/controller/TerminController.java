@@ -11,6 +11,7 @@ import fer.leprogi.dvoranko.service.TerminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,7 @@ public class TerminController {
 
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Termin> createTermin(@RequestBody TerminDTO termin) {
         Termin saved = terminService.create(termin);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
@@ -56,18 +58,21 @@ public class TerminController {
 
 
     @DeleteMapping("/zahtjevi/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR') or hasRole('USER') ")
     public ResponseEntity<Void> deleteZahtjevTermin(@PathVariable Long id) {
         terminService.deleteZahtjev(id);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR') or hasRole('USER') ")
     public ResponseEntity<Void> deleteTermin(@PathVariable Long id) {
         terminService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/my/requests")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR') or hasRole('USER')")
     public ResponseEntity<List<TerminZaFrontDTO>> getMyZahtjeviTermini(@AuthenticationPrincipal CustomOAuth2User principal) {
         List<TerminZaFrontDTO> zahtjevi = terminService.getMyZahtjeviTermini(principal);
         return ResponseEntity.ok(zahtjevi);

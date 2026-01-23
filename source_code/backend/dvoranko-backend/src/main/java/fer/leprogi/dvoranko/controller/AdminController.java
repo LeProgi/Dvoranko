@@ -28,7 +28,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/api/public/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     @Autowired

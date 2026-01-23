@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/public/moderator/request")
+@RequestMapping("/api/moderator/request")
 public class ModeratorRequestController {
 
     @Autowired

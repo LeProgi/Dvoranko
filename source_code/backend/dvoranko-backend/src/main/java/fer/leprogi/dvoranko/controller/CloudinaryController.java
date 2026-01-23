@@ -3,6 +3,7 @@ package fer.leprogi.dvoranko.controller;
 import fer.leprogi.dvoranko.service.CloudinaryService;
 import fer.leprogi.dvoranko.utils.FolderName;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ public class CloudinaryController {
     private final CloudinaryService cloudinaryService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
         return cloudinaryService.upload(file, 2L, 1, FolderName.dvorane);
     }

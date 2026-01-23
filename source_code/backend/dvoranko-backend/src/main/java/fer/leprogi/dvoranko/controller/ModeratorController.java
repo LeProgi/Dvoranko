@@ -116,7 +116,7 @@ public class ModeratorController {
     }
 
     @GetMapping("/getPotvrdeniTerminiForDvorana/{id}")
-    //@PreAuthorize("hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('USER')")
     public ResponseEntity<ApiResponse<Iterable<TerminZaFrontDTO>>> getAllPotvrdeniTerminiForDvorana(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("id") Long id) throws Exception {
         Iterable<TerminZaFrontDTO> termini = moderatorService.getAllPotvrdeniTerminiForThisDvorana(principal, id);
         return ResponseEntity.ok(ApiResponse.success(termini, "Potvrdeni termini fetched successfully"));
@@ -124,7 +124,7 @@ public class ModeratorController {
 
 
     @DeleteMapping("/delete/dvorana/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<Null>> deleteDvorana(@PathVariable Long id) {
         dvoranaService.deleteDvorana(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Dvorana deleted successfully"));

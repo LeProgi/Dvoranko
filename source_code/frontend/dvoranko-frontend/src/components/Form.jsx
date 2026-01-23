@@ -146,7 +146,7 @@ function Form() {
 
     const postDvorana = async (data) => {
         try {
-            const response = await fetch(`${url}/api/public/moderator/request/requestAdd`, {
+            const response = await fetch(`${url}/api/moderator/request/requestAdd`, {
                 method: "POST",
                 credentials: "include",
                 // headers: { "Content-Type": "application/json" },

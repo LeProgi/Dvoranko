@@ -75,7 +75,7 @@ public class UserController {
     }
 
     @PostMapping("/request/createZahtjevTermin")
-    //@PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR')")
     public ResponseEntity<?> createTerminRequest(@RequestBody CreateTerminRequest request) {
         try {
             userService.createTerminRequest(request);

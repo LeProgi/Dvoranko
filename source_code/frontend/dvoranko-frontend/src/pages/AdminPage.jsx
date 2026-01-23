@@ -39,7 +39,7 @@ const AdminPage = () => {
     const fetchRequests = async () => {
       try {
         //zahtjevi za dvorane
-        const resDvorana = await fetch(`${url}/api/public/admin/getall/zahtjevidvorana`, {
+        const resDvorana = await fetch(`${url}/api/admin/getall/zahtjevidvorana`, {
           method: "GET",
           credentials: "include",
         });
@@ -48,7 +48,7 @@ const AdminPage = () => {
         setZahtjevDvorana(dataDvorana.data); 
 
         //iznajmljivaci
-        const resIznajmljivac = await fetch(`${url}/api/public/admin/getall/zahtjeviznajmljivac`, {
+        const resIznajmljivac = await fetch(`${url}/api/admin/getall/zahtjeviznajmljivac`, {
           method: "GET",
           credentials: "include", 
         });
@@ -63,7 +63,7 @@ const AdminPage = () => {
       
       //korisnici
       try{
-          const resUsers = await fetch(`${url}/api/public/admin/getall/users`, {
+          const resUsers = await fetch(`${url}/api/admin/getall/users`, {
             method: "GET",
             credentials: "include",
           });
@@ -77,7 +77,7 @@ const AdminPage = () => {
         }
 
         //sve postojece dvorane
-        const resAllDvorane = await fetch(`${url}/api/public/admin/getall/dvorane`, {
+        const resAllDvorane = await fetch(`${url}/api/admin/getall/dvorane`, {
           method: "GET",
           credentials: "include",
         });
@@ -92,7 +92,7 @@ const AdminPage = () => {
 
   const handleAcceptIznajmljivac = (id) => { 
     try {
-      const res = fetch(`${url}/api/public/admin/request/moderator/${id}/accept`, {
+      const res = fetch(`${url}/api/admin/request/moderator/${id}/accept`, {
         method: "POST",
         credentials: "include",
       });
@@ -109,7 +109,7 @@ const AdminPage = () => {
 
   const handleRejectIznajmljivac = async (id) => {
     try {
-      const res = await fetch(`${url}/api/public/admin/request/moderator/${id}/reject`, {
+      const res = await fetch(`${url}/api/admin/request/moderator/${id}/reject`, {
         method: "POST",
         credentials: "include",
       });
@@ -143,7 +143,7 @@ const AdminPage = () => {
   const handleAcceptDvorana = async (id) => {
     setLoadingDvorane(prev => new Set(prev).add(id));
     try {
-      const res = await fetch(`${url}/api/public/admin/requests/${id}/approve`, {
+      const res = await fetch(`${url}/api/admin/requests/${id}/approve`, {
         method: "POST",
         credentials: "include",
       });
@@ -169,7 +169,7 @@ const AdminPage = () => {
   const handleRejectDvorana = async (id) => {
     setLoadingDvorane(prev => new Set(prev).add(id));
     try {
-      const res = await fetch(`${url}/api/public/admin/requests/${id}/reject`, {
+      const res = await fetch(`${url}/api/admin/requests/${id}/reject`, {
         method: "POST",
         credentials: "include",
       });
@@ -195,7 +195,7 @@ const AdminPage = () => {
   const handleDeleteDvorana = async(id) => {
     setDvoranaToDelete(prev => new Set(prev).add(id));
     try {
-      const res = await fetch(`${url}/api/public/admin/delete/dvorana/${id}`, {
+      const res = await fetch(`${url}/api/admin/delete/dvorana/${id}`, {
         method: "DELETE", 
         credentials: "include",
       })
@@ -220,7 +220,7 @@ const AdminPage = () => {
   const handleDeleteUser = async(id) => {
     setUserToDelete(prev => new Set(prev).add(id));
     try {
-      const res = await fetch(`${url}/api/public/admin/delete/user/${id}`, {
+      const res = await fetch(`${url}/api/admin/delete/user/${id}`, {
         method: "DELETE",
         credentials: "include",
       })
