@@ -53,7 +53,6 @@ public class ModeratorController {
     @PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<List<ZahtjevOglasDTO>>> getAllDvoranaRequestsForModerator(@AuthenticationPrincipal CustomOAuth2User principal) {
         List<ZahtjevOglasDTO> dvorane = moderatorService.getAllDvoranaRequestsForModerator(principal);
-        System.out.println("ovo je velicina na kontroleru " + dvorane.size());
 
         return ResponseEntity.ok(ApiResponse.success(dvorane, "My dvorane requests fetched successfully"));
 

@@ -13,6 +13,7 @@ import EditFormPage from './pages/EditFormPage'
 import Reservation from './pages/ReservationPage';
 import VenueReservations from './pages/VenueReservations';
 import UpdateCategory from './pages/UpdateCategory';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   
@@ -21,15 +22,15 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/event-board" element={<EventBoard />} />
-        <Route path="/venue/:id" element={<VenuePage/>}/>
         <Route path="/maps" element={<MapPage/>}/>
-        <Route path='/my-profile' element={<ProfilePage/>}/>
-        <Route path='/admin' element ={<AdminPage/>}/>
-        <Route path='/form' element={<FormPage/>}/>
-        <Route path='/editform/:id' element= {<EditFormPage/>}/>
-        <Route path='/reservation' element={<Reservation/>}/>
-        <Route path='/reservations/:idDvorana' element={<VenueReservations/>}/>
-        <Route path='/admin/updatecategory' element={<UpdateCategory/>}/>
+        <Route path="/venue/:id" element={<ProtectedRoute><VenuePage/></ProtectedRoute>}/>
+        <Route path='/my-profile' element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
+        <Route path='/admin' element={<ProtectedRoute><AdminPage/></ProtectedRoute>}/>
+        <Route path='/form' element={<ProtectedRoute><FormPage/></ProtectedRoute>}/>
+        <Route path='/editform/:id' element={<ProtectedRoute><EditFormPage/></ProtectedRoute>}/>
+        <Route path='/reservation' element={<ProtectedRoute><Reservation/></ProtectedRoute>}/>
+        <Route path='/reservations/:idDvorana' element={<ProtectedRoute><VenueReservations/></ProtectedRoute>}/>
+        <Route path='/admin/updatecategory' element={<ProtectedRoute><UpdateCategory/></ProtectedRoute>}/>
       </Routes>
     </Router>
   )

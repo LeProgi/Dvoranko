@@ -30,7 +30,6 @@ const Map = ({ hoveredVenue }) => {
     fetch(`${url}/api/public/dvorane`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched locations: ", data);
         const formatted = data.data.map(dvorana => ({
           id: dvorana.idDvorana,
           name: dvorana.nazivDvorana,

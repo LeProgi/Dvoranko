@@ -126,7 +126,7 @@ public class AdminService {
     }
 
     public void rejectOglasRequest(Long requestId) throws Exception {
-        System.out.println("PROBNI PRINT");
+
 
         ZahtjevOglas zahtjev = zahtjevOglasRepository.findById(requestId)
                 .map(z -> {

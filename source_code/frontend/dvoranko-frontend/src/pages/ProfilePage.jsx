@@ -56,7 +56,6 @@ const ProfilePage = () => {
                     return;
                 }
                 setUser(data)
-                // console.log("User data fetched:", data);
             })
             .catch(() => {
                 setUser(null);
@@ -149,7 +148,6 @@ const ProfilePage = () => {
             })
             .then(data => {
                 setMyDvorane(data);
-                // console.log("My dvorane fetched:", data);
             })
             .catch(err => {
                 console.error(err);
@@ -165,14 +163,12 @@ const ProfilePage = () => {
             credentials: "include",
         })
         .then(res => {
-            console.log("Response for dvorane zahtjevi:", res);
             if (!res.ok) throw new Error("Greška pri dohvaćanju zahtjeva za dvorane");
             return res.json();
             
         })
         .then(data => {
             setMyDvoraneZahtjevi(data);
-            console.log("My dvorane zahtjevi fetched:", data);
         })
         .catch(err => {
             console.error(err);
@@ -217,10 +213,8 @@ const ProfilePage = () => {
         })
         .then(data => {
             setMyReservations(data)
-            console.log("My reservations fetched:", data)
             data?.data?.forEach(reservation => {
-                // console.log(reservation)
-                // console.log(reservation.idDvorana)
+
 
                 if(reservation.idDvorana) {
                     getDvorana(reservation.idDvorana)
@@ -245,7 +239,6 @@ const ProfilePage = () => {
         })
         .then(data => {
             setMyRequests(data);
-            console.log("My requests fetched:", data);
         })
         .catch(err => {
             console.error(err);
@@ -261,7 +254,6 @@ const ProfilePage = () => {
                 credentials: "include",
             });
             
-            // console.log("Logout response:", res);
             if (!res.ok) throw new Error("Logout failed");
 
             setUser(null);

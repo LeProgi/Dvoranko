@@ -73,11 +73,9 @@ function Form() {
                 const res = await fetch(`${url}/api/public/kategorije`);
                 if (!res.ok) throw new Error("Greška pri dohvaćanju kategorija");
                 const data = await res.json();
-                // console.log("Fetched categories:", data);
                 setCategories(data.data);
             } catch (err) {
                 console.error(err);
-                setCategoriesError("Ne mogu dohvatiti kategorije.");
             }
         };
 
@@ -169,7 +167,6 @@ function Form() {
                 throw new Error(respData?.message || `Server error ${response.status}`);
             }
 
-            console.log("Response from server:", respData);
             return respData;
         } catch (error) {
             console.error("Error submitting data:", error);
@@ -286,7 +283,6 @@ function Form() {
             formData.append("files", image);
             formData.append("request", JSON.stringify(payload));
 
-            console.log("Payload to be sent:", formData);
             await postDvorana(formData);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
             navigate("/my-profile");
