@@ -31,6 +31,7 @@ public class Dvorana {
     @OneToMany(mappedBy = "dvorana", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Termin> termini;
 
+    @Column(columnDefinition = "TEXT")
     private String opis;
 
     private String daysOpen;
