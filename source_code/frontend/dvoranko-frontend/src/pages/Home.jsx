@@ -83,7 +83,10 @@ const Home = () => {
 
 
     useEffect(() => {
-        if (venues.length === 0) return;
+        if (venues.length === 0) {
+            setImagesLoaded(true)
+            return;
+        }
 
         const preloadImages = venues
             .filter(v => v.imgUrl)
@@ -202,7 +205,7 @@ const Home = () => {
                 </div>
                 )} */}
 
-                {!imagesLoaded || dvoranaLoading > 0 ? (
+                {!imagesLoaded || dvoranaLoading ? (
                     <div className="flex flex-col justify-center items-center w-full py-10 gap-4">
                         <p className="text-gray-500">Učitavanje dvorana...</p>
                         <div className="border-4 border-gray-300 border-t-4 border-t-blue-500 rounded-full w-12 h-12 animate-spin"></div>
