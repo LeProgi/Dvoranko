@@ -14,9 +14,10 @@ const ModeratorReservationsCard = ({
     function getDurationInHours(start, end) {
         if (!start || !end) return 0;
 
-        const [startH, startM] = start.split(":").map(Number);
-        const [endH, endM] = end.split(":").map(Number);
+        let [startH, startM] = start.split(":").map(Number);
+        let [endH, endM] = end.split(":").map(Number);
 
+        if (endH === 0) endH = 24;
 
         if (
             isNaN(startH) || isNaN(startM) ||

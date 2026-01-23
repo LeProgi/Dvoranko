@@ -308,7 +308,7 @@ const ReservationPage = () => {
          if (endTime === "24:00") {
             let date = new Date(dateStr);
             date.setDate(date.getDate() + 1);
-            let dateDatum = String(date.getFullYear()) + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate());
+            let dateDatum = String(date.getFullYear()) + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
             datumVrijemeEnd = dateDatum + "T" + "00:00" + ":00";
          } else {
             datumVrijemeEnd = dateStr + "T" + endTime + ":00";
