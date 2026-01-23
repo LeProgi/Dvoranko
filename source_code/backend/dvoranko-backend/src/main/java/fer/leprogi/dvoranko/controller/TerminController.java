@@ -26,7 +26,6 @@ public class TerminController {
     private final TerminService terminService;
 
 
-
     @GetMapping
     public ResponseEntity<List<Termin>> getAllTermini() {
         return ResponseEntity.ok(terminService.getAll());

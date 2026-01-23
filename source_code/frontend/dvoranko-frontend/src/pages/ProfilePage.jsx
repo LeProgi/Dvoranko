@@ -477,12 +477,12 @@ const ProfilePage = () => {
                             <div key={index} className="flex w-3/4 gap-4 items-center">
                                 <ModeratorReservationsCard
                                     key={reservation.id}
-                                    imeVlasnika={dvoranaCache[reservation.idDvorana]?.vlasnik?.name || "Nepoznato"}
+                                    imeVlasnika={dvoranaCache[reservation.idDvorana]?.nazivDvorana || "Nepoznato"}
                                     imeDogadanja={reservation.imeDogadanja}
                                     opisDogadanja={reservation.opisDogadanja}
                                     datumVrijemeStart={reservation.datumVrijemeStart}
                                     datumVrijemeEnd={reservation.datumVrijemeEnd}
-                                    jeJavniEvent={reservation.je_javni_event}
+                                    jeJavniEvent={reservation.jeJavniEvent}
                                     idRequest={reservation.id}
                                     cijenaPoSatu={dvoranaCache[reservation.idDvorana]?.cijenaPoSatu || 0}
                                     potvrdeno={true}
@@ -500,7 +500,7 @@ const ProfilePage = () => {
                             <div key={request.id} className="flex w-3/4 gap-4 items-center">
                                 <ModeratorReservationsCard
                                     key={request.id}
-                                    imeVlasnika={""}
+                                    imeVlasnika={request.dvorana.nazivDvorana}
                                     imeDogadanja={request.imeDogadanja}
                                     opisDogadanja={request.opisDogadanja}
                                     datumVrijemeStart={request.datumVrijemeStart}

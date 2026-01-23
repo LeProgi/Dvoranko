@@ -1,24 +1,16 @@
 package fer.leprogi.dvoranko.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.http.*;
 import java.util.Base64;
 
+
 @Service
-@RequiredArgsConstructor
-public class MailService {
+public class MailgunService {
 
     @Value("${mailgun.api.key}")
     private String apiKey;
@@ -31,8 +23,7 @@ public class MailService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-
-    public void sendMail(String to, String subject, String text) {
+    public void sendEmail(String to, String subject, String text) {
         String url = "https://api.mailgun.net/v3/" + domain + "/messages";
 
         HttpHeaders headers = new HttpHeaders();

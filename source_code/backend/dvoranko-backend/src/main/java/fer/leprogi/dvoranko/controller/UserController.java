@@ -7,6 +7,7 @@ import fer.leprogi.dvoranko.dto.createRequest.CreateTerminRequest;
 import fer.leprogi.dvoranko.model.Termin;
 import fer.leprogi.dvoranko.model.ZahtjevIznajmljivac;
 import fer.leprogi.dvoranko.security.CustomOAuth2User;
+import fer.leprogi.dvoranko.service.MailgunService;
 import fer.leprogi.dvoranko.service.UserService;
 import fer.leprogi.dvoranko.utils.ApiResponse;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,24 @@ public class UserController {
 
     private final UserService userService;
 
+
+    @Autowired
+    private MailgunService mailService;
+
+    @PostMapping("/send-test")
+    public String sendTestEmail(@RequestParam String email) {
+        try {
+            mailService.sendEmail(
+                    email,
+                    "Test Email from Render Sandbox",
+                    "Ovo je test mail sa Mailgun sandboxa!"
+            );
+            return "Mail poslan na " + email;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Greška pri slanju: " + e.getMessage();
+        }
+    }
 
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")

@@ -66,20 +66,19 @@ const ModeratorReservationsCard = ({
             {/* GORNJI RED */}
             <div className="flex justify-between items-start">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-800">
-                        {imeVlasnika}
-                    </h2>
-
-                    {jeJavniEvent ? (
-                        <p className="text-sm">
+                    {jeJavniEvent == 1 ? (
+                        <p className="text-sm text-left">
                             <span className="text-gray-500">Naziv događanja: </span>{" "}
                             <span className="text-[#3B5B80] font-semibold">{imeDogadanja}</span>
                         </p>
                     ) : (
-                        <p className="text-sm">
+                        <p className="text-sm text-left">
                             <span className="text-[#3B5B80] font-semibold">Privatno događanje</span>
                         </p>
                     )}
+                    <h2 className="text-xl font-bold flex items-start text-gray-800">
+                        {imeVlasnika}
+                    </h2>
 
                 </div>
 

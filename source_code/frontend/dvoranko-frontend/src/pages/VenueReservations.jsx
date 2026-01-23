@@ -16,6 +16,8 @@ const VenueReservations = () => {
     const [dvorana, setDvorana] = useState(null)
     const [userMap, setUsersMap] = useState({})
 
+    const [subbmitingZahtjev, setSubbmitingZahtjev] = useState(new Set())
+
 
     const [user, setUser] = useState(null);
 
@@ -184,6 +186,7 @@ const VenueReservations = () => {
     };
 
     const acceptReservationRequest = async(id) => {
+        setSubbmitingZahtjev(prev => new Set(prev).add(id));
         try{
             const res = await fetch(`${url}/api/moderator/approveTeminRequest/${id}`, {
             method: "POST",
@@ -202,10 +205,17 @@ const VenueReservations = () => {
         
         } catch(err) {
             console.error("error: ", err)
+        }finally{
+            setSubbmitingZahtjev(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(id);
+                return newSet; 
+            })
         }
     }
 
     const rejectReservationRequest = async (id) => {
+        setSubbmitingZahtjev(prev => new Set(prev).add(id));
         try{
             const res = await fetch(`${url}/api/moderator/rejectTeminRequest/${id}`, {
             method: "POST",
@@ -218,6 +228,12 @@ const VenueReservations = () => {
         );
         } catch(err) {
             console.error("error: ", err)
+        }finally{
+            setSubbmitingZahtjev(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(id);
+                return newSet; 
+            })
         }
     }
 
@@ -232,11 +248,6 @@ const VenueReservations = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#f5f5f5]">
       <div className="bg-[#3B5B80] w-full pb-10 rounded-b-[40%] flex flex-col items-center justify-center text-center mb-10%">
-        {/* <div className="flex justify-evenly gap-12 mt-8 w-3/4">
-          <Link to="/" className="w-[50vw] block">
-            <Button variant="default" title="Početna stranica" />
-          </Link>
-        </div> */}
 
         <div className="flex justify-evenly md:gap-12 gap-6 mt-4 w-3/4">
             <Link to="/" className="w-[50vw] block">
@@ -288,34 +299,64 @@ const VenueReservations = () => {
                 reservationRequests.map((reservation, index) => (
                 <div className="flex md:flex-row flex-col w-full gap-6 items-stretch">
 
-                    <ModeratorReservationsCard 
-                        key={reservation.id}
-                        imeVlasnika={reservation.imeVlasnika}
-                        imeDogadanja={reservation.imeDogadanja}
-                        opisDogadanja={reservation.opisDogadanja}
-                        datumVrijemeStart={reservation.datumVrijemeStart}
-                        datumVrijemeEnd={reservation.datumVrijemeEnd}
-                        jeJavniEvent={reservation.jeJavniEvent}
-                        cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
-                        potvrdeno={true}
-                        />
+                    <div className="relative w-[95%]">
+                        <div className={`transition-all duration-200 overflow-x-auto ${subbmitingZahtjev.has(reservation.id) ? "blur-sm opacity-50 pointer-events-none" : ""}`}>
+                            <ModeratorReservationsCard 
+                                key={reservation.id}
+                                imeVlasnika={reservation.imeVlasnika}
+                                imeDogadanja={reservation.imeDogadanja}
+                                opisDogadanja={reservation.opisDogadanja}
+                                datumVrijemeStart={reservation.datumVrijemeStart}
+                                datumVrijemeEnd={reservation.datumVrijemeEnd}
+                                jeJavniEvent={reservation.jeJavniEvent}
+                                cijenaPoSatu={dvorana.cijenaPoSatu} // ako izračunavaš
+                                potvrdeno={true}
+                                />
+                        </div>
+                        {subbmitingZahtjev.has(reservation.id) &&(
+                            <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-xl z-10">
+                                <div className="w-10 h-10 border-4 border-[#3B5B80] border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        )}
+                    </div>
 
 
                     {/* GUMBI */}
                     <div className="flex flex-col gap-3 justify-center items-center">
-                    <button
-                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold w-[200px] hover:cursor-pointer"
-                        onClick={() => acceptReservationRequest(reservation.id)}
-                    >
-                        PRIHVATI
-                    </button>
+                        <button
+                            disabled={subbmitingZahtjev.has(reservation.id)}
+                            // className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold w-[200px] hover:cursor-pointer"
+                            onClick={() => {
+                                if (subbmitingZahtjev.has(reservation.id)) return
+                                acceptReservationRequest(reservation.id)
+                            }}
+                            className={`px-6 py-2 rounded-lg font-semibold w-[200px] transition
+                                ${subbmitingZahtjev.has(reservation.id)
+                                    ? "bg-gray-400 text-gray-700 cursor-not-allowed opacity-60"
+                                    : "bg-green-600 text-white hover:bg-green-700 cursor-pointer"
+                                }
+                            `}
+                        >
+                            PRIHVATI
+                        </button>
 
-                    <button
-                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold w-[200px] hover:cursor-pointer"
-                        onClick={() => rejectReservationRequest(reservation.id)}
-                    >
-                        ODBIJ
-                    </button>
+                        <button
+                            disabled={subbmitingZahtjev.has(reservation.id)} 
+                            // className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold w-[200px] hover:cursor-pointer"
+                            onClick={() => {
+                                if (subbmitingZahtjev.has(reservation.id)) return
+                                rejectReservationRequest(reservation.id)
+                            }}
+                            className={`px-6 py-2 rounded-lg font-semibold w-[200px] transition
+                                ${subbmitingZahtjev.has(reservation.id)
+                                    ? "bg-gray-400 text-gray-700 cursor-not-allowed opacity-60"
+                                    : "bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+                                }
+                            `}
+                            
+                        >
+                            ODBIJ
+                        </button>
                     </div>
                 </div>
                 ))
@@ -331,7 +372,7 @@ const VenueReservations = () => {
 
         {reservations.length === 0 && <p>Nema potvrđenih rezervacija</p>}
 
-        <div className="flex flex-col justify-center items-center gap-4 md:w-3/4 w-[95%]">
+        <div className="flex flex-col justify-center items-center gap-4 md:w-3/4 w-full">
           {reservations.map((reservation, index) => (
             <div className="flex md:w-3/4 w-[95%] gap-4 items-center">
 
