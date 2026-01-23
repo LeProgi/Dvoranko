@@ -22,6 +22,7 @@ useEffect(() => {
         return res.json();
     })
     .then((data) => {
+        setUser(data);
         if(data.role === "ADMIN") {
           navigate("/admin", {replace:true});
           return;
