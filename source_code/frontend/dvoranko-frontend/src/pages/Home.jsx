@@ -14,6 +14,7 @@ const Home = () => {
     const [venues, setVenues] = useState([]);
     const [filteredVenues, setFilteredVenues] = useState([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [dvoranaLoading, setDvoranaLoading] = useState(false)
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
@@ -31,33 +32,38 @@ const Home = () => {
                 }
         })
 
+        setDvoranaLoading(true)
         fetch(`${url}/api/public/dvorane`,{
             credentials: "include",
         })
-            .then(res => res.json())
-            .then(data => {
-                const formatted = data.data.map(dvorana=>({
-                    id: dvorana.idDvorana,
-                    name: dvorana.nazivDvorana,
-                    kapacitet: dvorana.kapacitet,
-                    postanskiBroj: dvorana.adresa?.mjesto?.postanskiBroj,
-                    
-                    adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : "",
-                    imgUrl: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "",
-                    cijenaPoSatu: dvorana.cijenaPoSatu,
-                    categories: dvorana.kategorije.map(k => k.nazivKategorije) 
+        .then(res => res.json())
+        .then(data => {
+            if(data){
+            console.log(data);
+            }
+            const formatted = data.data.map(dvorana=>({
+                id: dvorana.idDvorana,
+                name: dvorana.nazivDvorana,
+                kapacitet: dvorana.kapacitet,
+                postanskiBroj: dvorana.adresa?.mjesto?.postanskiBroj,
+                
+                adresa:dvorana.adresa ?  `${dvorana.adresa.ulica} ${dvorana.adresa.kucniBroj}, ${dvorana.adresa.mjesto?.nazivMjesto}` : "",
+                imgUrl: dvorana.slike && dvorana.slike.length > 0 ? dvorana.slike[0].urlSlika : "",
+                cijenaPoSatu: dvorana.cijenaPoSatu,
+                categories: dvorana.kategorije.map(k => k.nazivKategorije) 
 
-                }));
-                setVenues(formatted);
-                setFilteredVenues(formatted);
+            }));
+            setVenues(formatted);
+            setFilteredVenues(formatted);
 
 
-                const allCategories = Array.from(
-                    new Set(data.data.flatMap(dvorana => dvorana.kategorije.map(k => k.nazivKategorije)))
-                );
-                setCategories(allCategories);
-            })
-            .catch(err => console.error("neuspjelo dohvacanje dvorane", err));
+            const allCategories = Array.from(
+                new Set(data.data.flatMap(dvorana => dvorana.kategorije.map(k => k.nazivKategorije)))
+            );
+            setCategories(allCategories);
+        })
+        .catch(err => console.error("neuspjelo dohvacanje dvorane", err))
+        .finally(() => setDvoranaLoading(false));
     }, []);
     
     useEffect(() => {
@@ -94,7 +100,7 @@ const Home = () => {
             });
 
         Promise.all(preloadImages).then(() => setImagesLoaded(true));
-    }, [venues]);
+    }, [filteredVenues]);
 
 
     const handleGoogleLogin = () => {
@@ -172,9 +178,10 @@ const Home = () => {
         <Filter onApply={applyFilters} categories={categories}/>
         <div className="flex flex-col md:w-3/4 w-[95%] bg-[#d9d9d9] rounded-[10px] items-center py-6 mt-4 mb-12">
                 <h2 className="text-xl font-semibold mb-6">Popis dvorana</h2>
-                {venues.length == 0 && <p className="text-gray-500">Nema objavljenih dvorana...</p>}
-                {!imagesLoaded && venues.length > 0 ? (
-                    
+
+                {/* {venues.length == 0 && <p className="text-gray-500">Nema objavljenih dvorana...</p>} */}
+
+                {/* {!imagesLoaded && venues.length > 0 ? (
                     <div className="flex flex-col justify-center items-center w-full py-10 gap-4">
                         <p className="text-gray-500">Učitavanje dvorana...</p>
                         <div className="border-4 border-gray-300 border-t-4 border-t-blue-500 rounded-full w-12 h-12 animate-spin"></div>
@@ -187,6 +194,38 @@ const Home = () => {
                         <p className="text-gray-500 text-sm mt-2">
                             Pokušajte promijeniti filtere.
                         </p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center gap-4 w-full">
+                    {filteredVenues.map((venue) => (
+                        <Link id={`dvorana-link-${venue.id}`} key={venue.id} to={`/venue/${venue.id}`} state={{ from: '/' }} className="w-11/12 block">
+                            <VenueCard name={venue.name} adresa={venue.adresa} imgUrl = {venue.imgUrl}  cijenaPoSatu={venue.cijenaPoSatu} potvrdeno={true}/>
+                        </Link>
+                    ))}
+                </div>
+                )} */}
+
+                {!imagesLoaded || dvoranaLoading > 0 ? (
+                    <div className="flex flex-col justify-center items-center w-full py-10 gap-4">
+                        <p className="text-gray-500">Učitavanje dvorana...</p>
+                        <div className="border-4 border-gray-300 border-t-4 border-t-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+                    </div>
+                ) : filteredVenues.length === 0 ? (
+                    <div className="flex flex-col justify-center items-center w-full py-10">
+                        {venues.length === 0 ? (
+                            <p className="text-gray-600 text-lg font-medium">
+                                Nema objavljenih dvorana...
+                            </p>
+                        ) : (
+                            <>
+                                <p className="text-gray-600 text-lg font-medium">
+                                    Nema dvorana po vašim željama.
+                                </p>
+                                <p className="text-gray-500 text-sm mt-2">
+                                    Pokušajte promijeniti filtere.
+                                </p>
+                            </>
+                        )}
                     </div>
                 ) : (
                     <div className="flex flex-col items-center gap-4 w-full">

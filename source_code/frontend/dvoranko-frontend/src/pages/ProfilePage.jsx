@@ -390,7 +390,7 @@ const ProfilePage = () => {
                         {myDvorane?.data?.length === 0 && myDvoraneZahtjevi?.data?.length === 0 && (
                             <p>Nemate oglašenih dvorana</p>
                         )}
-                        {(myDvorane?.data?.length > 0 || myDvoraneZahtjevi?.data?.length > 0) &&(
+                        {(myDvorane?.data?.length > 0 || myDvoraneZahtjevi?.data?.length > 0 || loadingDvorane || loadingDvoraneZahtjevi) &&(
                             <div className="flex flex-col items-center gap-3 w-full justify-center">
                                 {loadingDvorane || loadingDvoraneZahtjevi ? (
                                     <div className="flex flex-col justify-center items-center w-full py-10 gap-4">
