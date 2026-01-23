@@ -38,7 +38,7 @@ const ModeratorReservationsCard = ({
         }
         catch(err){
             console.log(err)
-        }
+    }
     }
 
     const getTimeFromTimestamp = (timestamp) => {

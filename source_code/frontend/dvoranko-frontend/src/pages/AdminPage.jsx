@@ -43,18 +43,15 @@ const AdminPage = () => {
           method: "GET",
           credentials: "include",
         });
-        console.log(resDvorana);
         if (!resDvorana.ok) throw new Error("Ne smijes biti tu kume, nisi admin1");
         const dataDvorana = await resDvorana.json();
         setZahtjevDvorana(dataDvorana.data); 
-        console.log(dataDvorana);
 
         //iznajmljivaci
         const resIznajmljivac = await fetch(`${url}/api/public/admin/getall/zahtjeviznajmljivac`, {
           method: "GET",
           credentials: "include", 
         });
-        console.log(resIznajmljivac);
 
         if (!resIznajmljivac.ok) throw new Error("Ne smijes biti tu kume, nisi admin2");
         const dataIznajmljivac = await resIznajmljivac.json();
@@ -87,7 +84,6 @@ const AdminPage = () => {
         if (resAllDvorane.ok) {
           const dataAllDvorane = await resAllDvorane.json();
           setAllDvorane(dataAllDvorane.data);
-          console.log("Sve dvorane:", dataAllDvorane);
         }
     };
 
@@ -135,11 +131,9 @@ const AdminPage = () => {
                 credentials: "include",
             });
             
-            // console.log("Logout response:", res);
             if (!res.ok) throw new Error("Logout failed");
 
             //setUser(null);
-            console.log("uspjesno si logoutan")
             navigate("/", { replace: true });
         } catch (err) {
             console.error("Logout error:", err);

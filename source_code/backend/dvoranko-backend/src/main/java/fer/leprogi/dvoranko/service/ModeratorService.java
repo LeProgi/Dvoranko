@@ -126,10 +126,10 @@ public class ModeratorService {
     public List<ZahtjevOglasDTO> getAllDvoranaRequestsForModerator(CustomOAuth2User principal) {
 
         Long ownerId = userService.getIdForPrincipal(principal);
-        System.out.println("OWner id je " + ownerId );
+
 
         List<ZahtjevOglas> zahtjevi = zahtjevOglasRepository.findAllByOwner_Id(ownerId);
-        System.out.println("proslo dalje idemo" + zahtjevi.size());
+
         return zahtjevi.stream().map(dtoMapper::toZahtjevOglasDTO).toList();
     }
 

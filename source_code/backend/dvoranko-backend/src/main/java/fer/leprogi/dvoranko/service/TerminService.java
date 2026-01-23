@@ -174,13 +174,12 @@ public class TerminService {
         Long userId = userService.getIdForPrincipal(principal);
 
         List<ZahtjevTermin> mojiZahtjevi = zahtjevTerminRepository.findAllByIdKorisnik(userId);
-        System.out.println("moje zahtjevi: " + mojiZahtjevi.size());
 
         List<TerminZaFrontDTO> result = new LinkedList<>();
 
         for (ZahtjevTermin zahtjev : mojiZahtjevi) {
-            System.out.println("abananana");
-            System.out.println("dvorana id od zahtjeva: " + zahtjev.getDvorana().getIdDvorana());
+
+
 
             Dvorana dvorana = dvoranaRepository.findById(zahtjev.getDvorana().getIdDvorana())
                     .orElseThrow(() -> new RuntimeException("Dvorana ne postoji"));
@@ -192,7 +191,7 @@ public class TerminService {
                 dvorana.getSlike().size();
             }
 
-            System.out.println("dohvatio dovranu " + dvorana.getNazivDvorana());
+
 
 
             TerminZaFrontDTO dto = new TerminZaFrontDTO();
@@ -206,12 +205,11 @@ public class TerminService {
             dto.setImeDogadanja(zahtjev.getImeDogadanja());
             dto.setJeJavniEvent(zahtjev.getJeJavniEvent());
 
-            System.out.println("nesto");
             dto.setDvorana(dtoMapper.toDvoranaDTO(dvorana));
-            System.out.println("nesto2");
+
             result.add(dto);
 
-            System.out.println("proslo");
+
         }
 
         return result;

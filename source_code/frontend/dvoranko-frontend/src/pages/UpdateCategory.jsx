@@ -38,8 +38,7 @@ const UpdateCategory = () => {
         
         if (!res.ok) throw new Error("Error kume");
         const dataKategorije = await res.json();
-        setKategorije(dataKategorije.data)
-        console.log(dataKategorije.data)
+        setKategorije(dataKategorije.data);
 
       } catch (err) {
         console.error("Kume error tijekom getall kategorije", err);

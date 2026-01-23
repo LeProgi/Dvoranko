@@ -32,7 +32,6 @@ const Home = () => {
                 }
         })
 
-        console.log(`${url}/api/public/dvorane`);
         setDvoranaLoading(true)
         fetch(`${url}/api/public/dvorane`,{
             credentials: "include",
@@ -68,20 +67,16 @@ const Home = () => {
     }, []);
     
     useEffect(() => {
-        console.log(`${url}/api/auth/user`);
         fetch(`${url}/api/auth/user`, {
             credentials: "include",
         })
         .then((res) =>  {
-            console.log(res);
             if(res.status === 200) return res.json();
-            throw new Error("Nije ulogiran");
             
         })
         .then((data) => {
             setHasLoggedIn(true);
             setUser(data);
-            console.log(data)
         })
         .catch(() => {
             setHasLoggedIn(false);
@@ -109,8 +104,8 @@ const Home = () => {
 
 
     const handleGoogleLogin = () => {
+        setHasLoggedIn(true);
     // window.location.href = "https://dvoranko.onrender.com/oauth2/authorization/google";
-    console.log(`${url}/oauth2/authorization/google`);
         window.location.href = `${url}/oauth2/authorization/google`;
     };
 
