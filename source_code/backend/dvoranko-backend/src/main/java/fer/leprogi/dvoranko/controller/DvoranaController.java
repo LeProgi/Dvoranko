@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,7 @@ public class DvoranaController {
     private final DvoranaService dvoranaService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<DvoranaDTO>> createDvorana(@Valid @RequestPart("request") String requestJson, @RequestPart("files") List<MultipartFile> files) throws JsonProcessingException {
 
         CreateDvoranaRequest request = new ObjectMapper().readValue(requestJson, CreateDvoranaRequest.class);
@@ -50,6 +52,7 @@ public class DvoranaController {
     }
 
     @PutMapping("/{idDvorana}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<DvoranaDTO>> updateDvorana(@PathVariable Long idDvorana, @Valid @RequestBody CreateDvoranaRequest request){
         DvoranaDTO updated = dvoranaService.updateDvorana(idDvorana, request);
 
@@ -57,6 +60,7 @@ public class DvoranaController {
     }
 
     @DeleteMapping("/{idDvorana}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteDvorana(@PathVariable Long idDvorana){
         dvoranaService.deleteDvorana(idDvorana);
 

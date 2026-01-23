@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/error", "/login**", "/api/auth/user", "/api/public/**", "/index.html", "/favicon.ico", "/assets/**", "/static/**", "/maps/**", "/event-board/**", "/test/**").permitAll()
+                        .requestMatchers("/", "/error", "/login**", "/api/auth/user", "/api/public/**" , "/index.html", "/favicon.ico", "/assets/**", "/static/**", "/maps/**", "/event-board/**", "/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

@@ -18,7 +18,7 @@ public class KategorijaController {
     private final KategorijaService kategorijaService;
 
     @PostMapping
-    //@PreAuthorize("hasRole('ADMIN')") ovo bi trebalo
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<KategorijaDTO>> createKategorija(@RequestBody CreateKategorijaRequest request) {
         KategorijaDTO kategorija = kategorijaService.createKategorija(request);
 
@@ -42,6 +42,7 @@ public class KategorijaController {
     }
 
     @PutMapping("/{idKategorija}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<KategorijaDTO>> updateKategorija(@PathVariable Long idKategorija, @RequestBody CreateKategorijaRequest request) {
         KategorijaDTO updated = kategorijaService.updateKategorija(idKategorija, request);
 
@@ -49,6 +50,7 @@ public class KategorijaController {
     }
 
     @DeleteMapping("/{idKategorija}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteKategorija(@PathVariable Long idKategorija) {
         kategorijaService.deleteKategorija(idKategorija);
 

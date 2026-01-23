@@ -38,9 +38,6 @@ const Home = () => {
         })
         .then(res => res.json())
         .then(data => {
-            if(data){
-            console.log(data);
-            }
             const formatted = data.data.map(dvorana=>({
                 id: dvorana.idDvorana,
                 name: dvorana.nazivDvorana,
