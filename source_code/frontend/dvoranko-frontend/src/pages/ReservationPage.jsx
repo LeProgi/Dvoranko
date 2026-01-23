@@ -372,7 +372,7 @@ const ReservationPage = () => {
                <Calendar handleDateClick={handleDateClick} venueId={venueId}/>
             </div>
 
-            <div className={`w-[100%] lg:w-[49%] h-auto lg:h-[100%] flex justify-center ${selectedDate ? "items-start" : "items-center"}`}>
+            <div className={`w-[100%] lg:w-[49%] h-auto lg:h-[100%] flex justify-center ${selectedDate && !taken ? "items-start" : "items-center"}`}>
                {!selectedDate ? (
                   <div className="w-[100%]">
                      <p className="text-xl m-4">
