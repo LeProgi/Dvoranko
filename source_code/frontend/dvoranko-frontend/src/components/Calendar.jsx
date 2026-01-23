@@ -23,8 +23,6 @@ const Calendar = ({handleDateClick, venueId}) => {
             const workingDaysTemp = daysTemp.map(dan => dan.substring(0, 3));
             setDays(daysTemp);
             setWorkingDays(workingDaysTemp);
-
-            console.log("Response from server:", respData.data);
             return respData;
         } catch (error) {
             console.error("Error fetching data:", error);

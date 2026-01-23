@@ -32,7 +32,6 @@ const VenuePage = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 const dvorana = data.data;
                 setVenue({
                     name: dvorana.nazivDvorana,

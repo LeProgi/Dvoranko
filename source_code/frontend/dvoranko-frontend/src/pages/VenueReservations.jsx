@@ -52,7 +52,6 @@ const VenueReservations = () => {
 
         const data = await res.json();
         setReservationRequests(data.data || []);
-        console.log("Reservation requests:", data.data);
 
         const resDvorana = await fetch(`${url}/api/public/dvorane/${idDvorana}`);
         if (!resDvorana.ok) throw new Error("Dvorana fetch failed");
@@ -67,7 +66,6 @@ const VenueReservations = () => {
         if(!resPotvrdeniTermini.ok) throw new Error("fetch failed");
         const potvrdeniTerminiJson = await(resPotvrdeniTermini.json());
         setReservations(potvrdeniTerminiJson.data)
-        console.log("Potvrdeni termini:", potvrdeniTerminiJson.data);
         } catch (err) {
             console.error(err);
             navigate("/my-profile");
@@ -104,8 +102,7 @@ const VenueReservations = () => {
     };
 
     const getUserFromId = async (id) => {
-        console.log(reservations)
-        console.log(id)
+
         try{
             const res = await fetch(`${url}/api/user/getUserById/${id}`, {
                 method: "GET",
@@ -114,8 +111,7 @@ const VenueReservations = () => {
 
             if(!res.ok) throw new Error("Neuspjesno hvacanje usera");
             const json = await res.json();
-            console.log(json.data)
-            console.log(json.data.name)
+
             return json.data || json;
         }
         catch(err){

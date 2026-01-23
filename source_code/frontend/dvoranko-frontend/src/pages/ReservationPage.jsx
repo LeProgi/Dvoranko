@@ -48,7 +48,6 @@ const ReservationPage = () => {
                return;
             }
             setOwnerIdLocal(data.id)
-            console.log("User data fetched:", data);
             if (!venueId) throw new Error("Nema podatka o izabranoj dvorani");
             fetchDvoranu(venueId);
             fetchTermineDvorane(venueId);
@@ -76,7 +75,6 @@ const ReservationPage = () => {
          const respData = JSON.parse(text);
          setKapacitet(respData.data.kapacitet);
 
-         console.log("Dohvaćena dvorana:", respData.data);
          return respData;
       } catch (error) {
          console.error("Error fetching data:", error);
@@ -98,7 +96,6 @@ const ReservationPage = () => {
             setTermini(prev => [...prev, ...respData.data.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
          }
 
-         console.log("Dohvaćeni termini:", respData.data);
          return respData;
       } catch (error) {
          console.error("Error fetching data:", error);
@@ -119,7 +116,6 @@ const ReservationPage = () => {
             setTermini(prev => [...prev, ...respData.map(termin => ({start: termin.datumVrijemeStart, end: termin.datumVrijemeEnd}))]);
          }
 
-         console.log("Dohvaćeni zahtjevi:", respData);
       } catch (error) {
          console.error("Error fetching data:", error);
          throw error;
@@ -157,7 +153,6 @@ const ReservationPage = () => {
       const availableTimesPomocna = allTimes.slice(startIndex, endIndex + 1);
       const notStart = [];
       const disabled = [];
-      console.log(filtriraniTermini);
       filtriraniTermini.forEach(termin => {
          const start = termin.start.substring(11, 16);
          const end = termin.end.substring(11, 16);
@@ -313,7 +308,6 @@ const ReservationPage = () => {
          if (endTime === "24:00") {
             let date = new Date(dateStr);
             date.setDate(date.getDate() + 1);
-            console.log(date);
             let dateDatum = String(date.getFullYear()) + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate());
             datumVrijemeEnd = dateDatum + "T" + "00:00" + ":00";
          } else {
@@ -328,7 +322,6 @@ const ReservationPage = () => {
             imeDogadanja: privatno ? "Privatno događanje" : imeDogadanja,
             opisDogadanja: opisDogadanja
          }
-         console.log("Payload to be sent:", payload);
 
          await postZahtjevTermin(payload);
          setFormError("Zahtjev uspješno poslan");
@@ -363,7 +356,6 @@ const ReservationPage = () => {
                throw new Error(respData?.message || `Server error ${response.status}`);
             }
 
-            console.log("Response from server:", respData);
             return respData;
         } catch (error) {
             console.error("Error submitting data:", error);

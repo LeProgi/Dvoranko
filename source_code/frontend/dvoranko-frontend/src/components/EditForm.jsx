@@ -76,11 +76,9 @@ function Form() {
                 const res = await fetch(`${url}/api/public/kategorije`);
                 if (!res.ok) throw new Error("Greška pri dohvaćanju kategorija");
                 const data = await res.json();
-                // console.log("Fetched categories:", data);
                 setCategories(data.data);
             } catch (err) {
                 console.error(err);
-                setCategoriesError("Ne mogu dohvatiti kategorije.");
             }
         };
 
@@ -103,7 +101,6 @@ function Form() {
                     //ak posaljemo null onda ostavljamo staru, ak ne posaljemo null na back brisemo staru i dodajemo novu
                     //setImage(dvorana.slike[0].urlSlika)
 
-                    console.log("uspjesno dohvacanje dvorane kumeeee laooo")
                 })
             } catch (err){
                 console.error("error tijekom dohvaćanja dvorana kume", err)
@@ -201,7 +198,6 @@ function Form() {
                 throw new Error(respData?.message || `Server error ${response.status}`);
             }
 
-            console.log("Response from server:", respData);
             return respData;
         } catch (error) {
             console.error("Error submitting data:", error);
@@ -290,13 +286,6 @@ function Form() {
             if (userRes.status !== 200) throw new Error("Nije ulogiran");
             const userData = await userRes.json();
             const ownerIdLocal = userData.id;
-            console.log(naziv)
-            console.log(kapacitet)
-            console.log(cijenaPoSatu)
-            console.log(opis)
-            console.log(addressId)
-            console.log(selectedCategories)
-            console.log(userData.id)
 
             const payload = {
                 nazivDvorana: naziv, 
@@ -313,9 +302,6 @@ function Form() {
 
             formData.append("request", JSON.stringify(payload));
             if (image != null) formData.append("files", image);
-
-            console.log("Payload to be sent:", payload);
-            console.log("Image:", image);
 
             await updateDvorana(formData);
             setFormError("Zahtjev uspješno poslan! Preusmjeravanje na profil...");
