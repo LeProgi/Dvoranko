@@ -51,7 +51,7 @@ const VenuePage = () => {
    
     return (
         <div className="flex justify-center items-center min-h-screen bg-[#5B7692]">
-            <div className="flex flex-col bg-[#F5F5F5] w-[95%] md:w-3/4 max-w-6xl min-h-[80vh] max-h-[100vh] rounded-[20px] shadow-lg overflow-hidden">
+            <div className="flex flex-col bg-[#F5F5F5] w-[95%] md:w-3/4 max-w-6xl min-h-[80vh] rounded-[20px] shadow-lg overflow-hidden">
                 
 
                 
