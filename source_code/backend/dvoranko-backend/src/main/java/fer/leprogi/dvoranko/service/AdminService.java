@@ -120,7 +120,11 @@ public class AdminService {
 
         zahtjevOglasRepository.delete(zahtjev);
 
-        mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odobren", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je odobren i dvorana je sada dostupna na platformi Dvoranko.\n\nHvala vam što koristite našu uslugu!\n\nLijep pozdrav,\nDvoranko tim");
+        try {
+            mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odobren", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je odobren i dvorana je sada dostupna na platformi Dvoranko.\n\nHvala vam što koristite našu uslugu!\n\nLijep pozdrav,\nDvoranko tim");
+        }catch (Exception e){
+            log.warn("Error sending approval email to user");
+        }
 
         return novaDvorana;
     }
@@ -149,7 +153,11 @@ public class AdminService {
 
         zahtjevOglasRepository.deleteById(requestId);
 
-        mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odbijen", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je nažalost odbijen.\n\nZa dodatne informacije ili pitanja, slobodno nas kontaktirajte.\n\nLijep pozdrav,\nDvoranko tim");
+        try {
+            mailService.sendMail(zahtjev.getOwner().getEmail(), "Vaš oglas je odbijen", "Poštovani,\n\nVaš zahtjev za oglas dvorane pod nazivom '" + zahtjev.getNaziv() + "' je nažalost odbijen.\n\nZa dodatne informacije ili pitanja, slobodno nas kontaktirajte.\n\nLijep pozdrav,\nDvoranko tim");
+        } catch (Exception e) {
+            log.warn("Error sending rejection email to user");
+        }
     }
 
     public List<ZahtjevIznajmljivacDTO> getAllIznajmljivacRequests() {

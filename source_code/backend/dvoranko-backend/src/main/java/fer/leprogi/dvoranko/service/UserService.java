@@ -97,7 +97,11 @@ public class UserService {
         zahtjev.setImeDogadanja(request.getImeDogadanja());
         zahtjevTerminRepository.save(zahtjev);
 
-        mailService.sendMail(owner.getEmail(), "Zahtjev termina za dvoranu '" + dvorana.getNazivDvorana() + "'","Poštovani, \n\nimate novi zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "' na platformi Dvoranko.\n\nLijep pozdrav,\nDvoranko tim");
+        try {
+            mailService.sendMail(owner.getEmail(), "Zahtjev termina za dvoranu '" + dvorana.getNazivDvorana() + "'","Poštovani, \n\nimate novi zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "' na platformi Dvoranko.\n\nLijep pozdrav,\nDvoranko tim");
+        } catch (Exception e) {
+            System.out.println("Error sending email to moderator: " + e.getMessage());
+        }
     }
 
 

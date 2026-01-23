@@ -264,7 +264,11 @@ public class ModeratorService {
         terminService.create(terminDTO);
         zahtjevTerminRepository.delete(zahtjev);
 
-        mailService.sendMail(user.getEmail(),"Vaš termin je odobren", "Poštovani,\n\nVaš zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "', pod nazivom '" + zahtjev.getImeDogadanja() + "' je odobren.\n\nLijep pozdrav,\nDvoranko tim");
+        try {
+            mailService.sendMail(user.getEmail(),"Vaš termin je odobren", "Poštovani,\n\nVaš zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "', pod nazivom '" + zahtjev.getImeDogadanja() + "' je odobren.\n\nLijep pozdrav,\nDvoranko tim");
+        } catch (Exception e) {
+            System.out.println("Error sending approval email to user");
+        }
     }
 
     public void rejectTerminRequest(Long idZahtjev, CustomOAuth2User principal) {
@@ -280,7 +284,12 @@ public class ModeratorService {
 
         zahtjevTerminRepository.delete(zahtjev);
 
-        mailService.sendMail(user.getEmail(),"Vaš termin je odbijen", "Poštovani,\n\nVaš zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "', pod nazivom '" + zahtjev.getImeDogadanja() + "' je odbijen.\n\nLijep pozdrav,\nDvoranko tim");
+
+        try {
+            mailService.sendMail(user.getEmail(),"Vaš termin je odbijen", "Poštovani,\n\nVaš zahtjev za termin u dvorani '" + dvorana.getNazivDvorana() + "', pod nazivom '" + zahtjev.getImeDogadanja() + "' je odbijen.\n\nLijep pozdrav,\nDvoranko tim");
+        } catch (Exception e) {
+            System.out.println("Error sending rejection email to user");
+        }
     }
 
 
